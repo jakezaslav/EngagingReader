@@ -115,8 +115,8 @@ body {
 }
 
 #definitionModal img{
-    margin: clamp(15px, 4vw, 25px);
-    top: 0;
+    margin: clamp(12px, 3vw, 20px);
+    top: 58px; /* Lowered to clear Userway accessibility widget */
     right: 0;
     width: clamp(50px, 12vw, 70px);
     height: clamp(50px, 12vw, 70px);
@@ -666,4 +666,14 @@ body {
     #drop-area img {
         max-height: 25vh;
     }
+}
+
+/* Userway accessibility widget - white person/logo icon */
+[id*="userway"] img,
+[id*="userway"] svg,
+[id*="userway"] path,
+[class*="userway"] img,
+[class*="userway"] svg,
+[class*="userway"] path {
+    filter: brightness(0) invert(1) !important;
 }

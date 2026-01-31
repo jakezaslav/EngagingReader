@@ -1151,11 +1151,7 @@ function closeDefinitionModal() {
     if (definedWordIndex >= 0 && definedWordIndex < mainWordSpans.length) {
         setWordFocus(definedWordIndex);
     }
-    
-    // Resume reading using the smart resume logic
-    if (mainSpeechPaused) {
-        resumeReading();
-    }
+    // Do not auto-resume main reading when closing the definition modal
 }
 
 // Get definition from Google AI
