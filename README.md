@@ -1,5 +1,18 @@
 # Engaging Reader
 
+## What We Do
+
+At Engaging Reader, we make reading accessible for everyone. Our AI-powered web app helps people confidently read everything from news articles and emails to signs and job postings. With Engaging Reader, you can:
+
+- **Snap & Convert:** Snap a photo on your phone or upload a file from your computer and instantly turn it into clear, easy-to-read text
+- **Listen Along:** Listen as your text is read aloud with simple, word-by-word highlighting
+- **Define Words:** Click on words for context-specific definitions that make sense
+- **Translate:** Convert documents into English for easier reading
+
+---
+
+## Technical Overview
+
 An interactive reading application that uses Google's Gemini AI (via Vertex AI) to extract text from uploaded documents and provides an enhanced reading experience with text-to-speech functionality and contextual word definitions. Supports both images and multi-page PDF documents with advanced image optimization.
 
 ## Features
