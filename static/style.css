@@ -33,7 +33,10 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 25px);
+    padding: clamp(12px, 2.5vw, 16px) clamp(15px, 4vw, 25px);
+    min-height: 52px;
+    display: flex;
+    align-items: center;
     background-color: #2E6F40;
     margin-top: 0;
     color: white;
@@ -87,7 +90,7 @@ body {
 
 .drop-area {
     display: flex;
-    margin-top: clamp(46px, 6vw, 80px); /* Reduced to keep content above fold with breathing room */
+    margin-top: clamp(56px, 7vw, 88px); /* Clear the taller banner (fits Userway widget) */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -614,6 +617,18 @@ body {
 
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 
+/* Mobile: extra-tall green bar so Userway widget fits without hitting edges */
+@media screen and (max-width: 768px) {
+    .banner {
+        min-height: 64px;
+        padding: clamp(16px, 3.5vw, 20px) 64px clamp(16px, 3.5vw, 20px) clamp(15px, 4vw, 25px);
+    }
+    
+    .drop-area {
+        margin-top: max(80px, 10vh); /* Clear the taller banner */
+    }
+}
+
 /* Small phones - minimal adjustments to base responsive design */
 @media screen and (max-width: 480px) {
     body {
@@ -621,7 +636,7 @@ body {
     }
     
     .drop-area {
-        margin-top: max(60px, 8vh); /* Ensure minimum spacing while being responsive */
+        margin-top: max(80px, 10vh); /* Clear the taller banner */
     }
     
     #drop-area img {
