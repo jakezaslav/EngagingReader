@@ -1,13 +1,3 @@
-/* =============================================
-   USER GUIDE PAGE — Engaging Reader
-   Matches main site style. Colorblind-friendly
-   icon colors (distinguishable for deuteranopia,
-   protanopia, tritanopia).
-   ============================================= */
-
-/* ---- Font Import (same as main site) ---- */
-/* Already loaded via HTML <link> */
-
 /* ---- CSS Variables ---- */
 :root {
     /* Brand colors (from main site) */
@@ -17,14 +7,12 @@
     --green-bg:     #E3F0E5;
 
     /* Colorblind-friendly icon palette
-       Tested against deuteranopia, protanopia & tritanopia simulators.
-       Uses shape + color redundancy — each icon also has a unique SVG shape. */
-    --col-upload:   #3A7EC6;  /* Blue      — safe across all CVD types */
-    --col-listen:   #D4820A;  /* Amber     — distinguishable from blue/green */
-    --col-translate:#8A4BAF;  /* Purple    — distinct from blue & amber */
-    --col-define:   #2E6F40;  /* Brand green — familiar site color */
-    --col-keyboard: #45535B;  /* Slate     — neutral, distinct shape cue */
-    --col-phone:    #B84040;  /* Red-brown — distinct from all above */
+    --col-upload:   #3A7EC6;  /* Blue */
+    --col-listen:   #D4820A;  /* Amber */
+    --col-translate:#8A4BAF;  /* Purple  */
+    --col-define:   #2E6F40;  /* Green */
+    --col-keyboard: #45535B;  /* Slate  */
+    --col-phone:    #B84040;  /* Red-brown */
 
     /* Icon button pill background tints (light version of each color) */
     --tint-upload:   #D6E8F8;
@@ -337,10 +325,6 @@ kbd {
     box-shadow: 0 2px 0 #1a1a1a;
     white-space: nowrap;
 }
-
-/* =============================================
-   RESPONSIVE TWEAKS
-   ============================================= */
 
 /* Very small phones */
 @media screen and (max-width: 400px) {
