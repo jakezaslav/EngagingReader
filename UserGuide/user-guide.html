@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>User Guide – Engaging Reader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./user-guide.css">
+</head>
+<body>
+
+    <main class="guide-container" role="main">
+        <h1 class="guide-title">How to Use Engaging Reader</h1>
+
+        <!-- Icon Nav Row -->
+        <div class="icon-nav" role="tablist" aria-label="Guide sections">
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-upload" id="tab-upload" data-target="upload">
+                <span class="icon-wrap icon-upload" aria-hidden="true">
+                    <!-- Upload icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 8L24 32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M14 18L24 8L34 18" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 36V40H40V36" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Upload<br>a File</span>
+            </button>
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-listen" id="tab-listen" data-target="listen">
+                <span class="icon-wrap icon-listen" aria-hidden="true">
+                    <!-- Speaker icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 18H18L28 10V38L18 30H10V18Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M34 16C36.5 18.5 38 21.1 38 24C38 26.9 36.5 29.5 34 32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Listen to<br>a Text</span>
+            </button>
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-translate" id="tab-translate" data-target="translate">
+                <span class="icon-wrap icon-translate" aria-hidden="true">
+                    <!-- Translate icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 12H26M17 8V12M17 12C17 18 13 23 8 26" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 26C14.5 28 18 29.5 22 29.5" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M26 22L32 38M32 38L38 22M29 32H35" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Translate</span>
+            </button>
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-define" id="tab-define" data-target="define">
+                <span class="icon-wrap icon-define" aria-hidden="true">
+                    <!-- Book/define icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 8H34C36.2 8 38 9.8 38 12V40L24 34L10 40V8Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                        <path d="M18 20H30M18 26H26" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Define<br>Words</span>
+            </button>
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-keyboard" id="tab-keyboard" data-target="keyboard">
+                <span class="icon-wrap icon-keyboard" aria-hidden="true">
+                    <!-- Keyboard icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="4"/>
+                        <path d="M14 20H14.01M20 20H20.01M26 20H26.01M32 20H32.01M17 27H31" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Keyboard<br>Shortcuts</span>
+            </button>
+
+            <button class="icon-btn" role="tab" aria-selected="false" aria-controls="panel-phone" id="tab-phone" data-target="phone">
+                <span class="icon-wrap icon-phone" aria-hidden="true">
+                    <!-- Phone icon -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="14" y="4" width="20" height="40" rx="4" stroke="currentColor" stroke-width="4"/>
+                        <circle cx="24" cy="38" r="2" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="icon-label">Using your<br>Phone</span>
+            </button>
+
+        </div>
+
+        <!-- Expandable Panels -->
+        <div class="panel-container" hidden>
+
+            <!-- Upload a File -->
+            <section class="guide-panel" id="panel-upload" role="tabpanel" aria-labelledby="tab-upload" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-upload" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 8L24 32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M14 18L24 8L34 18" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 36V40H40V36" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <h2>Upload a File</h2>
+                    </div>
+                    <ol class="guide-steps">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ol>
+                    <div class="guide-tip"></div>
+                </div>
+            </section>
+
+            <!-- Listen to a Text -->
+            <section class="guide-panel" id="panel-listen" role="tabpanel" aria-labelledby="tab-listen" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-listen" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 18H18L28 10V38L18 30H10V18Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                                <path d="M34 16C36.5 18.5 38 21.1 38 24C38 26.9 36.5 29.5 34 32" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <h2>Listen to a Text</h2>
+                    </div>
+                    <ol class="guide-steps">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ol>
+                    <div class="guide-tip"></div>
+                </div>
+            </section>
+
+            <!-- Translate -->
+            <section class="guide-panel" id="panel-translate" role="tabpanel" aria-labelledby="tab-translate" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-translate" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 12H26M17 8V12M17 12C17 18 13 23 8 26" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 26C14.5 28 18 29.5 22 29.5" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M26 22L32 38M32 38L38 22M29 32H35" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <h2>Translate</h2>
+                    </div>
+                    <ol class="guide-steps">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ol>
+                    <div class="guide-tip"></div>
+                </div>
+            </section>
+
+            <!-- Define Words -->
+            <section class="guide-panel" id="panel-define" role="tabpanel" aria-labelledby="tab-define" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-define" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 8H34C36.2 8 38 9.8 38 12V40L24 34L10 40V8Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                                <path d="M18 20H30M18 26H26" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <h2>Define Words</h2>
+                    </div>
+                    <ol class="guide-steps">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ol>
+                    <div class="guide-tip"></div>
+                </div>
+            </section>
+
+            <!-- Keyboard Shortcuts -->
+            <section class="guide-panel" id="panel-keyboard" role="tabpanel" aria-labelledby="tab-keyboard" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-keyboard" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="4"/>
+                                <path d="M14 20H14.01M20 20H20.01M26 20H26.01M32 20H32.01M17 27H31" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <h2>Keyboard Shortcuts</h2>
+                    </div>
+                    <p class="guide-intro">&nbsp;</p>
+                    <table class="shortcut-table" aria-label="Keyboard shortcuts">
+                        <thead>
+                            <tr><th>&nbsp;</th><th>&nbsp;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                            <tr><td>&nbsp;</td><td><kbd>&nbsp;</kbd></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Using your Phone -->
+            <section class="guide-panel" id="panel-phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span class="panel-icon icon-phone" aria-hidden="true">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="14" y="4" width="20" height="40" rx="4" stroke="currentColor" stroke-width="4"/>
+                                <circle cx="24" cy="38" r="2" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <h2>Using your Phone</h2>
+                    </div>
+                    <ol class="guide-steps">
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                        <li>&nbsp;</li>
+                    </ol>
+                    <div class="guide-tip"></div>
+                </div>
+            </section>
+
+        </div><!-- end panel-container -->
+    </main>
+
+    <script>
+        const tabs = document.querySelectorAll('.icon-btn');
+        const panels = document.querySelectorAll('.guide-panel');
+        const panelContainer = document.querySelector('.panel-container');
+
+        const closePanels = () => {
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+
+            panels.forEach(panel => {
+                panel.classList.remove('active');
+                panel.hidden = true;
+            });
+
+            panelContainer.hidden = true;
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+
+                // Update tab states
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('active');
+                tab.setAttribute('aria-selected', 'true');
+
+                // Update panel visibility
+                panels.forEach(panel => {
+                    panel.classList.remove('active');
+                    panel.hidden = true;
+                });
+
+                panelContainer.hidden = false;
+
+                const activePanel = document.getElementById('panel-' + target);
+                activePanel.classList.add('active');
+                activePanel.hidden = false;
+            });
+
+            // Keyboard nav within tablist
+            tab.addEventListener('keydown', e => {
+                const tabList = Array.from(tabs);
+                const idx = tabList.indexOf(tab);
+                if (e.key === 'ArrowRight') {
+                    tabList[(idx + 1) % tabList.length].focus();
+                } else if (e.key === 'ArrowLeft') {
+                    tabList[(idx - 1 + tabList.length) % tabList.length].focus();
+                } else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    tab.click();
+                }
+            });
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && !panelContainer.hidden) {
+                closePanels();
+            }
+        });
+    </script>
+</body>
+</html>

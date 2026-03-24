@@ -1,0 +1,361 @@
+/* =============================================
+   USER GUIDE PAGE — Engaging Reader
+   Matches main site style. Colorblind-friendly
+   icon colors (distinguishable for deuteranopia,
+   protanopia, tritanopia).
+   ============================================= */
+
+/* ---- Font Import (same as main site) ---- */
+/* Already loaded via HTML <link> */
+
+/* ---- CSS Variables ---- */
+:root {
+    /* Brand colors (from main site) */
+    --green-dark:   #2E6F40;
+    --green-mid:    #95D3A6;
+    --green-light:  #E5EAE5;
+    --green-bg:     #E3F0E5;
+
+    /* Colorblind-friendly icon palette
+       Tested against deuteranopia, protanopia & tritanopia simulators.
+       Uses shape + color redundancy — each icon also has a unique SVG shape. */
+    --col-upload:   #3A7EC6;  /* Blue      — safe across all CVD types */
+    --col-listen:   #D4820A;  /* Amber     — distinguishable from blue/green */
+    --col-translate:#8A4BAF;  /* Purple    — distinct from blue & amber */
+    --col-define:   #2E6F40;  /* Brand green — familiar site color */
+    --col-keyboard: #45535B;  /* Slate     — neutral, distinct shape cue */
+    --col-phone:    #B84040;  /* Red-brown — distinct from all above */
+
+    /* Icon button pill background tints (light version of each color) */
+    --tint-upload:   #D6E8F8;
+    --tint-listen:   #FCF0D8;
+    --tint-translate:#EEE0F8;
+    --tint-define:   #D6EDD8;
+    --tint-keyboard: #DDE1E3;
+    --tint-phone:    #F8DADA;
+}
+
+/* ---- Base Reset ---- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---- Body ---- */
+body {
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    background-color: var(--green-light);
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    min-height: 100vh;
+    padding: clamp(20px, 5vw, 60px) clamp(15px, 4vw, 75px);
+}
+
+/* ---- Guide Container ---- */
+.guide-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 4vw, 36px);
+}
+
+/* ---- Page Title ---- */
+.guide-title {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* =============================================
+   ICON NAV ROW
+   ============================================= */
+.icon-nav {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    justify-content: center;
+    gap: clamp(8px, 2vw, 14px);
+    width: 100%;
+}
+
+.icon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    background-color: #fff;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: clamp(10px, 2vw, 14px) clamp(10px, 2vw, 14px);
+    width: 100%;
+    min-height: clamp(120px, 15vw, 150px);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    /* Ensures keyboard focus is always visible */
+    outline-offset: 3px;
+}
+
+.icon-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.icon-btn:focus-visible {
+    outline: 3px solid var(--green-dark);
+    outline-offset: 3px;
+}
+
+/* Active tab state */
+.icon-btn.active {
+    border-color: var(--green-dark);
+    box-shadow: 0 4px 0 var(--green-dark);
+    transform: translateY(-2px);
+}
+
+/* ---- Icon Wrap (the coloured pill/square) ---- */
+.icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(56px, 7vw, 72px);
+    height: clamp(56px, 7vw, 72px);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.icon-wrap svg {
+    width: 60%;
+    height: 60%;
+}
+
+/* Per-icon color theming */
+.icon-upload   { background-color: var(--tint-upload);   color: var(--col-upload); }
+.icon-listen   { background-color: var(--tint-listen);   color: var(--col-listen); }
+.icon-translate{ background-color: var(--tint-translate); color: var(--col-translate); }
+.icon-define   { background-color: var(--tint-define);   color: var(--col-define); }
+.icon-keyboard { background-color: var(--tint-keyboard); color: var(--col-keyboard); }
+.icon-phone    { background-color: var(--tint-phone);    color: var(--col-phone); }
+
+/* Active tab: icon gets a stronger fill */
+.icon-btn.active .icon-upload    { background-color: var(--col-upload);    color: #fff; }
+.icon-btn.active .icon-listen    { background-color: var(--col-listen);    color: #fff; }
+.icon-btn.active .icon-translate { background-color: var(--col-translate); color: #fff; }
+.icon-btn.active .icon-define    { background-color: var(--col-define);    color: #fff; }
+.icon-btn.active .icon-keyboard  { background-color: var(--col-keyboard);  color: #fff; }
+.icon-btn.active .icon-phone     { background-color: var(--col-phone);     color: #fff; }
+
+/* ---- Icon Labels ---- */
+.icon-label {
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* =============================================
+   PANEL CONTAINER
+   ============================================= */
+.panel-container {
+    width: 100%;
+}
+
+.panel-container[hidden] {
+    display: none;
+}
+
+/* ---- Individual Panel ---- */
+.guide-panel {
+    display: none;
+    background-color: var(--green-bg);
+    border: 1.5px solid var(--green-dark);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: panelIn 0.22s ease;
+    width: 100%;
+}
+
+.guide-panel.active {
+    display: block;
+}
+
+@keyframes panelIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-inner {
+    padding: clamp(20px, 5vw, 36px) clamp(20px, 5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 3vw, 24px);
+}
+
+/* ---- Panel Header ---- */
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2.5vw, 18px);
+}
+
+/* Panel icon — larger version, same color theming */
+.panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(48px, 8vw, 64px);
+    height: clamp(48px, 8vw, 64px);
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+
+.panel-icon svg {
+    width: 58%;
+    height: 58%;
+}
+
+/* Same color classes used for both .icon-wrap and .panel-icon */
+
+.panel-header h2 {
+    font-size: clamp(1.3rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: var(--green-dark);
+    line-height: 1.2;
+}
+
+/* ---- Step List ---- */
+.guide-steps {
+    list-style: none;
+    counter-reset: steps;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 2vw, 14px);
+    padding-left: 0;
+}
+
+.guide-steps li {
+    counter-increment: steps;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    line-height: 1.6;
+}
+
+.guide-steps li::before {
+    content: counter(steps);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(28px, 5vw, 36px);
+    height: clamp(28px, 5vw, 36px);
+    background-color: var(--green-dark);
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ---- Intro text (used in keyboard panel) ---- */
+.guide-intro {
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ---- Tip Box ---- */
+.guide-tip {
+    background-color: #fff;
+    border-left: 4px solid var(--green-dark);
+    border-radius: 0 10px 10px 0;
+    padding: clamp(10px, 2vw, 16px) clamp(14px, 3vw, 20px);
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+    line-height: 1.6;
+    color: #333;
+}
+
+.guide-tip:empty,
+.guide-tip.blank {
+    display: none;
+}
+
+/* ---- Shortcut Table ---- */
+.shortcut-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+}
+
+.shortcut-table thead tr {
+    background-color: var(--green-dark);
+    color: white;
+}
+
+.shortcut-table th {
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
+    text-align: left;
+    font-weight: 700;
+}
+
+.shortcut-table tbody tr {
+    border-bottom: 1px solid #cdd9ce;
+}
+
+.shortcut-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.shortcut-table tbody tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.5);
+}
+
+.shortcut-table td {
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
+    line-height: 1.5;
+}
+
+kbd {
+    display: inline-block;
+    background-color: #45535B;
+    color: #E5EAE5;
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 0 #1a1a1a;
+    white-space: nowrap;
+}
+
+/* =============================================
+   RESPONSIVE TWEAKS
+   ============================================= */
+
+/* Very small phones */
+@media screen and (max-width: 400px) {
+    .icon-nav {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .icon-label {
+        font-size: 0.6rem;
+    }
+}
+
+/* Collapse icon nav to 3x2 grid on very narrow screens */
+@media screen and (max-width: 360px) {
+    .icon-nav {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
