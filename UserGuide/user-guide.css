@@ -312,7 +312,17 @@ body {
     padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
     line-height: 1.5;
 }
+.video-wrapper {
+    width: 100%;
+    margin-top: 1rem;
+}
 
+.video-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
 kbd {
     display: inline-block;
     background-color: #45535B;
