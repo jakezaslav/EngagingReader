@@ -292,77 +292,98 @@
         </div><!-- end panel-container -->
     </main>
 
-    <script>
-        const tabs = document.querySelectorAll('.icon-btn');
-        const panels = document.querySelectorAll('.guide-panel');
-        const closeButtons = document.querySelectorAll('.panel-close');
-        const panelContainer = document.querySelector('.panel-container');
+   <script>
+    const tabs = document.querySelectorAll('.icon-btn');
+    const panels = document.querySelectorAll('.guide-panel');
+    const closeButtons = document.querySelectorAll('.panel-close');
+    const panelContainer = document.querySelector('.panel-container');
 
-        const closePanels = () => {
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-                tab.setAttribute('aria-selected', 'false');
+    // 🔥 NEW: stop all videos
+    const stopAllVideos = () => {
+        document.querySelectorAll('video').forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+        });
+    };
+
+    const closePanels = () => {
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+        });
+
+        panels.forEach(panel => {
+            panel.classList.remove('active');
+            panel.hidden = true;
+        });
+
+        panelContainer.hidden = true;
+
+        stopAllVideos(); // 🔥 added
+    };
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.target;
+
+            // 🔥 NEW: check if already open
+            const isAlreadyActive = tab.classList.contains('active');
+
+            if (isAlreadyActive) {
+                closePanels(); // toggle close
+                return;
+            }
+
+            // Update tab states
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
             });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
 
+            // Update panel visibility
             panels.forEach(panel => {
                 panel.classList.remove('active');
                 panel.hidden = true;
             });
 
-            panelContainer.hidden = true;
-        };
+            stopAllVideos(); // 🔥 added
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.dataset.target;
+            panelContainer.hidden = false;
 
-                // Update tab states
-                tabs.forEach(t => {
-                    t.classList.remove('active');
-                    t.setAttribute('aria-selected', 'false');
-                });
-                tab.classList.add('active');
-                tab.setAttribute('aria-selected', 'true');
-
-                // Update panel visibility
-                panels.forEach(panel => {
-                    panel.classList.remove('active');
-                    panel.hidden = true;
-                });
-
-                panelContainer.hidden = false;
-
-                const activePanel = document.getElementById('panel-' + target);
-                activePanel.classList.add('active');
-                activePanel.hidden = false;
-            });
-
-            // Keyboard nav within tablist
-            tab.addEventListener('keydown', e => {
-                const tabList = Array.from(tabs);
-                const idx = tabList.indexOf(tab);
-                if (e.key === 'ArrowRight') {
-                    tabList[(idx + 1) % tabList.length].focus();
-                } else if (e.key === 'ArrowLeft') {
-                    tabList[(idx - 1 + tabList.length) % tabList.length].focus();
-                } else if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    tab.click();
-                }
-            });
+            const activePanel = document.getElementById('panel-' + target);
+            activePanel.classList.add('active');
+            activePanel.hidden = false;
         });
 
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                closePanels();
-            });
-        });
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && !panelContainer.hidden) {
-                closePanels();
+        // Keyboard nav within tablist (UNCHANGED)
+        tab.addEventListener('keydown', e => {
+            const tabList = Array.from(tabs);
+            const idx = tabList.indexOf(tab);
+            if (e.key === 'ArrowRight') {
+                tabList[(idx + 1) % tabList.length].focus();
+            } else if (e.key === 'ArrowLeft') {
+                tabList[(idx - 1 + tabList.length) % tabList.length].focus();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                tab.click();
             }
         });
-    </script>
+    });
+
+    // Keep this (optional now, but harmless)
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closePanels();
+        });
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !panelContainer.hidden) {
+            closePanels();
+        }
+    });
+</script>
 </body>
 </html>
