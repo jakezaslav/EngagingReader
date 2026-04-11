@@ -40,7 +40,61 @@ body {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     min-height: 100vh;
-    padding: clamp(20px, 5vw, 60px) clamp(15px, 4vw, 75px);
+    padding: clamp(88px, 14vw, 130px) clamp(15px, 4vw, 75px) clamp(20px, 5vw, 60px);
+}
+
+.banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 18px);
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 25px);
+    background-color: var(--green-dark);
+    margin: 0;
+    color: white;
+    font-size: clamp(1.5rem, 6vw, 2.4rem);
+    font-weight: 700;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+.banner-title {
+    margin: 0;
+    font: inherit;
+    text-align: left;
+}
+
+.banner-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.banner-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    padding: clamp(6px, 1.4vw, 10px) clamp(12px, 2.4vw, 18px);
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.banner-back:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    transform: translateY(-2px);
+}
+
+.banner-back:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
 }
 
 /* ---- Guide Container ---- */
@@ -51,33 +105,6 @@ body {
     flex-direction: column;
     align-items: center;
     gap: clamp(20px, 4vw, 36px);
-}
-
-.back-home-btn {
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    color: var(--green-dark);
-    border: 2px solid var(--green-dark);
-    border-radius: 999px;
-    padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 22px);
-    font-size: clamp(1rem, 2.2vw, 1.2rem);
-    font-weight: 700;
-    text-decoration: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.back-home-btn:hover {
-    background-color: var(--green-bg);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
-}
-
-.back-home-btn:focus-visible {
-    outline: 3px solid var(--green-dark);
-    outline-offset: 3px;
 }
 
 /* ---- Page Title ---- */

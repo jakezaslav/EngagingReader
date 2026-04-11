@@ -46,6 +46,36 @@ body {
     box-sizing: border-box;
 }
 
+.guide-link {
+    position: fixed;
+    right: clamp(15px, 4vw, 25px);
+    bottom: clamp(20px, 4vw, 32px);
+    width: clamp(56px, 8vw, 70px);
+    height: clamp(56px, 8vw, 70px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1a1a1a;
+    border-radius: 50%;
+    background-color: #95D3A6;
+    color: #1a1a1a;
+    box-shadow: 0 6px #2E6F40;
+    font-size: clamp(1.8rem, 4.6vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.guide-link:hover {
+    background-color: #6bc382;
+}
+
+.guide-link:focus-visible {
+    outline: 3px solid #2E6F40;
+    outline-offset: 3px;
+}
+
 #upload-container {
     display: flex;
     width: 100%;
