@@ -10,7 +10,6 @@
     --col-upload:   #3A7EC6;  /* Blue */
     --col-upload-active: #2F6AA9;
     --col-listen:   #D4820A;  /* Amber */
-    --col-translate:#8A4BAF;  /* Purple  */
     --col-define:   #2E6F40;  /* Green */
     --col-keyboard: #45535B;  /* Slate  */
     --col-phone:    #A85A5A;  /* Soft rose */
@@ -18,7 +17,6 @@
     /* Icon button pill background tints (light version of each color) */
     --tint-upload:   #D6E8F8;
     --tint-listen:   #FCF0D8;
-    --tint-translate:#EEE0F8;
     --tint-define:   #D6EDD8;
     --tint-keyboard: #DDE1E3;
     --tint-phone:    #F4E1E1;
@@ -71,7 +69,7 @@ body {
    ============================================= */
 .icon-nav {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     justify-content: center;
     gap: clamp(10px, 2.4vw, 18px);
     width: 100%;
@@ -132,7 +130,6 @@ body {
 /* Per-icon color theming */
 .icon-upload   { background-color: var(--tint-upload);   color: var(--col-upload); }
 .icon-listen   { background-color: var(--tint-listen);   color: var(--col-listen); }
-.icon-translate{ background-color: var(--tint-translate); color: var(--col-translate); }
 .icon-define   { background-color: var(--tint-define);   color: var(--col-define); }
 .icon-keyboard { background-color: var(--tint-keyboard); color: var(--col-keyboard); }
 .icon-phone    { background-color: var(--tint-phone);    color: var(--col-phone); }
@@ -143,7 +140,6 @@ body {
     color: #fff;
 }
 .icon-btn.active .icon-listen    { background-color: var(--col-listen);    color: #fff; }
-.icon-btn.active .icon-translate { background-color: var(--col-translate); color: #fff; }
 .icon-btn.active .icon-define    { background-color: var(--col-define);    color: #fff; }
 .icon-btn.active .icon-keyboard  { background-color: var(--col-keyboard);  color: #fff; }
 .icon-btn.active .icon-phone     { background-color: var(--col-phone);     color: #fff; }
@@ -314,11 +310,6 @@ body {
 #panel-listen {
     --panel-bg: var(--tint-listen);
     --panel-accent: var(--col-listen);
-}
-
-#panel-translate {
-    --panel-bg: var(--tint-translate);
-    --panel-accent: var(--col-translate);
 }
 
 #panel-define {
