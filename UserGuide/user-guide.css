@@ -53,6 +53,33 @@ body {
     gap: clamp(20px, 4vw, 36px);
 }
 
+.back-home-btn {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: var(--green-dark);
+    border: 2px solid var(--green-dark);
+    border-radius: 999px;
+    padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 22px);
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.back-home-btn:hover {
+    background-color: var(--green-bg);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.back-home-btn:focus-visible {
+    outline: 3px solid var(--green-dark);
+    outline-offset: 3px;
+}
+
 /* ---- Page Title ---- */
 .guide-title {
     font-size: clamp(1.6rem, 4.6vw, 2.8rem);
@@ -192,6 +219,12 @@ body {
     gap: clamp(16px, 3vw, 24px);
 }
 
+.panel-description {
+    font-size: clamp(1.32rem, 2.9vw, 2.15rem);
+    line-height: 1.55;
+    color: #2f3b33;
+}
+
 /* ---- Panel Header ---- */
 .panel-header {
     display: flex;
@@ -255,6 +288,62 @@ body {
     height: 18px;
 }
 
+.listen-table td:first-child {
+    width: 38%;
+}
+
+.control-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.control-chip strong {
+    font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+}
+
+.control-icon {
+    display: inline-block;
+    width: clamp(44px, 6vw, 56px);
+    height: clamp(44px, 6vw, 56px);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+}
+
+.control-icon-play {
+    background-image: url('../static/assets/Play Button-unselected.png');
+}
+
+.control-icon-pause {
+    background-image: url('../static/assets/Pause Button-Selected.png');
+}
+
+.speed-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(54px, 7vw, 70px);
+    min-height: clamp(40px, 5vw, 50px);
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 2px solid var(--col-listen);
+    background-color: #fff;
+    color: #1a1a1a;
+}
+
+.highlight-sample {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 0, 0.5);
+    color: #1a1a1a;
+}
+
 /* ---- Step List ---- */
 .guide-steps {
     list-style: none;
@@ -304,7 +393,7 @@ body {
 
 #panel-upload {
     --panel-bg: var(--tint-upload);
-    --panel-accent: var(--col-upload);
+    --panel-accent: var(--col-upload-active);
 }
 
 #panel-listen {

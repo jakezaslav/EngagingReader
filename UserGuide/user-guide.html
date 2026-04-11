@@ -12,6 +12,7 @@
 <body>
 
     <main class="guide-container" role="main">
+        <a class="back-home-btn" href="/">Back to Main Page</a>
         <h1 class="guide-title">How to Use<br>Engaging Reader</h1>
 
         <!-- Icon Nav Row -->
@@ -96,6 +97,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="panel-description">Upload any pdf document or picture onto Engaging Reader to instantly turn it into clear, easy-to-read text</p>
                     <div class="video-wrapper">
                     <video controls>
                     <source src="https://raw.githubusercontent.com/jakezaslav/EngagingReader/CART484/static/assets/Upload File.mp4" type="video/mp4">
@@ -104,10 +106,11 @@
                     <ol class="guide-steps">
                         <li>Go to engagingreader.com</li>
                         <li>Click "Upload File"</li>
-                        <li>Select File*</li>
-                        <li>Wait for AI to Convert File</li>
+                        <li>Select a file from your computer's file browser.</li>
+                        <li>It may take up to 60 seconds to convert a file. If it has been longer than a minute, reload the site and try uploading again.</li>
+                        <li>When the text appears, use Play or the spacebar to start listening.</li>
                     </ol>
-                    <div class="guide-tip"></div>
+                    <div class="guide-tip">Translation is available after upload for supported image and PDF files.</div>
                 </div>
             </section>
 
@@ -128,21 +131,55 @@
                             </svg>
                         </button>
                     </div>
-                     <div class="video-wrapper">
+                    <p class="panel-description">The play bar lets you start listening, pause, change the reading speed, and follow the word that is being read aloud.</p>
+                    <div class="video-wrapper">
                     <video controls>
                     <source src="https://raw.githubusercontent.com/jakezaslav/EngagingReader/CART484/static/assets/Playback.mp4" type="video/mp4">
                     </video>
                     </div>
-                    <ol class="guide-steps">
-                        <li>Press Play to start reading the text aloud.</li>
-                        <li>Press Pause to stop the reading at any time.</li>
-                        <li>Click to view reading speed options.</li>
-                        <li>This shows the current reading speed.</li>
-                        <li>Select a reading speed.</li>
-                        <li>The word being read is highlighted as the audio plays.</li>
-                        <li>The highlighted button shows the current playback state.</li>
-                        <li>Click the title bar to go back to Upload.</li>
-                    </ol>
+                    <table class="shortcut-table listen-table" aria-label="Play bar controls">
+                        <thead>
+                            <tr><th>Control</th><th>What it does</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="control-chip">
+                                        <span class="control-icon control-icon-play" aria-hidden="true"></span>
+                                        <strong>Play</strong>
+                                    </div>
+                                </td>
+                                <td>Starts reading the text aloud.</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="control-chip">
+                                        <span class="control-icon control-icon-pause" aria-hidden="true"></span>
+                                        <strong>Pause</strong>
+                                    </div>
+                                </td>
+                                <td>Stops the reading at any time.</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="control-chip">
+                                        <span class="speed-chip"><strong>1x</strong></span>
+                                        <strong>Reading Speed</strong>
+                                    </div>
+                                </td>
+                                <td>Shows the current reading speed. Click it to choose another speed like .5x, 1x, or 2x.</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="control-chip">
+                                        <span class="highlight-sample"><strong>word</strong></span>
+                                        <strong>Highlight</strong>
+                                    </div>
+                                </td>
+                                <td>The yellow highlight shows the word being read right now.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="guide-tip"></div>
                 </div>
             </section>
@@ -164,6 +201,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="panel-description">Click on words for context-specific definitions that make sense</p>
                     <div class="video-wrapper">
                     <video controls>
                     <source src="https://raw.githubusercontent.com/jakezaslav/EngagingReader/CART484/static/assets/Define.mp4" type="video/mp4">
@@ -196,6 +234,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="panel-description">A keyboard shortcut is a quick way to do something on a computer by pressing keys on your keyboard at the same time.</p>
                     <div class="video-wrapper">
                     <video controls>
                     <source src="https://raw.githubusercontent.com/jakezaslav/EngagingReader/CART484/static/assets/KeyboardShortcuts.mp4" type="video/mp4">
@@ -203,15 +242,14 @@
                     </div>
                     <table class="shortcut-table" aria-label="Keyboard shortcuts">
                         <thead>
-                            <tr><th>Action</th><th>Shortcut</th></tr>
+                            <tr><th>Shortcut</th><th>Action</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>Move from word to word.</td><td><kbd>Left</kbd> / <kbd>Right</kbd></td></tr>
-                            <tr><td>Move from paragraph to paragraph.</td><td><kbd>Up</kbd> / <kbd>Down</kbd></td></tr>
-                            <tr><td>Define the selected word.</td><td><kbd>Enter</kbd></td></tr>
-                            <tr><td>The selected word follows along while the text is read aloud.</td><td>Automatic</td></tr>
-                            <tr><td>Play or pause the narration.</td><td><kbd>Space</kbd></td></tr>
-                            <tr><td>Leave the definition and return to the main text.</td><td><kbd>Esc</kbd></td></tr>
+                            <tr><td><kbd>Left</kbd> / <kbd>Right</kbd></td><td>Move from word to word.</td></tr>
+                            <tr><td><kbd>Up</kbd> / <kbd>Down</kbd></td><td>Move from paragraph to paragraph.</td></tr>
+                            <tr><td><kbd>Enter</kbd></td><td>Define the selected word.</td></tr>
+                            <tr><td><kbd>Space</kbd></td><td>Play or pause the narration.</td></tr>
+                            <tr><td><kbd>Esc</kbd></td><td>Leave the definition and return to the main text.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -234,6 +272,7 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="panel-description">You can access Engaging Reader easily on your mobile device at engagingreader.com</p>
                     <ol class="guide-steps">
                         <li>Press Upload File.</li>
                         <li>Select "Photo Library" to use a photo from your camera roll, or select "Take Photo" to capture a new photo.</li>
