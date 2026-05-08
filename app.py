@@ -79,10 +79,18 @@ def cleanup_old_jobs():
 
 # === Google Gemini Client Initialization ===
 def initialize_genai_client():
-    # Load service account credentials from environment variable
+    # Prefer API key auth when provided.
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if api_key:
+        return genai.Client(api_key=api_key)
+
+    # Otherwise fall back to Vertex AI service account auth.
     service_account_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not service_account_json:
-        raise ValueError("GOOGLE_SERVICE_ACCOUNT_JSON environment variable not set")
+        raise ValueError(
+            "Set GEMINI_API_KEY (or GOOGLE_API_KEY) for API key auth, "
+            "or set GOOGLE_SERVICE_ACCOUNT_JSON for Vertex AI auth."
+        )
 
     try:
         # Write credentials to a temp file for authentication

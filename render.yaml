@@ -5,6 +5,8 @@ services:
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app --timeout 300"
     envVars:
+      - key: GEMINI_API_KEY
+        value: "{{.GEMINI_API_KEY}}"
       - key: GOOGLE_APPLICATION_CREDENTIALS
         value: service_account_file.json
       - key: GOOGLE_SERVICE_ACCOUNT_JSON
