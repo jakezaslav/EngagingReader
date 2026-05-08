@@ -211,8 +211,8 @@ Preserve original emphasis like bold and italics. Preserve paragraphs.
 
 Footnotes:
 -- If a table has footnotes, place the full footnote text immediately below its corresponding table.
--- In the table cell, mark the reference number with a tilde, like this: 1,234,567~1~.
--- Begin the footnote text itself with the same marker, like this: ~1~ This is the footnote text.
+-- In the table cell, mark the reference number with brackets and a carrot, like this: 1,234,567[^1].
+-- Begin the footnote text itself with the same marker, like this: [^1]: This is the footnote text.
 
 Completeness: Ensure all extracted (or translated) text, including any URLs, is present in the final output.""")
 
