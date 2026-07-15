@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for speed controls
     setupSpeedControl('speedDisplay', 'main');
     setupSpeedControl('modalSpeedDisplay', 'modal');
-    // setupLanguageSelector(); // re-enable with language selector HTML
+    setupLanguageSelector();
 
     // Drag and drop events
     dropArea.addEventListener('dragover', (e) => {
@@ -436,7 +436,12 @@ function setupLanguageSelector() {
     dropdown.querySelectorAll('.language-option:not(.language-label)').forEach(option => {
         option.addEventListener('click', function(event) {
             event.stopPropagation();
-            label.textContent = this.textContent.trim();
+            const lang = this.getAttribute('data-lang');
+            if (lang && typeof window.setLocale === 'function') {
+                window.setLocale(lang);
+            } else {
+                label.textContent = this.textContent.trim();
+            }
             closeLanguageDropdown();
         });
     });
@@ -465,8 +470,8 @@ async function uploadImage() {
     document.getElementById('speech-controls').style.display = 'none';
     
     if (!fileInput.files.length) {
-        showError("Please select an image file first.");
-        announceError("Please select a file first.");
+        showError(t('errors.selectFileVisible'));
+        announceError(t('errors.selectFile'));
         return;
     }
 
@@ -481,23 +486,23 @@ async function uploadImage() {
     const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
     
     if (!allowedTypes.includes(file.type) && !hasValidExtension) {
-        showError("Please select a valid file (JPEG, PNG, HEIC, WebP, or PDF).");
-        announceError("Invalid file type. Please select an image or PDF file.");
+        showError(t('errors.invalidTypeVisible'));
+        announceError(t('errors.invalidType'));
         return;
     }
 
     // Check file size (50MB limit - generous for high-quality documents)
     const maxSize = 50 * 1024 * 1024; // 50MB in bytes
     if (file.size > maxSize) {
-        showError("File size exceeds 50MB limit. Please choose a smaller file.");
-        announceError("File too large. Please choose a file under 50MB.");
+        showError(t('errors.fileTooLargeVisible'));
+        announceError(t('errors.fileTooLarge'));
         return;
     }
 
     // Show loading state
     loadingOverlay.style.display = 'flex';
     outputDiv.innerHTML = "";
-    announceStatus("Processing file, please wait...");
+    announceStatus(t('status.processing'));
 
     try {
         const formData = new FormData();
@@ -511,7 +516,7 @@ async function uploadImage() {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "Failed to upload file");
+            throw new Error(data.error || t('errors.uploadFailed'));
         }
 
         // Get job ID and poll for results
@@ -530,7 +535,7 @@ async function uploadImage() {
                 const statusData = await statusResponse.json();
                 
                 if (!statusResponse.ok) {
-                    throw new Error(statusData.error || "Failed to check status");
+                    throw new Error(statusData.error || t('errors.statusCheckFailed'));
                 }
                 
                 if (statusData.status === "completed") {
@@ -555,7 +560,7 @@ async function uploadImage() {
                     document.getElementById('upload-container').style.display = 'none';
                     
                     loadingOverlay.style.display = 'none';
-                    announceStatus("Text extracted successfully. Use spacebar to start reading or tab to navigate words.");
+                    announceStatus(t('status.extracted'));
                 } else if (statusData.status === "failed") {
                     throw new Error(statusData.error || "Processing failed");
                 } else if (statusData.status === "processing") {
@@ -574,7 +579,7 @@ async function uploadImage() {
                 console.error("Error polling for results:", error);
                 loadingOverlay.style.display = 'none';
                 showError(error.message);
-                announceError("Failed to process file. Please try again.");
+                announceError(t('errors.processFailed'));
                 // Keep speech controls hidden on error
                 document.getElementById('speech-controls').style.display = 'none';
             }
@@ -585,7 +590,7 @@ async function uploadImage() {
 
     } catch (error) {
         showError(error.message);
-        announceError("Failed to process file. Please try again.");
+        announceError(t('errors.processFailed'));
         // Keep speech controls hidden on error
         document.getElementById('speech-controls').style.display = 'none';
         loadingOverlay.style.display = 'none';
@@ -1148,7 +1153,7 @@ function handleWordSelection(event) {
         }
 
         // Show loading state
-        showDefinitionModal(selectedText, "Loading definition...");
+        showDefinitionModal(selectedText, t('definition.loading'));
 
         // Get definition from Google AI
         getDefinition(selectedText, context)
@@ -1157,7 +1162,7 @@ function handleWordSelection(event) {
             })
             .catch(error => {
                 console.error('Error getting definition:', error);
-                showDefinitionModal(selectedText, "Could not load definition. Please try again.");
+                showDefinitionModal(selectedText, t('definition.loadFailed'));
             });
     }
 }
@@ -1217,7 +1222,7 @@ async function getDefinition(word, context) {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to get definition');
+            throw new Error(t('errors.definitionFailed'));
         }
 
         const data = await response.json();
@@ -1866,6 +1871,6 @@ function handleEnterForDefinition() {
         handleWordSelection({target: targetWord});
         
         // Announce to screen readers what we're doing
-        announceStatus(`Getting definition for "${targetWord.textContent}"`);
+        announceStatus(t('status.gettingDefinition', { word: targetWord.textContent }));
     }
 }

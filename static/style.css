@@ -699,7 +699,7 @@ body {
 }
 
 #text-display .highlight-word::after {
-    content: "click to define";
+    content: var(--define-hover-label, "click to define");
     position: absolute;
     top: calc(100% + 10px);
     left: 50%;

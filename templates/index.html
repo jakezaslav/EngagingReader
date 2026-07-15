@@ -36,45 +36,44 @@
 </head>
 
 <body>
-    <h1 class="banner" onClick="window.location.reload();" >Engaging Reader</h1>
+    <h1 class="banner" onClick="window.location.reload();" data-i18n="app.title">Engaging Reader</h1>
 
-    <!-- Language selector (hidden until i18n is ready)
     <div id="language-selector" class="language-selector">
-        <span class="control-tooltip control-tooltip--below" role="tooltip">Change Language</span>
-        <button type="button" id="languageBtn" class="language-btn" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false">
+        <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="lang.change">Change Language</span>
+        <button type="button" id="languageBtn" class="language-btn" data-i18n-aria="lang.change" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false">
             <span class="language-btn-label">EN</span>
         </button>
-        <div class="language-dropdown" role="listbox" aria-label="Language">
-            <div class="language-option language-label">Language</div>
+        <div class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
+            <div class="language-option language-label" data-i18n="lang.menu">Language</div>
             <button type="button" class="language-option" data-lang="en" role="option">EN</button>
             <button type="button" class="language-option" data-lang="es" role="option">ES</button>
-            <button type="button" class="language-option" data-lang="er" role="option">ER</button>
+            <button type="button" class="language-option" data-lang="fr" role="option">FR</button>
             <button type="button" class="language-option" data-lang="fil" role="option">FIL</button>
             <button type="button" class="language-option" data-lang="pt" role="option">PT</button>
             <button type="button" class="language-option" data-lang="pa" role="option">PA</button>
-            <button type="button" class="language-option" data-lang="tur" role="option">TUR</button>
+            <button type="button" class="language-option" data-lang="tr" role="option">TR</button>
             <button type="button" class="language-option" data-lang="uk" role="option">UK</button>
         </div>
     </div>
-    -->
 
     <main role="main">
         <div id="upload-container">
         <div id="drop-area" class="drop-area" 
              role="button" 
              tabindex="0"
+             data-i18n-aria="upload.ariaLabel"
              aria-label="Upload document: click to browse files or drag and drop. Supported: Images and PDF files up to 50MB">
-            <img src="/static/assets/upload.svg" alt="Upload File">
-            <label for="fileInput" class="labBtn">Upload File</label>
+            <img src="/static/assets/upload.svg" alt="Upload File" data-i18n-alt="upload.imageAlt">
+            <label for="fileInput" class="labBtn" data-i18n="upload.label">Upload File</label>
             <input type="file" id="fileInput" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
         </div>
         <div class="disclaimer-box">
-            <p class="disclaimer-line-bold">Engaging Reader is not intended to handle sensitive personal data.</p>
-            <p class="disclaimer-line-regular">Please do not upload documents with financial information, government ID numbers, medical details, or other confidential content.</p>
+            <p class="disclaimer-line-bold" data-i18n="disclaimer.bold">Engaging Reader is not intended to handle sensitive personal data.</p>
+            <p class="disclaimer-line-regular" data-i18n="disclaimer.regular">Please do not upload documents with financial information, government ID numbers, medical details, or other confidential content.</p>
         </div>
         </div>
 
-        <div id="text-display" tabindex="0" role="document" aria-label="Extracted text content"></div>
+        <div id="text-display" tabindex="0" role="document" data-i18n-aria="aria.textDisplay" aria-label="Extracted text content"></div>
     </main>
 
     <!-- ARIA live regions for status announcements -->
@@ -82,21 +81,21 @@
     <div aria-live="assertive" aria-atomic="true" class="sr-only" id="upload-errors"></div>
 
     <div id="loading-overlay" class="loading-overlay">
-        <h1 class="banner">Engaging Reader</h1>
+        <h1 class="banner" data-i18n="app.title">Engaging Reader</h1>
         <div class="loader2"></div>
-        <label class="labBtn">Loading</label>
+        <label class="labBtn" data-i18n="status.loading">Loading</label>
     </div>
 
     <div id="speech-controls" style="left: 50%;transform: translate(-50%, -50%);">
-        <button id="playBtn" aria-label="Play">
-            <span class="control-tooltip" role="tooltip">Play</span>
+        <button id="playBtn" data-i18n-aria="playback.play" aria-label="Play">
+            <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
             </svg>
         </button>
-        <button id="pauseBtn" aria-label="Pause">
-            <span class="control-tooltip" role="tooltip">Pause</span>
+        <button id="pauseBtn" data-i18n-aria="playback.pause" aria-label="Pause">
+            <span class="control-tooltip" role="tooltip" data-i18n="playback.pause">Pause</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
@@ -104,10 +103,10 @@
             </svg>
         </button>
         <div id="speedDisplay" class="speed-display">
-            <span class="control-tooltip" role="tooltip">Change reading speed</span>
+            <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
             1x
             <div class="speed-dropdown">
-                <div class="speed-option speed-label">Speed</div>
+                <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
                 <div class="speed-option" data-speed="0.45">.5x</div>
                 <div class="speed-option" data-speed="0.675">.75x</div>
                 <div class="speed-option" data-speed="0.9">1x</div>
@@ -116,8 +115,8 @@
                 <div class="speed-option" data-speed="1.8">2x</div>
             </div>
         </div>
-        <button id="newFileBtn" type="button" aria-label="New file">
-            <span class="control-tooltip" role="tooltip">Upload new file</span>
+        <button id="newFileBtn" type="button" data-i18n-aria="playback.newFile" aria-label="New file">
+            <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <rect class="icon-fg" x="25" y="57.5" width="15" height="50" rx="7.5" transform="rotate(-90 25 57.5)"/>
@@ -129,18 +128,18 @@
     <!-- Definition Modal -->
     <div id="definitionModal" class="modal">
         <div class="modal-content">
-            <h2 id="definitionWord">Definition</h2>
+            <h2 id="definitionWord" data-i18n="definition.title">Definition</h2>
             <div id="definitionTextContent"></div>
             <div class="modal-speech-controls">
-                <button id="modalPlayBtn" aria-label="Play definition">
-                    <span class="control-tooltip" role="tooltip">Play</span>
+                <button id="modalPlayBtn" data-i18n-aria="definition.play" aria-label="Play definition">
+                    <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
                         <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
                     </svg>
                 </button>
-                <button id="modalPauseBtn" aria-label="Pause definition">
-                    <span class="control-tooltip" role="tooltip">Pause</span>
+                <button id="modalPauseBtn" data-i18n-aria="definition.pause" aria-label="Pause definition">
+                    <span class="control-tooltip" role="tooltip" data-i18n="playback.pause">Pause</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
                         <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
@@ -148,10 +147,10 @@
                     </svg>
                 </button>
                 <div id="modalSpeedDisplay" class="speed-display">
-                    <span class="control-tooltip" role="tooltip">Change reading speed</span>
+                    <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
                     1x
                     <div class="speed-dropdown">
-                        <div class="speed-option speed-label">Speed</div>
+                        <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
                         <div class="speed-option" data-speed="0.45">.5x</div>
                         <div class="speed-option" data-speed="0.675">.75x</div>
                         <div class="speed-option" data-speed="0.9">1x</div>
@@ -162,8 +161,8 @@
                 </div>
             </div>
             
-            <button type="button" onclick="closeDefinitionModal()" class="close-btn" aria-label="Close definition">
-                <span class="control-tooltip control-tooltip--side" role="tooltip">return to main text</span>
+            <button type="button" onclick="closeDefinitionModal()" class="close-btn" data-i18n-aria="definition.close" aria-label="Close definition">
+                <span class="control-tooltip control-tooltip--side" role="tooltip" data-i18n="definition.returnToText">return to main text</span>
                 <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <circle cx="50" cy="50" r="50" fill="#45535B"/>
                     <rect class="icon-fg" x="24.9998" y="37.0288" width="17.9302" height="56.7791" rx="8.96512" transform="rotate(-42.0697 24.9998 37.0288)"/>
@@ -173,9 +172,8 @@
         </div>
     </div>
 
-    <script src="/static/javascript.js">
-       
-    </script>
+    <script src="/static/i18n.js"></script>
+    <script src="/static/javascript.js"></script>
 
     <!-- Userway Accessibility Widget -->
     <script>

@@ -11,7 +11,7 @@ import re                         # For filename sanitization
 import threading                  # For background job processing
 from datetime import datetime, timedelta  # For job cleanup
 from pathlib import Path          # For secure path handling
-from flask import Flask, render_template, request, jsonify  # Flask web framework
+from flask import Flask, render_template, request, jsonify, send_from_directory, abort  # Flask web framework
 from google import genai         # Google's Gemini (GenAI) client
 from google.genai import types   # Needed to construct content parts and config
 from dotenv import load_dotenv   # Load environment variables from .env file
@@ -309,10 +309,21 @@ Completeness: Ensure all extracted (or translated) text, including any URLs, is 
 
     return output_text  # Return the markdown-formatted output
 
+# === i18n locale files ===
+I18N_DIR = Path(__file__).resolve().parent / "i18n"
+SUPPORTED_I18N_LANGS = frozenset({"en", "es", "fr", "uk", "fil", "tr", "pt", "pa"})
+
 # === Flask Route: Homepage ===
 @app.route("/")
 def index():
     return render_template("index.html")  # Loads index.html from templates folder
+
+# === Flask Route: Locale JSON (UI copy only) ===
+@app.route("/i18n/<lang_code>.json")
+def serve_i18n(lang_code):
+    if lang_code not in SUPPORTED_I18N_LANGS:
+        abort(404)
+    return send_from_directory(I18N_DIR, f"{lang_code}.json")
 
 # === Flask Route: Image Upload Endpoint (Async) ===
 @app.route("/upload", methods=["POST"])
