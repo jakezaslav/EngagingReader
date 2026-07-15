@@ -38,13 +38,33 @@
 <body>
     <h1 class="banner" onClick="window.location.reload();" >Engaging Reader</h1>
 
+    <!-- Language selector (hidden until i18n is ready)
+    <div id="language-selector" class="language-selector">
+        <span class="control-tooltip control-tooltip--below" role="tooltip">Change Language</span>
+        <button type="button" id="languageBtn" class="language-btn" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false">
+            <span class="language-btn-label">EN</span>
+        </button>
+        <div class="language-dropdown" role="listbox" aria-label="Language">
+            <div class="language-option language-label">Language</div>
+            <button type="button" class="language-option" data-lang="en" role="option">EN</button>
+            <button type="button" class="language-option" data-lang="es" role="option">ES</button>
+            <button type="button" class="language-option" data-lang="er" role="option">ER</button>
+            <button type="button" class="language-option" data-lang="fil" role="option">FIL</button>
+            <button type="button" class="language-option" data-lang="pt" role="option">PT</button>
+            <button type="button" class="language-option" data-lang="pa" role="option">PA</button>
+            <button type="button" class="language-option" data-lang="tur" role="option">TUR</button>
+            <button type="button" class="language-option" data-lang="uk" role="option">UK</button>
+        </div>
+    </div>
+    -->
+
     <main role="main">
         <div id="upload-container">
         <div id="drop-area" class="drop-area" 
              role="button" 
              tabindex="0"
              aria-label="Upload document: click to browse files or drag and drop. Supported: Images and PDF files up to 50MB">
-            <img src="/static/assets/upload.png" alt="Upload File">
+            <img src="/static/assets/upload.svg" alt="Upload File">
             <label for="fileInput" class="labBtn">Upload File</label>
             <input type="file" id="fileInput" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
         </div>
@@ -68,9 +88,23 @@
     </div>
 
     <div id="speech-controls" style="left: 50%;transform: translate(-50%, -50%);">
-        <button id="playBtn"></button>
-        <button id="pauseBtn"></button>
+        <button id="playBtn" aria-label="Play">
+            <span class="control-tooltip" role="tooltip">Play</span>
+            <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
+            </svg>
+        </button>
+        <button id="pauseBtn" aria-label="Pause">
+            <span class="control-tooltip" role="tooltip">Pause</span>
+            <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
+                <rect class="icon-fg" x="53" y="25" width="15" height="50" rx="7.5"/>
+            </svg>
+        </button>
         <div id="speedDisplay" class="speed-display">
+            <span class="control-tooltip" role="tooltip">Change reading speed</span>
             1x
             <div class="speed-dropdown">
                 <div class="speed-option speed-label">Speed</div>
@@ -82,6 +116,14 @@
                 <div class="speed-option" data-speed="1.8">2x</div>
             </div>
         </div>
+        <button id="newFileBtn" type="button" aria-label="New file">
+            <span class="control-tooltip" role="tooltip">Upload new file</span>
+            <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                <rect class="icon-fg" x="25" y="57.5" width="15" height="50" rx="7.5" transform="rotate(-90 25 57.5)"/>
+                <rect class="icon-fg" x="42.5" y="25" width="15" height="50" rx="7.5"/>
+            </svg>
+        </button>
     </div>
 
     <!-- Definition Modal -->
@@ -90,9 +132,23 @@
             <h2 id="definitionWord">Definition</h2>
             <div id="definitionTextContent"></div>
             <div class="modal-speech-controls">
-                <button id="modalPlayBtn"></button>
-                <button id="modalPauseBtn"></button>
+                <button id="modalPlayBtn" aria-label="Play definition">
+                    <span class="control-tooltip" role="tooltip">Play</span>
+                    <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                        <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
+                    </svg>
+                </button>
+                <button id="modalPauseBtn" aria-label="Pause definition">
+                    <span class="control-tooltip" role="tooltip">Pause</span>
+                    <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                        <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
+                        <rect class="icon-fg" x="53" y="25" width="15" height="50" rx="7.5"/>
+                    </svg>
+                </button>
                 <div id="modalSpeedDisplay" class="speed-display">
+                    <span class="control-tooltip" role="tooltip">Change reading speed</span>
                     1x
                     <div class="speed-dropdown">
                         <div class="speed-option speed-label">Speed</div>
@@ -106,9 +162,14 @@
                 </div>
             </div>
             
-            <div onclick="closeDefinitionModal()" class="close-btn">
-                <img src="/static/assets/x.png" alt="">
-        </div>
+            <button type="button" onclick="closeDefinitionModal()" class="close-btn" aria-label="Close definition">
+                <span class="control-tooltip control-tooltip--side" role="tooltip">return to main text</span>
+                <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                    <rect class="icon-fg" x="24.9998" y="37.0288" width="17.9302" height="56.7791" rx="8.96512" transform="rotate(-42.0697 24.9998 37.0288)"/>
+                    <rect class="icon-fg" x="63.0115" y="25" width="17.9302" height="56.7791" rx="8.96512" transform="rotate(42 63.0115 25)"/>
+                </svg>
+            </button>
         </div>
     </div>
 

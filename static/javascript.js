@@ -46,6 +46,7 @@ let isManuallyPaused = false;
 // Speech control buttons
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
+const newFileBtn = document.getElementById("newFileBtn");
 
 // Speed control variables - unified speed for both main and modal
 let speechRate = 0.9;
@@ -270,10 +271,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for main TTS
     playBtn.addEventListener('click', handlePlayClick);
     pauseBtn.addEventListener('click', handlePauseClick);
+    newFileBtn.addEventListener('click', () => window.location.reload());
 
     // Add event listeners for speed controls
     setupSpeedControl('speedDisplay', 'main');
     setupSpeedControl('modalSpeedDisplay', 'modal');
+    // setupLanguageSelector(); // re-enable with language selector HTML
 
     // Drag and drop events
     dropArea.addEventListener('dragover', (e) => {
@@ -411,7 +414,50 @@ document.addEventListener('click', function(event) {
             dropdown.parentElement.classList.remove('active');
         });
     }
+    if (!event.target.closest('.language-selector')) {
+        closeLanguageDropdown();
+    }
 });
+
+function setupLanguageSelector() {
+    const selector = document.getElementById('language-selector');
+    const languageBtn = document.getElementById('languageBtn');
+    const label = languageBtn?.querySelector('.language-btn-label');
+    const dropdown = selector?.querySelector('.language-dropdown');
+    if (!selector || !languageBtn || !dropdown || !label) return;
+
+    languageBtn.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const isOpen = dropdown.classList.toggle('show');
+        selector.classList.toggle('open', isOpen);
+        languageBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    dropdown.querySelectorAll('.language-option:not(.language-label)').forEach(option => {
+        option.addEventListener('click', function(event) {
+            event.stopPropagation();
+            label.textContent = this.textContent.trim();
+            closeLanguageDropdown();
+        });
+    });
+}
+
+function closeLanguageDropdown() {
+    const selector = document.getElementById('language-selector');
+    const languageBtn = document.getElementById('languageBtn');
+    const dropdown = selector?.querySelector('.language-dropdown');
+    if (!selector || !dropdown) return;
+    dropdown.classList.remove('show');
+    selector.classList.remove('open');
+    if (languageBtn) languageBtn.setAttribute('aria-expanded', 'false');
+}
+
+function setLanguageSelectorVisible(visible) {
+    const selector = document.getElementById('language-selector');
+    if (!selector) return;
+    if (!visible) closeLanguageDropdown();
+    selector.style.display = visible ? '' : 'none';
+}
 
 // Upload and process image
 async function uploadImage() {
@@ -1140,12 +1186,14 @@ function showDefinitionModal(word, content) {
     updateModalButtonStates(false);
 
     definitionModal.style.display = 'block';
+    setLanguageSelectorVisible(false);
 }
 
 // Close definition modal
 function closeDefinitionModal() {
     stopDefinitionReading();
     definitionModal.style.display = 'none';
+    setLanguageSelectorVisible(true);
     
     // Restore focus to the word that opened the modal (as requested)
     if (definedWordIndex >= 0 && definedWordIndex < mainWordSpans.length) {
