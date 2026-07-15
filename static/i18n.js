@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk'];
+    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'zh'];
     var LOCALE_LABELS = {
         en: 'EN',
         es: 'ES',
@@ -10,7 +10,8 @@
         pt: 'PT',
         pa: 'PA',
         tr: 'TR',
-        uk: 'UK'
+        uk: 'UK',
+        zh: 'ZH'
     };
     var STORAGE_KEY = 'locale';
     var SOURCE_META = '__source__';
@@ -30,6 +31,7 @@
         var primary = lower.split('-')[0];
 
         if (primary === 'tl' || primary === 'fil') return 'fil';
+        if (primary === 'zh') return 'zh';
         if (isSupported(primary)) return primary;
         if (isSupported(lower)) return lower;
         return null;
@@ -103,6 +105,8 @@
         var options = document.querySelectorAll('.language-option[data-lang]');
         options.forEach(function (option) {
             var code = option.getAttribute('data-lang');
+            var nativeName = LOCALE_LABELS[code];
+            if (nativeName) option.textContent = nativeName;
             var selected = code === currentLocale;
             option.setAttribute('aria-selected', selected ? 'true' : 'false');
             option.classList.toggle('active', selected);

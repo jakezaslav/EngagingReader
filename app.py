@@ -311,7 +311,7 @@ Completeness: Ensure all extracted (or translated) text, including any URLs, is 
 
 # === i18n locale files ===
 I18N_DIR = Path(__file__).resolve().parent / "i18n"
-SUPPORTED_I18N_LANGS = frozenset({"en", "es", "fr", "uk", "fil", "tr", "pt", "pa"})
+SUPPORTED_I18N_LANGS = frozenset({"en", "es", "fr", "uk", "fil", "tr", "pt", "pa", "zh"})
 
 # === Flask Route: Homepage ===
 @app.route("/")

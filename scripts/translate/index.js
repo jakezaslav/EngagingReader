@@ -19,7 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa'];
+const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh'];
 const SOURCE_KEY = '__source__';
 
 /** Keys that must stay identical to English (brand names, etc.). */
@@ -34,6 +34,7 @@ const API_LANG_MAP = {
   tr: 'tr',
   pt: 'pt',
   pa: 'pa',
+  zh: 'zh',
 };
 
 /** DeepL target codes. null = unsupported by DeepL. */
@@ -45,6 +46,7 @@ const DEEPL_TARGETS = {
   tr: 'TR',
   fil: 'TL', // Tagalog
   pa: 'PA', // Punjabi
+  zh: 'ZH', // Simplified Chinese
 };
 
 const I18N_DIR = process.env.I18N_DIR

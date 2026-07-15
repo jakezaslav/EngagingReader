@@ -8,6 +8,7 @@ At Engaging Reader, we make reading accessible for everyone. Our AI-powered web 
 - **Listen Along:** Listen as your text is read aloud with simple, word-by-word highlighting
 - **Define Words:** Click on words for context-specific definitions that make sense
 - **Translate:** Convert documents into English for easier reading
+- **Multi-Language UI:** Switch the interface language with the language selector (English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, Chinese)
 
 ---
 
@@ -22,6 +23,7 @@ An interactive reading application that uses Google's Gemini AI (via Vertex AI) 
 - **Multi-Format Support**: Process JPEG, PNG, WebP, HEIC/HEIF images and PDF documents up to 50MB
 - **Text-to-Speech with Word Highlighting**: Listen to extracted text with synchronized word-by-word highlighting during speech
 - **Interactive Definitions**: Double-click on any word to get contextual, accessible definitions designed for adults with low literacy
+- **Multi-Language UI**: Language selector for English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, and Chinese; preference is saved in the browser
 - **Format Preservation**: Maintains original document formatting (headings, paragraphs, tables) while adding speech functionality
 - **Clean, Accessible UI**: Designed with readability and accessibility in mind
 - **Drag & Drop Support**: Easy file upload with visual feedback for both images and PDFs
@@ -152,7 +154,7 @@ The application will be available at `http://localhost:5000`
 - **Educational focus** for adults with low literacy and learning disabilities
 
 ### Document Intelligence
-- **Multi-language support**: Extracts English content or translates non-English documents
+- **Document translation**: Extracts English content or translates non-English documents to English
 - **Format preservation**: Maintains tables, headings, lists, and formatting
 - **Smart text extraction** using Gemini 2.5 Flash model
 - **PDF multi-page processing**: Handle complex documents with multiple pages
