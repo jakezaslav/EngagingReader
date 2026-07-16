@@ -8,7 +8,6 @@ At Engaging Reader, we make reading accessible for everyone. Our AI-powered web 
 - **Listen Along:** Listen as your text is read aloud with simple, word-by-word highlighting
 - **Define Words:** Click on words for context-specific definitions that make sense
 - **Translate:** Convert documents into English for easier reading
-- **Multi-Language UI:** Switch the interface language with the language selector (English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, Chinese)
 
 ---
 
@@ -31,8 +30,10 @@ An interactive reading application that uses Google's Gemini AI (via Vertex AI) 
 ## Prerequisites
 
 - Python 3.7 or higher
-- Google Cloud Platform account with Vertex AI API enabled
-- Google Cloud service account with appropriate permissions
+- Node.js 18 or higher (for build-time UI locale translation)
+- Google Cloud Platform account with Vertex AI API enabled, **or** a Gemini API key
+- Google Cloud service account with appropriate permissions (if using Vertex AI)
+- DeepL API account (for translating UI strings into other languages)
 
 ## Setup Instructions
 
@@ -87,38 +88,64 @@ pip install -r requirements.txt
 4. Choose **JSON** format
 5. Download the JSON file
 
-### 5. Environment Variables
+### 5. DeepL Setup
+
+UI locale files are translated at build time with DeepL. You need an API key for `npm run translate` and for Render builds.
+
+#### a. Create a DeepL account
+1. Go to the [DeepL API signup page](https://www.deepl.com/pro-api)
+2. Create a DeepL API account (Free or Pro)
+
+#### b. Generate an API key
+1. Open the [DeepL API Keys](https://www.deepl.com/your-account/keys) page in your account
+2. Create or copy an authentication key
+3. Free keys end with `:fx` (the translator uses `api-free.deepl.com` automatically for those)
+
+### 6. Environment Variables
 
 Create a `.env` file in your project root:
 
 ```bash
-# Required - Replace with your actual service account JSON content
-GOOGLE_SERVICE_ACCOUNT_JSON={"type": "service_account", "project_id": "your-project", "private_key_id": "abc123...", "private_key": "-----BEGIN PRIVATE KEY-----\nyour-actual-key\n-----END PRIVATE KEY-----\n", "client_email": "your-service@your-project.iam.gserviceaccount.com", "client_id": "123456789", "auth_uri": "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token", "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs", "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service%40your-project.iam.gserviceaccount.com", "universe_domain": "googleapis.com"}
+# Required for document OCR / definitions — pick ONE auth method:
+
+# Option A: Gemini API key
+GEMINI_API_KEY=your-gemini-api-key
+
+# Option B: Vertex AI service account JSON (entire file as one line)
+# GOOGLE_SERVICE_ACCOUNT_JSON={"type": "service_account", "project_id": "your-project", ...}
+# GOOGLE_PROJECT=your-google-cloud-project-id
+# GOOGLE_LOCATION=us-central1
+
+# Required for UI locale translation (npm run translate / Render build)
+DEEPL_API_KEY=your-deepl-api-key:fx
 
 # Optional (with defaults)
-GOOGLE_PROJECT=your-google-cloud-project-id
-GOOGLE_LOCATION=us-central1
 FLASK_DEBUG=false
 PORT=5000
 ```
 
-**Important**: The `GOOGLE_SERVICE_ACCOUNT_JSON` should contain the entire contents of your downloaded JSON file as a single line string.
+**Important**:
+- If using `GOOGLE_SERVICE_ACCOUNT_JSON`, it must contain the entire contents of your downloaded JSON file as a single line string.
+- Never commit `.env` — it is gitignored. Set the same keys in your host’s environment for deployment (see Deployment below).
 
 #### Alternative: Set Environment Variables Directly
 
 **macOS/Linux:**
 ```bash
-export GOOGLE_SERVICE_ACCOUNT_JSON='{"type": "service_account", "project_id": "your-project", ...}'
-export GOOGLE_PROJECT=your-google-cloud-project-id
+export GEMINI_API_KEY='your-gemini-api-key'
+export DEEPL_API_KEY='your-deepl-api-key:fx'
+# or:
+# export GOOGLE_SERVICE_ACCOUNT_JSON='{"type": "service_account", "project_id": "your-project", ...}'
+# export GOOGLE_PROJECT=your-google-cloud-project-id
 ```
 
 **Windows:**
 ```cmd
-set GOOGLE_SERVICE_ACCOUNT_JSON={"type": "service_account", "project_id": "your-project", ...}
-set GOOGLE_PROJECT=your-google-cloud-project-id
+set GEMINI_API_KEY=your-gemini-api-key
+set DEEPL_API_KEY=your-deepl-api-key:fx
 ```
 
-### 6. Run the Application
+### 7. Run the Application
 
 ```bash
 gunicorn app:app
@@ -235,13 +262,13 @@ Run locally with `python app.py` or `gunicorn app:app --timeout 300` — both us
 
 ### UI localization (build-time)
 
-Edit English strings in `i18n/en.json`, then sync other locales:
+Edit English strings in `i18n/en.json`, then sync other locales (requires `DEEPL_API_KEY` in `.env`):
 
 ```bash
 npm run translate
 ```
 
-On Render, `scripts/build.sh` runs this automatically after `pip install` (requires `DEEPL_API_KEY`). Set `SKIP_I18N_TRANSLATE=1` to skip.
+On Render, `scripts/build.sh` runs this automatically after `pip install`. Set `SKIP_I18N_TRANSLATE=1` to skip.
 
 ## Dependencies
 
@@ -260,28 +287,35 @@ Key libraries used:
    - Ensure your `.env` file is in the project root
    - Verify the JSON content is properly formatted as a single line string
    - Check that `python-dotenv` is installed
+   - Or use `GEMINI_API_KEY` instead of a service account
 
-2. **"Permission denied" errors with Google Cloud**
+2. **"DEEPL_API_KEY is required" / locale translation fails**
+   - Add `DEEPL_API_KEY` to your local `.env` (see DeepL Setup above)
+   - On Render, add `DEEPL_API_KEY` in the service Environment settings (it is not loaded from GitHub)
+   - Free keys end with `:fx`; confirm the key is active on the DeepL account page
+   - To skip translation temporarily: `SKIP_I18N_TRANSLATE=1`
+
+3. **"Permission denied" errors with Google Cloud**
    - Verify your service account has the "Vertex AI User" role
    - Ensure the Vertex AI API is enabled in your Google Cloud project
    - Check that your project ID matches the one in the service account
 
-3. **Text-to-speech not working**
+4. **Text-to-speech not working**
    - Check browser permissions for speech synthesis
    - Try a different browser (Chrome/Edge recommended)
    - Ensure system volume is enabled
 
-4. **Application won't start**
+5. **Application won't start**
    - Check that port 5000 isn't already in use
    - Set a different port using the `PORT` environment variable
    - Verify all dependencies are installed: `pip install -r requirements.txt`
 
-5. **Image processing errors**
+6. **Image processing errors**
    - System falls back to original image if optimization fails
    - Check that Pillow and pillow-heif are properly installed
    - For HEIC files, ensure pillow-heif is compatible with your system
 
-6. **PDF upload issues**
+7. **PDF upload issues**
    - Ensure your browser supports the HTML5 file API
    - Check file size is under 50MB limit
    - Verify PDF is not password-protected or corrupted
@@ -296,11 +330,23 @@ python app.py
 
 ## Deployment
 
-This project includes a `render.yaml` file for deployment to Render.com. For other platforms:
+This project includes a `render.yaml` file for deployment to Render.com.
 
-- **Build**: `pip install -r requirements.txt`
-- **Start**: `gunicorn app:app`
-- **Environment**: Set `GOOGLE_SERVICE_ACCOUNT_JSON` in your deployment platform's environment variables
+### Render.com
+
+1. Connect the GitHub repo in the Render dashboard (or apply the Blueprint from `render.yaml`).
+2. In the service **Environment** settings, add the same secrets you use locally:
+   - `GEMINI_API_KEY` (or `GOOGLE_SERVICE_ACCOUNT_JSON` + `GOOGLE_PROJECT` / `GOOGLE_LOCATION`)
+   - `DEEPL_API_KEY`
+3. Deploy. The build command (`bash scripts/build.sh`) installs Python deps and runs DeepL locale sync.
+
+`render.yaml` references `{{.GEMINI_API_KEY}}` and `{{.DEEPL_API_KEY}}` — define those in a Render Environment Group or as service secrets. They are **not** read from GitHub; `.env` is never committed.
+
+### Other platforms
+
+- **Build**: `bash scripts/build.sh` (or `pip install -r requirements.txt` and set `SKIP_I18N_TRANSLATE=1` if you skip locale sync)
+- **Start**: `gunicorn app:app --timeout 300`
+- **Environment**: Set `GEMINI_API_KEY` (or `GOOGLE_SERVICE_ACCOUNT_JSON`) and `DEEPL_API_KEY` in the platform’s environment variables
 
 ## Contributing
 
