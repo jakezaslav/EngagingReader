@@ -1,0 +1,12 @@
+{
+  "name": "engaging-reader",
+  "private": true,
+  "description": "Build scripts for Engaging Reader (i18n locale translation)",
+  "scripts": {
+    "translate": "node scripts/translate/index.js",
+    "build": "npm run translate"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

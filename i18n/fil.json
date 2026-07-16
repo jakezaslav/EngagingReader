@@ -1,5 +1,6 @@
 {
   "app.title": "Engaging Reader",
+  "app.returnHome": "Bumalik sa Pangunahing Screen",
   "lang.change": "Baguhin ang wika",
   "lang.menu": "Wika",
   "upload.label": "Mag-upload ng file",
@@ -73,6 +74,7 @@
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
     "define.hover": "click to define",
-    "aria.textDisplay": "Extracted text content"
+    "aria.textDisplay": "Extracted text content",
+    "app.returnHome": "Return to Home Screen"
   }
 }

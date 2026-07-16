@@ -2,17 +2,15 @@
 /**
  * Build-time i18n translator.
  * Reads i18n/en.json, incrementally translates new/changed keys into target locales
- * via LibreTranslate (default), DeepL, or Google (env-selected).
+ * via DeepL.
  *
- * Usage: node scripts/translate/index.js
+ * Usage:
+ *   npm run translate
+ *   bash scripts/build.sh   (deploy build: pip + translate; used by render.yaml)
  * Env:
+ *   DEEPL_API_KEY — required (Free keys end with :fx → api-free.deepl.com)
  *   SKIP_I18N_TRANSLATE=1 | TRANSLATE_I18N=0  — exit without work
  *   FORCE_I18N_RETRANSLATE=1 — retranslate all keys even if unchanged
- *   TRANSLATE_API=libre|deepl|google
- *   TRANSLATE_API_URL  — LibreTranslate endpoint
- *   LIBRETRANSLATE_API_KEY
- *   DEEPL_API_KEY — Free keys end with :fx (uses api-free.deepl.com)
- *   GOOGLE_TRANSLATE_API_KEY
  *   I18N_DIR — override path to i18n folder
  */
 
@@ -25,19 +23,7 @@ const SOURCE_KEY = '__source__';
 /** Keys that must stay identical to English (brand names, etc.). */
 const DO_NOT_TRANSLATE = new Set(['app.title']);
 
-/** LibreTranslate / common API language codes for our locale ids */
-const API_LANG_MAP = {
-  es: 'es',
-  fr: 'fr',
-  uk: 'uk',
-  fil: 'tl', // Tagalog
-  tr: 'tr',
-  pt: 'pt',
-  pa: 'pa',
-  zh: 'zh',
-};
-
-/** DeepL target codes. null = unsupported by DeepL. */
+/** DeepL target codes. Languages omitted here are skipped. */
 const DEEPL_TARGETS = {
   es: 'ES',
   fr: 'FR',
@@ -96,39 +82,9 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function translateLibre(text, target) {
-  const url = process.env.TRANSLATE_API_URL || 'https://libretranslate.com/translate';
-  const body = {
-    q: text,
-    source: 'en',
-    target: API_LANG_MAP[target] || target,
-    format: 'text',
-  };
-  if (process.env.LIBRETRANSLATE_API_KEY) {
-    body.api_key = process.env.LIBRETRANSLATE_API_KEY;
-  }
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`LibreTranslate ${res.status}: ${errText || res.statusText}`);
-  }
-
-  const data = await res.json();
-  if (!data || typeof data.translatedText !== 'string') {
-    throw new Error(`LibreTranslate unexpected response: ${JSON.stringify(data)}`);
-  }
-  return data.translatedText;
-}
-
 async function translateDeepL(text, target) {
   const key = process.env.DEEPL_API_KEY;
-  if (!key) throw new Error('DEEPL_API_KEY is required for TRANSLATE_API=deepl');
+  if (!key) throw new Error('DEEPL_API_KEY is required');
 
   const apiTarget = DEEPL_TARGETS[target];
   if (!apiTarget) {
@@ -173,49 +129,8 @@ async function translateDeepL(text, target) {
   throw new Error('DeepL: exhausted retries');
 }
 
-async function translateGoogle(text, target) {
-  const key = process.env.GOOGLE_TRANSLATE_API_KEY;
-  if (!key) {
-    throw new Error(
-      'GOOGLE_TRANSLATE_API_KEY is required for TRANSLATE_API=google (REST path)'
-    );
-  }
-
-  const targetCode = API_LANG_MAP[target] || target;
-  const url = `https://translation.googleapis.com/language/translate/v2?key=${encodeURIComponent(key)}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      q: text,
-      source: 'en',
-      target: targetCode,
-      format: 'text',
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`Google Translate ${res.status}: ${errText || res.statusText}`);
-  }
-
-  const data = await res.json();
-  return data.data.translations[0].translatedText;
-}
-
-function getProvider() {
-  return (process.env.TRANSLATE_API || 'libre').toLowerCase();
-}
-
 function isDeepLUnsupported(lang) {
-  return getProvider() === 'deepl' && !DEEPL_TARGETS[lang];
-}
-
-async function translateText(text, target) {
-  const provider = getProvider();
-  if (provider === 'deepl') return translateDeepL(text, target);
-  if (provider === 'google') return translateGoogle(text, target);
-  return translateLibre(text, target);
+  return !DEEPL_TARGETS[lang];
 }
 
 function keysNeedingTranslation(en, existing) {
@@ -242,7 +157,7 @@ function keysNeedingTranslation(en, existing) {
 async function translateLocale(lang, en) {
   if (isDeepLUnsupported(lang)) {
     console.log(
-      `  [${lang}] skipped — DeepL Free does not support this language; keeping existing file.`
+      `  [${lang}] skipped — DeepL does not support this language; keeping existing file.`
     );
     return { lang, translated: 0, wrote: false, skipped: true };
   }
@@ -289,15 +204,15 @@ async function translateLocale(lang, en) {
         console.log('kept English');
         continue;
       }
-      const translated = await translateText(enText, lang);
+      const translated = await translateDeepL(enText, lang);
       next[key] = translated;
       source[key] = enText;
       persist();
       console.log('ok');
-      await sleep(getProvider() === 'deepl' ? 400 : 150);
+      await sleep(400);
     } catch (err) {
       console.log('failed');
-      persist();
+      // Do not persist a failed key into __source__ — that would skip retries on the next build.
       throw new Error(`${lang}/${key}: ${err.message}`);
     }
   }
@@ -311,6 +226,11 @@ async function main() {
     process.exit(0);
   }
 
+  if (!process.env.DEEPL_API_KEY) {
+    console.error('DEEPL_API_KEY is required for i18n translation.');
+    process.exit(1);
+  }
+
   const enPath = path.join(I18N_DIR, 'en.json');
   if (!fs.existsSync(enPath)) {
     console.error(`Missing source file: ${enPath}`);
@@ -318,15 +238,12 @@ async function main() {
   }
 
   const en = readJson(enPath);
-  const provider = getProvider();
+  const key = process.env.DEEPL_API_KEY || '';
   console.log(`Source: ${enPath} (${Object.keys(en).length} keys)`);
-  console.log(`Provider: ${provider}`);
-  if (provider === 'deepl') {
-    const key = process.env.DEEPL_API_KEY || '';
-    console.log(
-      `DeepL endpoint: ${key.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com'}`
-    );
-  }
+  console.log('Provider: deepl');
+  console.log(
+    `DeepL endpoint: ${key.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com'}`
+  );
   if (process.env.FORCE_I18N_RETRANSLATE === '1') {
     console.log('FORCE_I18N_RETRANSLATE=1 — retranslating all keys.');
   }
@@ -343,7 +260,7 @@ async function main() {
   }
 
   if (skipped.length) {
-    console.log(`Skipped (unsupported by provider): ${skipped.join(', ')}`);
+    console.log(`Skipped (unsupported by DeepL): ${skipped.join(', ')}`);
   }
 
   if (total === 0) {

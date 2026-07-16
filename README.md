@@ -171,11 +171,16 @@ The application will be available at `http://localhost:5000`
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅ | - | Google Cloud service account credentials as JSON string |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅* | - | Google Cloud service account credentials as JSON string |
+| `GEMINI_API_KEY` | ✅* | - | Gemini API key (alternative to service account JSON) |
+| `DEEPL_API_KEY` | ✅** | - | DeepL API key for build-time UI locale translation |
 | `GOOGLE_PROJECT` | ❌ | "engaging-reader" | Google Cloud project ID |
 | `GOOGLE_LOCATION` | ❌ | "us-central1" | Google Cloud region for Vertex AI |
 | `FLASK_DEBUG` | ❌ | "false" | Enable Flask debug mode |
 | `PORT` | ❌ | "5000" | Port to run the application on |
+
+\* One of `GEMINI_API_KEY` / `GOOGLE_API_KEY` or `GOOGLE_SERVICE_ACCOUNT_JSON` is required at runtime.  
+\*\* Required for `npm run translate` / Render build locale sync (unless `SKIP_I18N_TRANSLATE=1`).
 
 ## Supported File Types
 
@@ -219,11 +224,24 @@ EngagingReader/
 │   ├── style.css
 │   └── js/                     # Frontend modules (ER namespace, classic script tags)
 ├── templates/index.html
-├── i18n/                       # UI locale JSON
-└── scripts/translate/          # Build-time locale translator
+├── i18n/                       # UI locale JSON (en.json is the source of truth)
+├── package.json                # npm run translate / npm run build
+└── scripts/
+    ├── build.sh                # Deploy build: pip install + i18n translate
+    └── translate/              # Incremental locale translator (Node)
 ```
 
 Run locally with `python app.py` or `gunicorn app:app --timeout 300` — both use the same factory.
+
+### UI localization (build-time)
+
+Edit English strings in `i18n/en.json`, then sync other locales:
+
+```bash
+npm run translate
+```
+
+On Render, `scripts/build.sh` runs this automatically after `pip install` (requires `DEEPL_API_KEY`). Set `SKIP_I18N_TRANSLATE=1` to skip.
 
 ## Dependencies
 

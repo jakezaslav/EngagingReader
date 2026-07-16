@@ -2,7 +2,7 @@ services:
   - type: web
     name: EngagingReader
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "bash scripts/build.sh"
     startCommand: "gunicorn app:app --timeout 300"
     envVars:
       - key: GEMINI_API_KEY
@@ -17,4 +17,7 @@ services:
         value: "10000"
       - key: GUNICORN_RUNNING
         value: "true"
+      - key: DEEPL_API_KEY
+        value: "{{.DEEPL_API_KEY}}"
+      # Optional: SKIP_I18N_TRANSLATE=1 to skip locale sync during build
     plan: starter

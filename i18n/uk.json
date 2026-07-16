@@ -1,5 +1,6 @@
 {
   "app.title": "Engaging Reader",
+  "app.returnHome": "Повернутися на головний екран",
   "lang.change": "Змінити мову",
   "lang.menu": "Мова",
   "upload.label": "Завантажити файл",
@@ -73,6 +74,7 @@
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
     "define.hover": "click to define",
-    "aria.textDisplay": "Extracted text content"
+    "aria.textDisplay": "Extracted text content",
+    "app.returnHome": "Return to Home Screen"
   }
 }

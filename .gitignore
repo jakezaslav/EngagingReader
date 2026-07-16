@@ -1,3 +1,4 @@
 service_account_file.json
 .env
 temp_service_account.json
+.node/
