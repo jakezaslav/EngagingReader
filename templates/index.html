@@ -36,7 +36,12 @@
 </head>
 
 <body>
-    <h1 class="banner" onClick="window.location.reload();" data-i18n="app.title">Engaging Reader</h1>
+    <div class="banner">
+        <h1 class="banner-home">
+            <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
+            <button type="button" class="banner-home-btn" onclick="window.location.reload();" data-i18n="app.title" data-i18n-aria="app.returnHome" aria-label="Return to Home Screen">Engaging Reader</button>
+        </h1>
+    </div>
 
     <div id="language-selector" class="language-selector">
         <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="lang.change">Change Language</span>
@@ -160,6 +165,14 @@
                         <div class="speed-option" data-speed="1.8">2x</div>
                     </div>
                 </div>
+                <button id="modalNewFileBtn" type="button" data-i18n-aria="playback.newFile" aria-label="New file">
+                    <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
+                    <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="50" cy="50" r="50" fill="#45535B"/>
+                        <rect class="icon-fg" x="25" y="57.5" width="15" height="50" rx="7.5" transform="rotate(-90 25 57.5)"/>
+                        <rect class="icon-fg" x="42.5" y="25" width="15" height="50" rx="7.5"/>
+                    </svg>
+                </button>
             </div>
             
             <button type="button" onclick="closeDefinitionModal()" class="close-btn" data-i18n-aria="definition.close" aria-label="Close definition">
@@ -174,7 +187,14 @@
     </div>
 
     <script src="/static/i18n.js"></script>
-    <script src="/static/javascript.js"></script>
+    <script src="/static/js/state.js"></script>
+    <script src="/static/js/voices.js"></script>
+    <script src="/static/js/ui.js"></script>
+    <script src="/static/js/speech.js"></script>
+    <script src="/static/js/definitions.js"></script>
+    <script src="/static/js/navigation.js"></script>
+    <script src="/static/js/upload.js"></script>
+    <script src="/static/js/main.js"></script>
 
     <!-- Userway Accessibility Widget -->
     <script>

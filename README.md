@@ -203,6 +203,28 @@ The application will be available at `http://localhost:5000`
 - **File Processing**: Automatic format detection and optimization
 - **Deployment**: Ready for Render.com with included `render.yaml`
 
+### Project layout
+
+```
+EngagingReader/
+├── app.py                      # WSGI entrypoint: app = create_app() (gunicorn app:app)
+├── engaging_reader/            # Flask package (factory, blueprints, services, jobs)
+│   ├── __init__.py             # create_app()
+│   ├── config.py
+│   ├── jobs.py
+│   ├── services/               # Gemini client, images, OCR, definitions
+│   └── blueprints/             # HTTP routes
+├── static/
+│   ├── i18n.js
+│   ├── style.css
+│   └── js/                     # Frontend modules (ER namespace, classic script tags)
+├── templates/index.html
+├── i18n/                       # UI locale JSON
+└── scripts/translate/          # Build-time locale translator
+```
+
+Run locally with `python app.py` or `gunicorn app:app --timeout 300` — both use the same factory.
+
 ## Dependencies
 
 Key libraries used:

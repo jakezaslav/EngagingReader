@@ -1,0 +1,42 @@
+window.ER = window.ER || {};
+(function (ER) {
+'use strict';
+ER.state = {
+  fileInput: document.getElementById("fileInput"),
+  outputDiv: document.getElementById("text-display"),
+  loadingOverlay: document.getElementById("loading-overlay"),
+  dropArea: document.getElementById("drop-area"),
+  speechSynthesis: window.speechSynthesis || window.webkitSpeechSynthesis,
+  mainSpeechUtterance: null,
+  currentText: "",
+  mainWords: [],
+  mainCurrentWordIndex: 0,
+  mainWordSpans: [],
+  mainSpeechPaused: false,
+  isMainSpeaking: false,
+  preloadedVoice: null,
+  modalSpeechUtterance: null,
+  modalPlayBtn: document.getElementById("modalPlayBtn"),
+  modalPauseBtn: document.getElementById("modalPauseBtn"),
+  definitionModal: document.getElementById("definitionModal"),
+  definitionContent: document.getElementById("definitionTextContent"),
+  definitionWord: document.getElementById("definitionWord"),
+  modalWords: [],
+  modalWordSpans: [],
+  modalCurrentWordIndex: 0,
+  modalSpeechPaused: false,
+  isModalSpeaking: false,
+  modalFocusedWordIndex: -1,
+  definedWordElement: null,
+  definedWordIndex: -1,
+  focusedWordIndex: -1,
+  paragraphBoundaries: [],
+  currentParagraphIndex: -1,
+  isManuallyPaused: false,
+  playBtn: document.getElementById("playBtn"),
+  pauseBtn: document.getElementById("pauseBtn"),
+  newFileBtn: document.getElementById("newFileBtn"),
+  modalNewFileBtn: document.getElementById("modalNewFileBtn"),
+  speechRate: 0.9
+};
+})(window.ER);
