@@ -358,10 +358,10 @@ This project includes a `render.yaml` file for deployment to Render.com.
 
 ## Credits
 
-Engaging Reader is currently maintained by Jake Zaslav. 
-The site was originally developed by Jake Zaslav and Azhar Saidoo. 
-This project was possible due to the support of [engAGE: Centre for Research on Aging] (https://www.concordia.ca/research/aging.html) and the [Grace Dart Foundation] (https://fondationgracedart.com)
-Thank you to Mario and Ramsay: our first users, community partners, and visionaries  
+- Engaging Reader is currently maintained by Jake Zaslav. 
+- The site was originally developed by Jake Zaslav and Azhar Saidoo. 
+- This project was possible due to the support of [engAGE: Centre for Research on Aging] (https://www.concordia.ca/research/aging.html) and the [Grace Dart Foundation] (https://fondationgracedart.com)
+- Thank you to Mario and Ramsay: our first users, community partners, and visionaries  
 
 ## License
 
