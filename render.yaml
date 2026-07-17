@@ -19,5 +19,7 @@ services:
         value: "true"
       - key: DEEPL_API_KEY
         value: "{{.DEEPL_API_KEY}}"
+      - key: SITE_URL
+        value: "https://engagingreader.com"
       # Optional: SKIP_I18N_TRANSLATE=1 to skip locale sync during build
     plan: starter

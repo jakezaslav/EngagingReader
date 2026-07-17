@@ -1,7 +1,9 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
-    "icons": [
+  "name": "Engaging Reader",
+  "short_name": "Engaging Reader",
+  "description": "At Engaging Reader, we make reading accessible for everyone. Snap a photo or upload a file, listen along, define words, and translate.",
+  "start_url": "/",
+  "icons": [
     {
       "src": "/static/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",

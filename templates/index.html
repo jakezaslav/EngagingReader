@@ -4,24 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Engaging Reader</title>
-    
+    <title>{{ site_title }}</title>
+    <meta name="description" content="{{ site_description }}">
+    <meta name="keywords" content="{{ site_keywords }}">
+    <meta name="author" content="{{ site_name }}">
+    <meta name="application-name" content="{{ site_name }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ site_url }}/">
+
     <!-- Open Graph / Social Media Preview Tags -->
-    <meta property="og:title" content="Engaging Reader" />
-    <meta property="og:description" content="At Engaging Reader, we make reading accessible for everyone. Our AI-powered web app helps people confidently read everything from news articles and emails to signs and job postings." />
-    <meta property="og:image" content="https://engagingreader.com/static/assets/Demo_page.png" />
+    <meta property="og:title" content="{{ site_title }}" />
+    <meta property="og:description" content="{{ site_description }}" />
+    <meta property="og:image" content="{{ og_image_url }}" />
+    <meta property="og:image:width" content="{{ og_image_width }}" />
+    <meta property="og:image:height" content="{{ og_image_height }}" />
+    <meta property="og:image:alt" content="{{ site_name }} — {{ site_tagline }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://engagingreader.com" />
-    
+    <meta property="og:url" content="{{ site_url }}/" />
+    <meta property="og:site_name" content="{{ site_name }}" />
+    <meta property="og:locale" content="en_US" />
+
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Engaging Reader" />
-    <meta name="twitter:description" content="At Engaging Reader, we make reading accessible for everyone. Our AI-powered web app helps people confidently read everything from news articles and emails to signs and job postings." />
-    <meta name="twitter:image" content="https://engagingreader.com/static/assets/Demo_page.png" />
-    
+    <meta name="twitter:title" content="{{ site_title }}" />
+    <meta name="twitter:description" content="{{ site_description }}" />
+    <meta name="twitter:image" content="{{ og_image_url }}" />
+    <meta name="twitter:image:alt" content="{{ site_name }} — {{ site_tagline }}" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": {{ site_name | tojson }},
+      "alternateName": {{ site_tagline | tojson }},
+      "slogan": {{ site_tagline | tojson }},
+      "url": {{ (site_url ~ "/") | tojson }},
+      "description": {{ site_description | tojson }},
+      "applicationCategory": "EducationalApplication",
+      "applicationSubCategory": "AccessibilityApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Supports modern browsers.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": {{ site_features | list | tojson }},
+      "keywords": {{ site_keywords | tojson }},
+      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "zh"],
+      "image": {{ og_image_url | tojson }},
+      "screenshot": {{ og_image_url | tojson }}
+    }
+    </script>
+
     <link rel="stylesheet" href="/static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
@@ -36,12 +75,12 @@
 </head>
 
 <body>
-    <div class="banner">
+    <header class="banner">
         <h1 class="banner-home">
             <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
             <button type="button" class="banner-home-btn" onclick="window.location.reload();" data-i18n="app.title" data-i18n-aria="app.returnHome" aria-label="Return to Home Screen">Engaging Reader</button>
         </h1>
-    </div>
+    </header>
 
     <div id="language-selector" class="language-selector">
         <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="lang.change">Change Language</span>
@@ -86,8 +125,8 @@
     <div aria-live="polite" aria-atomic="true" class="sr-only" id="upload-status"></div>
     <div aria-live="assertive" aria-atomic="true" class="sr-only" id="upload-errors"></div>
 
-    <div id="loading-overlay" class="loading-overlay">
-        <h1 class="banner" data-i18n="app.title">Engaging Reader</h1>
+    <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+        <p class="banner" data-i18n="app.title">Engaging Reader</p>
         <div class="loader2"></div>
         <label class="labBtn" data-i18n="status.loading">Loading</label>
     </div>
