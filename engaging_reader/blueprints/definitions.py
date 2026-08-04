@@ -21,13 +21,14 @@ def get_definition():
 
         word = data.get("word to define", "").strip()
         context = data.get("context sentence", "").strip()
+        user_language = data.get("USER_LANGUAGE", "English").strip() or "English"
 
         if not word:
             return jsonify({"error": "Word to define is required"}), 400
         if not context:
             return jsonify({"error": "Context sentence is required"}), 400
 
-        output_text = generate_definition(word, context)
+        output_text = generate_definition(word, context, user_language)
         return jsonify({"definition": output_text})
 
     except Exception as e:

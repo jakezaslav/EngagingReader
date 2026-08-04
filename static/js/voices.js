@@ -147,6 +147,90 @@ async function getEnglishVoice() {
     // Last resort - first available voice
     return voices[0];
 }
+
+// Preferred BCP-47 language tags per UI locale (ordered by preference)
+var LOCALE_LANG_TAGS = {
+    en: ['en-US', 'en_US', 'en-GB', 'en'],
+    es: ['es-ES', 'es_ES', 'es-MX', 'es-US', 'es'],
+    fr: ['fr-FR', 'fr_FR', 'fr-CA', 'fr'],
+    fil: ['fil-PH', 'fil', 'tl-PH', 'tl'],
+    pt: ['pt-BR', 'pt_BR', 'pt-PT', 'pt'],
+    pa: ['pa-IN', 'pa_IN', 'pa-Guru', 'pa-Arab', 'pa'],
+    tr: ['tr-TR', 'tr_TR', 'tr'],
+    uk: ['uk-UA', 'uk_UA', 'uk'],
+    zh: ['zh-CN', 'zh_CN', 'zh-Hans', 'zh-TW', 'zh-Hant', 'zh']
+};
+
+// Voice-name keywords when lang tags are missing or nonstandard
+var LOCALE_VOICE_NAME_HINTS = {
+    es: ['spanish', 'español', 'espanol'],
+    fr: ['french', 'français', 'francais'],
+    fil: ['filipino', 'tagalog'],
+    pt: ['portuguese', 'português', 'portugues'],
+    pa: ['punjabi', 'panjabi', 'gurmukhi', 'ਪੰਜਾਬੀ'],
+    tr: ['turkish', 'türkçe', 'turkce'],
+    uk: ['ukrainian', 'україн'],
+    zh: ['chinese', 'mandarin', 'cantonese', '中文']
+};
+
+function normalizeLangTag(tag) {
+    return (tag || '').toLowerCase().replace(/_/g, '-');
+}
+
+function primaryLang(tag) {
+    return normalizeLangTag(tag).split('-')[0];
+}
+
+/**
+ * Pick the best available TTS voice for a UI locale code.
+ * Returns { voice, lang }. When no matching voice is installed, voice is null
+ * and lang is still set so the browser can choose (e.g. remote voices).
+ * Does NOT fall back to an English voice for non-English locales — that
+ * forces English pronunciation of non-English text.
+ */
+async function getVoiceForLocale(locale) {
+    const tags = LOCALE_LANG_TAGS[locale] || [locale || 'en'];
+    const preferredLang = normalizeLangTag(tags[0]).replace(/_/g, '-') || 'en-US';
+
+    if (!locale || locale === 'en') {
+        const voice = await getEnglishVoice();
+        return { voice: voice || null, lang: (voice && voice.lang) || 'en-US' };
+    }
+
+    const voices = await loadVoices();
+
+    // Prefer an exact / prefix match on voice.lang
+    for (const tag of tags) {
+        const tagLower = normalizeLangTag(tag);
+        const voice = voices.find(v => {
+            if (!v.lang) return false;
+            const lang = normalizeLangTag(v.lang);
+            return lang === tagLower || lang.startsWith(tagLower + '-') ||
+                (tagLower.length >= 2 && lang === tagLower);
+        });
+        if (voice) return { voice: voice, lang: voice.lang || preferredLang };
+    }
+
+    // Broader match: primary language subtag only (e.g. "es" in "es-419")
+    const primary = primaryLang(tags[tags.length - 1] || locale);
+    const byPrimary = voices.find(v => v.lang && primaryLang(v.lang) === primary);
+    if (byPrimary) return { voice: byPrimary, lang: byPrimary.lang || preferredLang };
+
+    // Name-based match (some OS voices omit or misuse lang)
+    const hints = LOCALE_VOICE_NAME_HINTS[locale] || [];
+    if (hints.length) {
+        const byName = voices.find(v => {
+            const name = (v.name || '').toLowerCase();
+            return hints.some(h => name.indexOf(h.toLowerCase()) !== -1);
+        });
+        if (byName) return { voice: byName, lang: byName.lang || preferredLang };
+    }
+
+    // No local voice — leave voice unset and rely on utterance.lang
+    return { voice: null, lang: preferredLang };
+}
+
   ER.loadVoices = loadVoices;
   ER.getEnglishVoice = getEnglishVoice;
+  ER.getVoiceForLocale = getVoiceForLocale;
 })(window.ER);

@@ -132,9 +132,26 @@ function closeDefinitionModal() {
     // Do not auto-resume main reading when closing the definition modal
 }
 
+var LOCALE_LANGUAGE_NAMES = {
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    fil: 'Filipino',
+    pt: 'Portuguese',
+    pa: 'Punjabi',
+    tr: 'Turkish',
+    uk: 'Ukrainian',
+    zh: 'Chinese'
+};
+
+function localeToLanguageName(code) {
+    return LOCALE_LANGUAGE_NAMES[code] || 'English';
+}
+
 // Get definition from Google AI
 async function getDefinition(word, context) {
     try {
+        const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
         const response = await fetch('/get-definition', {
             method: 'POST',
             headers: {
@@ -142,7 +159,8 @@ async function getDefinition(word, context) {
             },
             body: JSON.stringify({
                 "word to define": word,
-                "context sentence": context
+                "context sentence": context,
+                "USER_LANGUAGE": localeToLanguageName(locale)
             })
         });
 
@@ -206,14 +224,13 @@ async function readDefinitionAloud() {
     // Create utterance
     ER.state.modalSpeechUtterance = new SpeechSynthesisUtterance(definitionText);
 
-    // Get and set English voice
-    const englishVoice = await ER.getEnglishVoice();
-    if (englishVoice) {
-        ER.state.modalSpeechUtterance.voice = englishVoice;
-        ER.state.modalSpeechUtterance.lang = englishVoice.lang;
-    } else {
-        ER.state.modalSpeechUtterance.lang = 'en-US';
+    // Match TTS voice to the user's UI language (definitions are localized)
+    const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+    const { voice: definitionVoice, lang: definitionLang } = await ER.getVoiceForLocale(locale);
+    if (definitionVoice) {
+        ER.state.modalSpeechUtterance.voice = definitionVoice;
     }
+    ER.state.modalSpeechUtterance.lang = definitionLang || 'en-US';
 
     // Set rate to current selection
     ER.state.modalSpeechUtterance.rate = ER.state.speechRate;
@@ -325,14 +342,13 @@ async function restartModalFromWord(wordIndex) {
     // Create new utterance for the remaining text
     ER.state.modalSpeechUtterance = new SpeechSynthesisUtterance(textToSpeak);
 
-    // Get and set English voice
-    const englishVoice = await ER.getEnglishVoice();
-    if (englishVoice) {
-        ER.state.modalSpeechUtterance.voice = englishVoice;
-        ER.state.modalSpeechUtterance.lang = englishVoice.lang;
-    } else {
-        ER.state.modalSpeechUtterance.lang = 'en-US';
+    // Match TTS voice to the user's UI language (definitions are localized)
+    const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+    const { voice: definitionVoice, lang: definitionLang } = await ER.getVoiceForLocale(locale);
+    if (definitionVoice) {
+        ER.state.modalSpeechUtterance.voice = definitionVoice;
     }
+    ER.state.modalSpeechUtterance.lang = definitionLang || 'en-US';
 
     // Set rate to current selection
     ER.state.modalSpeechUtterance.rate = ER.state.speechRate;

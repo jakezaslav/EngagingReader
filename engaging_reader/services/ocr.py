@@ -128,7 +128,7 @@ Completeness: Ensure all extracted (or translated) text, including any URLs, is 
     output_text = ""
     first_chunk_received = False
     for chunk in client.models.generate_content_stream(
-        model="gemini-2.5-flash",
+        model="gemini-3.5-flash-lite",
         contents=contents,
         config=config,
     ):
