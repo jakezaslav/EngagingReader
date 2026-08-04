@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setTimeout(async () => {
         try {
-            ER.state.preloadedVoice = await ER.getEnglishVoice();
+            await ER.preloadDocumentVoice(ER.state.documentLocale || 'en');
         } catch (error) {
             console.error('❌ Error preloading voice:', error);
         }

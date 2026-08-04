@@ -356,6 +356,7 @@ function handleEnterForDefinition() {
         }
         
         // Set focus to this word for proper modal return behavior
+        ER.clearAllKeyboardFocus();
         ER.state.focusedWordIndex = targetIndex;
         ER.state.definedWordIndex = targetIndex;
         

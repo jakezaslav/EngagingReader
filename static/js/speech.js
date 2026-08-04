@@ -94,7 +94,7 @@ function stopAllSpeech() {
 }
 
 // Read the extracted text aloud with highlighting
-function readText() {
+async function readText() {
     if (!ER.state.currentText) {
         return;
     }
@@ -130,19 +130,8 @@ function readText() {
     // Create utterance
     ER.state.mainSpeechUtterance = new SpeechSynthesisUtterance(cleanText);
 
-    // Use preloaded voice (Chrome compatibility fix) or fallback
-    if (ER.state.preloadedVoice) {
-
-        ER.state.mainSpeechUtterance.voice = ER.state.preloadedVoice;
-        ER.state.mainSpeechUtterance.lang = ER.state.preloadedVoice.lang;
-    } else {
-
-        ER.state.mainSpeechUtterance.lang = 'en-US';
-        // Try to load voice asynchronously in background for next time
-        ER.getEnglishVoice().then(voice => {
-            if (voice) ER.state.preloadedVoice = voice;
-        });
-    }
+    // Use document-locale voice (matches OCR output language)
+    await ER.applyVoiceForLocale(ER.state.mainSpeechUtterance, ER.state.documentLocale || 'en');
 
     // Set rate to current selection
     ER.state.mainSpeechUtterance.rate = ER.state.speechRate;
@@ -237,9 +226,11 @@ function readText() {
 
 
     
-    // Chrome-specific: Try immediate start first if we have preloaded voice, then fallback to delayed
+    // Chrome-specific: Try immediate start first if voice/lang is ready for this document
     if (isChrome) {
-        if (ER.state.preloadedVoice) {
+        const voiceReady = ER.state.preloadedLocale === (ER.state.documentLocale || 'en') &&
+            (ER.state.preloadedVoice || ER.state.preloadedLang);
+        if (voiceReady) {
     
             ER.state.speechSynthesis.speak(ER.state.mainSpeechUtterance);
     
@@ -390,14 +381,8 @@ async function resumeFromDefinedWord() {
     // Create new utterance for the remaining text
     ER.state.mainSpeechUtterance = new SpeechSynthesisUtterance(textToSpeak);
 
-    // Get and set English voice
-    const englishVoice = await ER.getEnglishVoice();
-    if (englishVoice) {
-        ER.state.mainSpeechUtterance.voice = englishVoice;
-        ER.state.mainSpeechUtterance.lang = englishVoice.lang;
-    } else {
-        ER.state.mainSpeechUtterance.lang = 'en-US';
-    }
+    // Use document-locale voice (matches OCR output language)
+    await ER.applyVoiceForLocale(ER.state.mainSpeechUtterance, ER.state.documentLocale || 'en');
 
     // Set rate to current selection
     ER.state.mainSpeechUtterance.rate = ER.state.speechRate;

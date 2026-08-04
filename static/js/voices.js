@@ -234,7 +234,50 @@ async function getVoiceForLocale(locale) {
     return { voice: null, lang: preferredLang };
 }
 
+/**
+ * Preload TTS voice/lang for a document locale into ER.state.
+ * Voice may be null when no matching system voice is installed; lang is always set.
+ */
+async function preloadDocumentVoice(locale) {
+    const code = locale || ER.state.documentLocale || 'en';
+    const { voice, lang } = await getVoiceForLocale(code);
+    ER.state.preloadedVoice = voice || null;
+    ER.state.preloadedLang = lang || 'en-US';
+    ER.state.preloadedLocale = code;
+    return { voice: ER.state.preloadedVoice, lang: ER.state.preloadedLang };
+}
+
+/**
+ * Apply locale voice/lang to an utterance. Uses preload cache when it matches
+ * the requested locale; otherwise resolves via getVoiceForLocale.
+ */
+async function applyVoiceForLocale(utterance, locale) {
+    const code = locale || ER.state.documentLocale || 'en';
+    let voice = null;
+    let lang = null;
+
+    if (code === ER.state.preloadedLocale && ER.state.preloadedLang) {
+        voice = ER.state.preloadedVoice;
+        lang = ER.state.preloadedLang;
+    } else {
+        const result = await getVoiceForLocale(code);
+        voice = result.voice;
+        lang = result.lang;
+        ER.state.preloadedVoice = voice || null;
+        ER.state.preloadedLang = lang || 'en-US';
+        ER.state.preloadedLocale = code;
+    }
+
+    if (voice) {
+        utterance.voice = voice;
+    }
+    utterance.lang = lang || 'en-US';
+    return { voice: voice || null, lang: utterance.lang };
+}
+
   ER.loadVoices = loadVoices;
   ER.getEnglishVoice = getEnglishVoice;
   ER.getVoiceForLocale = getVoiceForLocale;
+  ER.preloadDocumentVoice = preloadDocumentVoice;
+  ER.applyVoiceForLocale = applyVoiceForLocale;
 })(window.ER);

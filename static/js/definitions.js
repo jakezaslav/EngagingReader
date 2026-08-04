@@ -33,6 +33,9 @@ function handleWordSelection(event) {
             // Find the index of this word in the main word spans array
             if (ER.state.mainWordSpans && ER.state.mainWordSpans.length > 0) {
                 ER.state.definedWordIndex = ER.state.mainWordSpans.indexOf(target);
+                // Clear any prior focus highlight before updating the tracked index
+                // (avoids orphaned keyboard-focused classes when defining multiple words)
+                ER.clearAllKeyboardFocus();
                 // Also store this as the word that opened the modal for focus restoration
                 ER.state.focusedWordIndex = ER.state.definedWordIndex;
             } else {
@@ -126,8 +129,11 @@ function closeDefinitionModal() {
     ER.setLanguageSelectorVisible(true);
     
     // Restore focus to the word that opened the modal (as requested)
-    if (ER.state.definedWordIndex >= 0 && ER.state.definedWordIndex < ER.state.mainWordSpans.length) {
-        ER.setWordFocus(ER.state.definedWordIndex);
+    const restoreIndex = ER.state.definedWordIndex >= 0
+        ? ER.state.definedWordIndex
+        : ER.state.focusedWordIndex;
+    if (restoreIndex >= 0 && restoreIndex < ER.state.mainWordSpans.length) {
+        ER.setWordFocus(restoreIndex);
     }
     // Do not auto-resume main reading when closing the definition modal
 }

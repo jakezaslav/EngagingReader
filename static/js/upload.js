@@ -93,6 +93,17 @@ async function uploadImage() {
                     
                     // Enable play button and store the current text
                     ER.state.currentText = cleanHtml;
+
+                    // Voice follows OCR output language: translate on → UI locale, else English
+                    ER.state.documentLocale = translateFile ? locale : 'en';
+                    ER.state.preloadedVoice = null;
+                    ER.state.preloadedLang = null;
+                    ER.state.preloadedLocale = null;
+                    if (typeof ER.preloadDocumentVoice === 'function') {
+                        ER.preloadDocumentVoice(ER.state.documentLocale).catch(function (err) {
+                            console.error('Error preloading document voice:', err);
+                        });
+                    }
                     
                     // Set initial button states (not playing)
                     ER.updateButtonStates(false);
