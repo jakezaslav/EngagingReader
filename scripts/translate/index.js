@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh'];
+const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh', 'ru', 'ht'];
 const SOURCE_KEY = '__source__';
 
 /** Keys that must stay identical to English (brand names, etc.). */
@@ -33,6 +33,8 @@ const DEEPL_TARGETS = {
   fil: 'TL', // Tagalog
   pa: 'PA', // Punjabi
   zh: 'ZH', // Simplified Chinese
+  ru: 'RU',
+  ht: 'HT', // Haitian Creole
 };
 
 const I18N_DIR = process.env.I18N_DIR

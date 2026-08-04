@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'zh'];
+    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'ru', 'ht', 'zh'];
     var LOCALE_LABELS = {
         en: 'EN',
         es: 'ES',
@@ -11,6 +11,8 @@
         pa: 'PA',
         tr: 'TR',
         uk: 'UK',
+        ru: 'RU',
+        ht: 'HT',
         zh: 'ZH'
     };
     var STORAGE_KEY = 'locale';
@@ -189,6 +191,8 @@
         pa: 'Punjabi',
         tr: 'Turkish',
         uk: 'Ukrainian',
+        ru: 'Russian',
+        ht: 'Haitian Creole',
         zh: 'Chinese'
     };
 

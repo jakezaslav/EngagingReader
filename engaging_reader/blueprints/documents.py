@@ -69,7 +69,7 @@ def upload_file():
         return jsonify({"error": "Failed to save file. Please try again."}), 500
 
     user_language = (request.form.get("USER_LANGUAGE") or "English").strip() or "English"
-    translate_raw = (request.form.get("TRANSLATE_FILE") or "true").strip().lower()
+    translate_raw = (request.form.get("TRANSLATE_FILE") or "false").strip().lower()
     translate = translate_raw in ("true", "1", "on", "yes")
 
     # Create job and start background processing

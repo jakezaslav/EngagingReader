@@ -76,6 +76,7 @@
     "definition.loadFailed": "Could not load definition. Please try again.",
     "define.hover": "click to define",
     "aria.textDisplay": "Extracted text content",
-    "app.returnHome": "Return to Home Screen"
+    "app.returnHome": "Return to Home Screen",
+    "upload.translateFile": "Translate File"
   }
 }

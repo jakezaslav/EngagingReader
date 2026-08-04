@@ -22,7 +22,7 @@ An interactive reading application that uses Google's Gemini AI (via Vertex AI) 
 - **Multi-Format Support**: Process JPEG, PNG, WebP, HEIC/HEIF images and PDF documents up to 50MB
 - **Text-to-Speech with Word Highlighting**: Listen to extracted text with synchronized word-by-word highlighting during speech
 - **Interactive Definitions**: Double-click on any word to get contextual, accessible definitions designed for adults with low literacy
-- **Multi-Language UI**: Language selector for English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, and Chinese; preference is saved in the browser
+- **Multi-Language UI**: Language selector for English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, Russian, Haitian Creole, and Chinese; preference is saved in the browser
 - **Format Preservation**: Maintains original document formatting (headings, paragraphs, tables) while adding speech functionality
 - **Clean, Accessible UI**: Designed with readability and accessibility in mind
 - **Drag & Drop Support**: Easy file upload with visual feedback for both images and PDFs

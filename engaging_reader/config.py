@@ -7,7 +7,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 UPLOAD_FOLDER = "uploads"
 I18N_DIR = PROJECT_ROOT / "i18n"
-SUPPORTED_I18N_LANGS = frozenset({"en", "es", "fr", "uk", "fil", "tr", "pt", "pa", "zh"})
+SUPPORTED_I18N_LANGS = frozenset({"en", "es", "fr", "uk", "fil", "tr", "pt", "pa", "zh", "ru", "ht"})
 
 TEMPLATE_FOLDER = str(PROJECT_ROOT / "templates")
 STATIC_FOLDER = str(PROJECT_ROOT / "static")
@@ -34,7 +34,7 @@ SITE_FEATURES = (
     "Define Words: Get context-specific definitions that make sense",
     "Translate: Convert documents into English for easier reading",
     "Multi-format support for images and multi-page PDFs up to 50MB",
-    "Multilingual interface: English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, and Chinese",
+    "Multilingual interface: English, Spanish, French, Filipino, Portuguese, Punjabi, Turkish, Ukrainian, Russian, Haitian Creole, and Chinese",
 )
 OG_IMAGE_PATH = "/static/assets/Demo_page.png"
 OG_IMAGE_WIDTH = 2032

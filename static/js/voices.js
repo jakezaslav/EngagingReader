@@ -152,12 +152,14 @@ async function getEnglishVoice() {
 var LOCALE_LANG_TAGS = {
     en: ['en-US', 'en_US', 'en-GB', 'en'],
     es: ['es-ES', 'es_ES', 'es-MX', 'es-US', 'es'],
-    fr: ['fr-FR', 'fr_FR', 'fr-CA', 'fr'],
+    fr: ['fr-CA', 'fr_CA', 'fr-FR', 'fr_FR', 'fr'],
     fil: ['fil-PH', 'fil', 'tl-PH', 'tl'],
     pt: ['pt-BR', 'pt_BR', 'pt-PT', 'pt'],
     pa: ['pa-IN', 'pa_IN', 'pa-Guru', 'pa-Arab', 'pa'],
     tr: ['tr-TR', 'tr_TR', 'tr'],
     uk: ['uk-UA', 'uk_UA', 'uk'],
+    ru: ['ru-RU', 'ru_RU', 'ru'],
+    ht: ['ht-HT', 'ht_HT', 'ht'],
     zh: ['zh-CN', 'zh_CN', 'zh-Hans', 'zh-TW', 'zh-Hant', 'zh']
 };
 
@@ -170,6 +172,8 @@ var LOCALE_VOICE_NAME_HINTS = {
     pa: ['punjabi', 'panjabi', 'gurmukhi', 'ਪੰਜਾਬੀ'],
     tr: ['turkish', 'türkçe', 'turkce'],
     uk: ['ukrainian', 'україн'],
+    ru: ['russian', 'русский'],
+    ht: ['haitian', 'creole', 'kreyol', 'kreyòl'],
     zh: ['chinese', 'mandarin', 'cantonese', '中文']
 };
 

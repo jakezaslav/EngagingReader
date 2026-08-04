@@ -49,7 +49,7 @@ async function uploadImage() {
             : 'English';
         formData.append("USER_LANGUAGE", languageName);
         const translateToggle = document.getElementById("translateFileToggle");
-        const translateFile = translateToggle ? translateToggle.checked : true;
+        const translateFile = translateToggle ? translateToggle.checked : false;
         formData.append("TRANSLATE_FILE", translateFile ? "true" : "false");
 
         const response = await fetch("/upload", {

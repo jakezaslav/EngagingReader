@@ -83,7 +83,7 @@ Step 4: Output Rule
 Do not include any introductory text, explanations, or preambles in your response. Begin the response directly with the extracted or translated content."""
 
 
-def process_file(file_path, user_language="English", translate=True):
+def process_file(file_path, user_language="English", translate=False):
     file_process_start = time.time()
     logger.info(f"[TIMING] process_file() started for: {file_path}")
 

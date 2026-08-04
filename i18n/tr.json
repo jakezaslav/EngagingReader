@@ -6,7 +6,7 @@
   "upload.label": "Dosya Yükle",
   "upload.ariaLabel": "Belge yükle: Dosyaları seçmek için tıklayın veya sürükleyip bırakın. Desteklenen dosya türleri: 50 MB'a kadar resimler ve PDF dosyaları",
   "upload.imageAlt": "Dosya Yükle",
-  "upload.translateFile": "Dosyayı çevir",
+  "upload.translateFile": "Dosyayı Çevir",
   "disclaimer.bold": "Engaging Reader, hassas kişisel verileri işlemek üzere tasarlanmamıştır.",
   "disclaimer.regular": "Lütfen mali bilgiler, resmi kimlik numaraları, tıbbi bilgiler veya diğer gizli içerikler barındıran belgeleri yüklemeyiniz.",
   "status.loading": "Yükleniyor",
@@ -76,6 +76,7 @@
     "definition.loadFailed": "Could not load definition. Please try again.",
     "define.hover": "click to define",
     "aria.textDisplay": "Extracted text content",
-    "app.returnHome": "Return to Home Screen"
+    "app.returnHome": "Return to Home Screen",
+    "upload.translateFile": "Translate File"
   }
 }

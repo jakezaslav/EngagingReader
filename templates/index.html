@@ -52,7 +52,7 @@
       },
       "featureList": {{ site_features | list | tojson }},
       "keywords": {{ site_keywords | tojson }},
-      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "zh"],
+      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "ru", "ht", "zh"],
       "image": {{ og_image_url | tojson }},
       "screenshot": {{ og_image_url | tojson }}
     }
@@ -97,6 +97,8 @@
             <button type="button" class="language-option" data-lang="pa" role="option">PA</button>
             <button type="button" class="language-option" data-lang="tr" role="option">TR</button>
             <button type="button" class="language-option" data-lang="uk" role="option">UK</button>
+            <button type="button" class="language-option" data-lang="ru" role="option">RU</button>
+            <button type="button" class="language-option" data-lang="ht" role="option">HT</button>
             <button type="button" class="language-option" data-lang="zh" role="option">ZH</button>
         </div>
     </div>
@@ -114,7 +116,7 @@
         </div>
         <div class="translate-toggle-row">
             <label class="translate-toggle" for="translateFileToggle">
-                <input type="checkbox" id="translateFileToggle" role="switch" checked>
+                <input type="checkbox" id="translateFileToggle" role="switch">
                 <span class="translate-toggle-track" aria-hidden="true"></span>
                 <span class="translate-toggle-label" data-i18n="upload.translateFile">Translate File</span>
             </label>
