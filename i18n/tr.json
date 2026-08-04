@@ -6,6 +6,7 @@
   "upload.label": "Dosya Yükle",
   "upload.ariaLabel": "Belge yükle: Dosyaları seçmek için tıklayın veya sürükleyip bırakın. Desteklenen dosya türleri: 50 MB'a kadar resimler ve PDF dosyaları",
   "upload.imageAlt": "Dosya Yükle",
+  "upload.translateFile": "Dosyayı çevir",
   "disclaimer.bold": "Engaging Reader, hassas kişisel verileri işlemek üzere tasarlanmamıştır.",
   "disclaimer.regular": "Lütfen mali bilgiler, resmi kimlik numaraları, tıbbi bilgiler veya diğer gizli içerikler barındıran belgeleri yüklemeyiniz.",
   "status.loading": "Yükleniyor",

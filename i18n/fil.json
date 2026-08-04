@@ -6,6 +6,7 @@
   "upload.label": "Mag-upload ng file",
   "upload.ariaLabel": "Mag-upload ng dokumento: i-click para mag-browse ng mga file o i-drag at i-drop. Sinusuportahan: Mga larawan at PDF file hanggang 50MB",
   "upload.imageAlt": "Mag-upload ng file",
+  "upload.translateFile": "Isalin ang File",
   "disclaimer.bold": "Ang Engaging Reader ay hindi idinisenyo upang humawak ng sensitibong personal na datos.",
   "disclaimer.regular": "Mangyaring huwag mag-upload ng mga dokumento na naglalaman ng impormasyong pinansyal, numero ng ID ng pamahalaan, mga detalye medikal, o iba pang kumpidensyal na nilalaman.",
   "status.loading": "Naglo-load",

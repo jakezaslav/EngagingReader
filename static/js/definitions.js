@@ -132,26 +132,13 @@ function closeDefinitionModal() {
     // Do not auto-resume main reading when closing the definition modal
 }
 
-var LOCALE_LANGUAGE_NAMES = {
-    en: 'English',
-    es: 'Spanish',
-    fr: 'French',
-    fil: 'Filipino',
-    pt: 'Portuguese',
-    pa: 'Punjabi',
-    tr: 'Turkish',
-    uk: 'Ukrainian',
-    zh: 'Chinese'
-};
-
-function localeToLanguageName(code) {
-    return LOCALE_LANGUAGE_NAMES[code] || 'English';
-}
-
 // Get definition from Google AI
 async function getDefinition(word, context) {
     try {
         const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+        const languageName = typeof window.localeToLanguageName === 'function'
+            ? window.localeToLanguageName(locale)
+            : 'English';
         const response = await fetch('/get-definition', {
             method: 'POST',
             headers: {
@@ -160,7 +147,7 @@ async function getDefinition(word, context) {
             body: JSON.stringify({
                 "word to define": word,
                 "context sentence": context,
-                "USER_LANGUAGE": localeToLanguageName(locale)
+                "USER_LANGUAGE": languageName
             })
         });
 

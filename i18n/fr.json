@@ -6,6 +6,7 @@
   "upload.label": "Télécharger un fichier",
   "upload.ariaLabel": "Télécharger un document : cliquez pour sélectionner un fichier ou glissez-déposez-le. Formats pris en charge : images et fichiers PDF d'une taille maximale de 50 Mo",
   "upload.imageAlt": "Télécharger un fichier",
+  "upload.translateFile": "Traduire le fichier",
   "disclaimer.bold": "Engaging Reader n'est pas conçu pour traiter des données personnelles sensibles.",
   "disclaimer.regular": "Veuillez ne pas télécharger de documents contenant des informations financières, des numéros d'identification administrative, des informations médicales ou tout autre contenu confidentiel.",
   "status.loading": "Chargement en cours",

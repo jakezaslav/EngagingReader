@@ -6,6 +6,7 @@
   "upload.label": "Carregar ficheiro",
   "upload.ariaLabel": "Carregar documento: clique para procurar ficheiros ou arraste e solte. Formatos suportados: imagens e ficheiros PDF até 50 MB",
   "upload.imageAlt": "Carregar ficheiro",
+  "upload.translateFile": "Traduzir ficheiro",
   "disclaimer.bold": "O Engaging Reader não se destina ao tratamento de dados pessoais sensíveis.",
   "disclaimer.regular": "Por favor, não envie documentos que contenham informações financeiras, números de identificação oficial, dados médicos ou outro conteúdo confidencial.",
   "status.loading": "A carregar",

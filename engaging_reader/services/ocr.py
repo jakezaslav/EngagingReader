@@ -11,32 +11,58 @@ from engaging_reader.services.images import standardize_image
 logger = get_logger(__name__)
 
 
-def process_file(file_path):
-    file_process_start = time.time()
-    logger.info(f"[TIMING] process_file() started for: {file_path}")
+PROMPT_TEMPLATE = """<role>
+You are an expert Document Intelligence AI specializing in vision parsing, text extraction, translation, and structured Markdown formatting for accessibility.
+</role>
 
-    # Create a prompt to guide Gemini on how to extract the data
-    text_prompt = types.Part.from_text(text="""Act as an expert document intelligence agent. Your mission is to analyze the document (image or PDF), process its content based on the rules below, and generate a clean, well-structured Markdown document.
+<instructions>
+Analyze the uploaded document image and process its content according to the following logic:
+
+1. LANGUAGE LOGIC
+   Evaluate the percentage of {{USER_LANGUAGE}} present in the image:
+   - Scenario A (User language present): If {{USER_LANGUAGE}} makes up MORE than 10% of the text:
+     * Extract ONLY the text written in {{USER_LANGUAGE}}.
+     * Completely IGNORE and DISCARD all non-{{USER_LANGUAGE}} text (including redundant dual-language columns, headings, or translations).
+   - Scenario B (User language missing): If 90% or more of the text is in languages OTHER than {{USER_LANGUAGE}}:
+     * Translate the ENTIRE document into {{USER_LANGUAGE}}.
+     * Retain any isolated words already in {{USER_LANGUAGE}} within their logical position in the translation.
+
+2. FORMATTING RULES
+   - Markdown Structure: Return 100% valid Markdown for headings, lists, tables, and body text.
+   - Tables: Recreate all visual tables as Markdown tables. Under Scenario A, include ONLY the headers and columns corresponding to {{USER_LANGUAGE}}.
+   - Text Styling: Preserve original emphasis (**bold**, *italics*).
+   - Footnotes: 
+     * Mark references in table cells using standard Markdown notation: `1,234,567[^1]`
+     * Define the footnote immediately below the corresponding table: `[^1]: Footnote text here.`
+   - Completeness: Ensure all relevant text, numbers, visual notes, and URLs are fully retained.
+3. LAYOUT & READING ORDER
+   - Two-Page Spreads: If the image contains a two-page book spread, you must process the pages sequentially based on their physical layout.
+   - Process and output the ENTIRE left page first (from top to bottom), followed by the ENTIRE right page (from top to bottom). Do not mix text from the two pages based on horizontal alignment.
+</instructions>
+
+<output_constraint>
+Return ONLY the final Markdown document. Do NOT include any conversational introduction, preamble, markdown block wrappers around the entire output, or trailing explanation. Start directly with the document content.
+</output_constraint>"""
+
+ORIGINAL_PROMPT = """Act as an expert document intelligence agent. Your mission is to analyze the document (image or PDF), process its content based on the rules below, and generate a clean, well-structured Markdown document.
 
 Step 1: Language Processing Rule
-
 First, estimate the language distribution in the image and follow the corresponding instruction:
 
 Scenario A: The document contains a significant amount of English text (i.e., English makes up more than 10% of the content).
-
-Action: Extract only the English content. Completely ignore and discard all non-English text.
+Action: Extract only the English content. Completely ignore and discard all non-English text.  
 
 Scenario B: The document is overwhelmingly non-English (i.e., 90% or more of the text is in a non-English language).
+Action: Translate the entire document into English. Any isolated English words should be kept and included in their logical place within the final translated output.  
 
-Action: Translate the entire document into English. Any isolated English words should be kept and included in their logical place within the final translated output.
+Step 2: Layout & Reading Order
+Before extracting or translating, analyze the document's physical layout to ensure the correct reading flow:  
 
-Step 2: Output Rule
-
-Do not include any introductory text, explanations, or preambles in your response. Begin the response directly with the extracted or translated content.
+Two-Page Spreads & Columns: If the image contains a two-page book spread or multiple columns, you must process the content sequentially based on the physical layout, not just highest-to-lowest text.
+Order: Process and output the ENTIRE left page/column first (from top to bottom), followed by the ENTIRE right page/column (from top to bottom). Do not mix text from different pages or columns based on horizontal alignment.  
 
 Step 3: Formatting Instructions
-
-After processing the language according to the rule above, format the entire output using these guidelines:
+After processing the language and layout according to the rules above, format the entire output using these guidelines:
 
 Markdown Output: The entire response must be in Markdown. This includes all text, headings, tables, and lists.
 
@@ -44,14 +70,33 @@ Tables:
 -- Recreate all tables as proper Markdown tables.
 -- If you are following Scenario A, ensure the tables are built using only the English headers and data columns.
 
-Preserve original emphasis like bold and italics. Preserve paragraphs.
+Styling: Preserve original emphasis like bold and italics. Preserve paragraphs.
 
 Footnotes:
 -- If a table has footnotes, place the full footnote text immediately below its corresponding table.
--- In the table cell, mark the reference number with brackets and a carrot, like this: 1,234,567[^1].
--- Begin the footnote text itself with the same marker, like this: [^1]: This is the footnote text.
+-- In the table cell, mark the reference number with brackets and a caret, like this: 1,234,567[^1].
+-- Begin the footnote text itself with the same marker, like this: [^1]: This is the footnote text.  
 
-Completeness: Ensure all extracted (or translated) text, including any URLs, is present in the final output.""")
+Completeness: Ensure all extracted (or translated) text, including any URLs, is present in the final output.  
+
+Step 4: Output Rule
+Do not include any introductory text, explanations, or preambles in your response. Begin the response directly with the extracted or translated content."""
+
+
+def process_file(file_path, user_language="English", translate=True):
+    file_process_start = time.time()
+    logger.info(f"[TIMING] process_file() started for: {file_path}")
+
+    user_language = (user_language or "English").strip() or "English"
+    if translate:
+        prompt_text = PROMPT_TEMPLATE.replace("{{USER_LANGUAGE}}", user_language)
+        logger.info(f"OCR translate=True USER_LANGUAGE: {user_language}")
+    else:
+        prompt_text = ORIGINAL_PROMPT
+        logger.info("OCR translate=False using ORIGINAL_PROMPT")
+
+    # Create a prompt to guide Gemini on how to extract the data
+    text_prompt = types.Part.from_text(text=prompt_text)
 
     # Read and process the file (image or PDF)
     read_start = time.time()

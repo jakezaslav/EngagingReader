@@ -43,6 +43,14 @@ async function uploadImage() {
     try {
         const formData = new FormData();
         formData.append("file", file);
+        const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+        const languageName = typeof window.localeToLanguageName === 'function'
+            ? window.localeToLanguageName(locale)
+            : 'English';
+        formData.append("USER_LANGUAGE", languageName);
+        const translateToggle = document.getElementById("translateFileToggle");
+        const translateFile = translateToggle ? translateToggle.checked : true;
+        formData.append("TRANSLATE_FILE", translateFile ? "true" : "false");
 
         const response = await fetch("/upload", {
             method: "POST",

@@ -6,6 +6,7 @@
   "upload.label": "Upload File",
   "upload.ariaLabel": "Upload document: click to browse files or drag and drop. Supported: Images and PDF files up to 50MB",
   "upload.imageAlt": "Upload File",
+  "upload.translateFile": "Translate File",
   "disclaimer.bold": "Engaging Reader is not intended to handle sensitive personal data.",
   "disclaimer.regular": "Please do not upload documents with financial information, government ID numbers, medical details, or other confidential content.",
   "status.loading": "Loading",

@@ -6,6 +6,7 @@
   "upload.label": "Subir archivo",
   "upload.ariaLabel": "Subir documento: haz clic para buscar archivos o arrástralos y suéltalos. Formatos admitidos: imágenes y archivos PDF de hasta 50 MB.",
   "upload.imageAlt": "Subir archivo",
+  "upload.translateFile": "Traducir archivo",
   "disclaimer.bold": "Engaging Reader no está diseñado para tratar datos personales sensibles.",
   "disclaimer.regular": "Por favor, no subas documentos que contengan información financiera, números de identificación oficial, datos médicos u otro contenido confidencial.",
   "status.loading": "Cargando",

@@ -358,6 +358,74 @@ body {
     display: none;
 }
 
+.translate-toggle-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: clamp(5px, 1.0vw, 10px);
+}
+
+.translate-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.translate-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+}
+
+.translate-toggle-track {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 32px;
+    flex-shrink: 0;
+    background-color: #E5EAE5;
+    border: 1px solid #45535B;
+    border-radius: 999px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.translate-toggle-track::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+
+.translate-toggle input:checked + .translate-toggle-track {
+    background-color: var(--icon-selected, #FFD90C);
+}
+
+.translate-toggle input:checked + .translate-toggle-track::after {
+    transform: translateX(24px);
+}
+
+.translate-toggle input:focus-visible + .translate-toggle-track {
+    outline: 3px solid #2E6F40;
+    outline-offset: 2px;
+}
+
+.translate-toggle-label {
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-weight: 700;
+    color: #000;
+}
+
 /* ===== LOADING ===== */
 
 .loading-overlay {

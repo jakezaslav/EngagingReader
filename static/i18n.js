@@ -180,10 +180,27 @@
         return currentLocale;
     }
 
+    var LOCALE_LANGUAGE_NAMES = {
+        en: 'English',
+        es: 'Spanish',
+        fr: 'French',
+        fil: 'Filipino',
+        pt: 'Portuguese',
+        pa: 'Punjabi',
+        tr: 'Turkish',
+        uk: 'Ukrainian',
+        zh: 'Chinese'
+    };
+
+    function localeToLanguageName(code) {
+        return LOCALE_LANGUAGE_NAMES[code] || 'English';
+    }
+
     window.t = t;
     window.setLocale = setLocale;
     window.applyUITranslations = applyUITranslations;
     window.getLocale = getLocale;
+    window.localeToLanguageName = localeToLanguageName;
     window.__SUPPORTED_LOCALES = SUPPORTED.slice();
     window.__LOCALE_LABELS = Object.assign({}, LOCALE_LABELS);
 

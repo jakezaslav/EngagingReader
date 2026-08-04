@@ -68,15 +68,26 @@ def upload_file():
         logger.error(f"Error saving file: {str(save_error)}")
         return jsonify({"error": "Failed to save file. Please try again."}), 500
 
+    user_language = (request.form.get("USER_LANGUAGE") or "English").strip() or "English"
+    translate_raw = (request.form.get("TRANSLATE_FILE") or "true").strip().lower()
+    translate = translate_raw in ("true", "1", "on", "yes")
+
     # Create job and start background processing
     job_id = create_job()
-    logger.info(f"Created job {job_id} for file {original_filename}")
+    logger.info(
+        f"Created job {job_id} for file {original_filename} "
+        f"(USER_LANGUAGE={user_language}, TRANSLATE_FILE={translate})"
+    )
 
     # Start background thread to process file
     def process_in_background():
         try:
             logger.info(f"[JOB {job_id}] Starting file processing")
-            extracted_markdown = process_file(str(filepath))
+            extracted_markdown = process_file(
+                str(filepath),
+                user_language=user_language,
+                translate=translate,
+            )
             update_job(job_id, status="completed", result={
                 "markdown": extracted_markdown,
                 "filename": original_filename

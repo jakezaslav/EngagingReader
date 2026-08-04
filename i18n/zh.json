@@ -6,6 +6,7 @@
   "upload.label": "上传文件",
   "upload.ariaLabel": "上传文档：点击浏览文件或拖放。支持：图片和 PDF 文件，最大 50MB",
   "upload.imageAlt": "上传文件",
+  "upload.translateFile": "翻译文件",
   "disclaimer.bold": "Engaging Reader 不适合处理敏感的个人数据。",
   "disclaimer.regular": "请勿上传包含财务信息、政府身份证号码、医疗详情或其他机密内容的文档。",
   "status.loading": "加载中",
