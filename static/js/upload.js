@@ -1,6 +1,17 @@
 window.ER = window.ER || {};
 (function (ER) {
 'use strict';
+function setLoadingState(isLoading) {
+    ER.state.loadingOverlay.style.display = isLoading ? 'flex' : 'none';
+    ER.state.loadingOverlay.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+
+    const main = document.querySelector('main');
+    if (main) {
+        if (isLoading) main.setAttribute('aria-busy', 'true');
+        else main.removeAttribute('aria-busy');
+    }
+}
+
 async function uploadImage() {
     // Hide speech controls when starting new upload
     document.getElementById('speech-controls').style.display = 'none';
@@ -36,7 +47,7 @@ async function uploadImage() {
     }
 
     // Show loading state
-    ER.state.loadingOverlay.style.display = 'flex';
+    setLoadingState(true);
     ER.state.outputDiv.innerHTML = "";
     ER.announceStatus(t('status.processing'));
 
@@ -88,14 +99,21 @@ async function uploadImage() {
                     const cleanHtml = DOMPurify.sanitize(dirtyHtml);
                     
                     ER.state.outputDiv.innerHTML = cleanHtml;
+
+                    // Voice follows OCR output language: translate on → UI locale, else English
+                    // Set locale before wrapping so CJK uses Intl.Segmenter correctly
+                    ER.state.documentLocale = translateFile ? locale : 'en';
+                    ER.state.outputDiv.setAttribute(
+                        'lang',
+                        ER.resolveContentLang(ER.state.documentLocale)
+                    );
+
                     ER.wrapWordsInSpans(ER.state.outputDiv);
                     ER.initializeWordNavigation();
                     
                     // Enable play button and store the current text
                     ER.state.currentText = cleanHtml;
 
-                    // Voice follows OCR output language: translate on → UI locale, else English
-                    ER.state.documentLocale = translateFile ? locale : 'en';
                     ER.state.preloadedVoice = null;
                     ER.state.preloadedLang = null;
                     ER.state.preloadedLocale = null;
@@ -114,7 +132,7 @@ async function uploadImage() {
                     // Hide upload container and show content
                     document.getElementById('upload-container').style.display = 'none';
                     
-                    ER.state.loadingOverlay.style.display = 'none';
+                    setLoadingState(false);
                     ER.announceStatus(t('status.extracted'));
                 } else if (statusData.status === "failed") {
                     throw new Error(statusData.error || "Processing failed");
@@ -132,7 +150,7 @@ async function uploadImage() {
                 }
             } catch (error) {
                 console.error("Error polling for results:", error);
-                ER.state.loadingOverlay.style.display = 'none';
+                setLoadingState(false);
                 ER.showError(error.message);
                 ER.announceError(t('errors.processFailed'));
                 // Keep speech controls hidden on error
@@ -148,7 +166,7 @@ async function uploadImage() {
         ER.announceError(t('errors.processFailed'));
         // Keep speech controls hidden on error
         document.getElementById('speech-controls').style.display = 'none';
-        ER.state.loadingOverlay.style.display = 'none';
+        setLoadingState(false);
     }
 }
   ER.uploadImage = uploadImage;

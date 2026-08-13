@@ -78,7 +78,7 @@
     <header class="banner">
         <h1 class="banner-home">
             <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
-            <button type="button" class="banner-home-btn" onclick="window.location.reload();" data-i18n="app.title" data-i18n-aria="app.returnHome" aria-label="Return to Home Screen">Engaging Reader</button>
+            <button type="button" class="banner-home-btn" onclick="window.location.reload();" data-i18n="app.title" data-home-label aria-label="Engaging Reader — Return to Home Screen">Engaging Reader</button>
         </h1>
     </header>
 
@@ -105,14 +105,11 @@
 
     <main role="main">
         <div id="upload-container">
-        <div id="drop-area" class="drop-area" 
-             role="button" 
-             tabindex="0"
-             data-i18n-aria="upload.ariaLabel"
-             aria-label="Upload document: click to browse files or drag and drop. Supported: Images and PDF files up to 50MB">
-            <img src="/static/assets/upload.svg" alt="Upload File" data-i18n-alt="upload.imageAlt">
+        <div id="drop-area" class="drop-area">
+            <img src="/static/assets/upload.svg" alt="">
             <label for="fileInput" class="labBtn" data-i18n="upload.label">Upload File</label>
-            <input type="file" id="fileInput" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
+            <span id="upload-hint" class="sr-only" data-i18n="upload.ariaLabel">Choose a file or drag and drop it here. Supported: Images and PDF files up to 50MB.</span>
+            <input type="file" id="fileInput" aria-describedby="upload-hint" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
         </div>
         <div class="translate-toggle-row">
             <label class="translate-toggle" for="translateFileToggle">
@@ -156,20 +153,22 @@
                 <rect class="icon-fg" x="53" y="25" width="15" height="50" rx="7.5"/>
             </svg>
         </button>
-        <div id="speedDisplay" class="speed-display">
-            <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
-            1x
-            <div class="speed-dropdown">
+        <div class="speed-control">
+            <button type="button" id="speedDisplay" class="speed-display" aria-haspopup="listbox" aria-expanded="false" aria-controls="speedDropdown" aria-label="Speed 1x">
+                <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
+                <span class="speed-value">1x</span>
+            </button>
+            <div id="speedDropdown" class="speed-dropdown" role="listbox" data-i18n-aria="playback.speed" aria-label="Speed">
                 <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
-                <div class="speed-option" data-speed="0.45">.5x</div>
-                <div class="speed-option" data-speed="0.675">.75x</div>
-                <div class="speed-option" data-speed="0.9">1x</div>
-                <div class="speed-option" data-speed="1.125">1.25x</div>
-                <div class="speed-option" data-speed="1.35">1.5x</div>
-                <div class="speed-option" data-speed="1.8">2x</div>
+                <button type="button" class="speed-option" data-speed="0.45" role="option" aria-selected="false">.5x</button>
+                <button type="button" class="speed-option" data-speed="0.675" role="option" aria-selected="false">.75x</button>
+                <button type="button" class="speed-option" data-speed="0.9" role="option" aria-selected="true">1x</button>
+                <button type="button" class="speed-option" data-speed="1.125" role="option" aria-selected="false">1.25x</button>
+                <button type="button" class="speed-option" data-speed="1.35" role="option" aria-selected="false">1.5x</button>
+                <button type="button" class="speed-option" data-speed="1.8" role="option" aria-selected="false">2x</button>
             </div>
         </div>
-        <button id="newFileBtn" type="button" data-i18n-aria="playback.newFile" aria-label="New file">
+        <button id="newFileBtn" type="button" data-i18n-aria="playback.uploadNew" aria-label="Upload new file">
             <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
@@ -180,10 +179,10 @@
     </div>
 
     <!-- Definition Modal -->
-    <div id="definitionModal" class="modal">
+    <div id="definitionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="definitionWord">
         <div class="modal-content">
             <h2 id="definitionWord" data-i18n="definition.title">Definition</h2>
-            <div id="definitionTextContent"></div>
+            <div id="definitionTextContent" tabindex="0"></div>
             <div class="modal-speech-controls">
                 <button id="modalPlayBtn" data-i18n-aria="definition.play" aria-label="Play definition">
                     <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>
@@ -200,20 +199,22 @@
                         <rect class="icon-fg" x="53" y="25" width="15" height="50" rx="7.5"/>
                     </svg>
                 </button>
-                <div id="modalSpeedDisplay" class="speed-display">
-                    <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
-                    1x
-                    <div class="speed-dropdown">
+                <div class="speed-control">
+                    <button type="button" id="modalSpeedDisplay" class="speed-display" aria-haspopup="listbox" aria-expanded="false" aria-controls="modalSpeedDropdown" aria-label="Speed 1x">
+                        <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
+                        <span class="speed-value">1x</span>
+                    </button>
+                    <div id="modalSpeedDropdown" class="speed-dropdown" role="listbox" data-i18n-aria="playback.speed" aria-label="Speed">
                         <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
-                        <div class="speed-option" data-speed="0.45">.5x</div>
-                        <div class="speed-option" data-speed="0.675">.75x</div>
-                        <div class="speed-option" data-speed="0.9">1x</div>
-                        <div class="speed-option" data-speed="1.125">1.25x</div>
-                        <div class="speed-option" data-speed="1.35">1.5x</div>
-                        <div class="speed-option" data-speed="1.8">2x</div>
+                        <button type="button" class="speed-option" data-speed="0.45" role="option" aria-selected="false">.5x</button>
+                        <button type="button" class="speed-option" data-speed="0.675" role="option" aria-selected="false">.75x</button>
+                        <button type="button" class="speed-option" data-speed="0.9" role="option" aria-selected="true">1x</button>
+                        <button type="button" class="speed-option" data-speed="1.125" role="option" aria-selected="false">1.25x</button>
+                        <button type="button" class="speed-option" data-speed="1.35" role="option" aria-selected="false">1.5x</button>
+                        <button type="button" class="speed-option" data-speed="1.8" role="option" aria-selected="false">2x</button>
                     </div>
                 </div>
-                <button id="modalNewFileBtn" type="button" data-i18n-aria="playback.newFile" aria-label="New file">
+                <button id="modalNewFileBtn" type="button" data-i18n-aria="playback.uploadNew" aria-label="Upload new file">
                     <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
@@ -223,7 +224,7 @@
                 </button>
             </div>
             
-            <button type="button" onclick="closeDefinitionModal()" class="close-btn" data-i18n-aria="definition.close" aria-label="Close definition">
+            <button type="button" class="close-btn" data-i18n-aria="definition.returnToText" aria-label="return to main text">
                 <span class="control-tooltip control-tooltip--side" role="tooltip" data-i18n="definition.returnToText">return to main text</span>
                 <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <circle cx="50" cy="50" r="50" fill="#45535B"/>
@@ -236,6 +237,7 @@
 
     <script src="/static/i18n.js"></script>
     <script src="/static/js/state.js"></script>
+    <script src="/static/js/segment.js"></script>
     <script src="/static/js/voices.js"></script>
     <script src="/static/js/ui.js"></script>
     <script src="/static/js/speech.js"></script>

@@ -102,7 +102,13 @@
 
     function syncLanguageSelector() {
         var label = document.querySelector('#languageBtn .language-btn-label');
-        if (label) label.textContent = LOCALE_LABELS[currentLocale] || currentLocale.toUpperCase();
+        var languageCode = LOCALE_LABELS[currentLocale] || currentLocale.toUpperCase();
+        if (label) label.textContent = languageCode;
+
+        var languageBtn = document.getElementById('languageBtn');
+        if (languageBtn) {
+            languageBtn.setAttribute('aria-label', languageCode + ' — ' + t('lang.change'));
+        }
 
         var options = document.querySelectorAll('.language-option[data-lang]');
         options.forEach(function (option) {
@@ -136,6 +142,15 @@
         document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
             var key = el.getAttribute('data-i18n-alt');
             if (key) el.setAttribute('alt', t(key));
+        });
+
+        document.querySelectorAll('[data-home-label]').forEach(function (el) {
+            el.setAttribute('aria-label', t('app.title') + ' — ' + t('app.returnHome'));
+        });
+
+        document.querySelectorAll('.speed-display').forEach(function (el) {
+            var value = el.querySelector('.speed-value');
+            el.setAttribute('aria-label', t('playback.speed') + ' ' + (value ? value.textContent.trim() : '1x'));
         });
 
         document.documentElement.style.setProperty(

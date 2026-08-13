@@ -37,85 +37,120 @@ function updateModalButtonStates(isPlaying) {
 function setupSpeedControl(displayId, context) {
     const speedDisplay = document.getElementById(displayId);
     if (!speedDisplay) return;
-    
-    const dropdown = speedDisplay.querySelector('.speed-dropdown');
-    const speedOptions = speedDisplay.querySelectorAll('.speed-option:not(.speed-label)');
-    
-    // Toggle dropdown on click
-    speedDisplay.addEventListener('click', function(event) {
-        // Close other dropdowns first
+
+    const control = speedDisplay.closest('.speed-control');
+    const dropdown = control?.querySelector('.speed-dropdown');
+    const speedOptions = Array.from(dropdown?.querySelectorAll('[role="option"]') || []);
+    if (!control || !dropdown || speedOptions.length === 0) return;
+
+    function closeDropdown(returnFocus) {
+        dropdown.classList.remove('show');
+        speedDisplay.classList.remove('active');
+        speedDisplay.setAttribute('aria-expanded', 'false');
+        if (returnFocus) speedDisplay.focus();
+    }
+
+    function openDropdown() {
         document.querySelectorAll('.speed-dropdown.show').forEach(otherDropdown => {
             if (otherDropdown !== dropdown) {
                 otherDropdown.classList.remove('show');
-                otherDropdown.parentElement.classList.remove('active');
+                const otherControl = otherDropdown.closest('.speed-control');
+                const otherTrigger = otherControl?.querySelector('.speed-display');
+                otherTrigger?.classList.remove('active');
+                otherTrigger?.setAttribute('aria-expanded', 'false');
             }
         });
-        
-        // Toggle this dropdown
-        dropdown.classList.toggle('show');
-        speedDisplay.classList.toggle('active');
-        
-        // Prevent event from bubbling to document
+        dropdown.classList.add('show');
+        speedDisplay.classList.add('active');
+        speedDisplay.setAttribute('aria-expanded', 'true');
+    }
+
+    function focusOption(index) {
+        speedOptions[(index + speedOptions.length) % speedOptions.length].focus();
+    }
+
+    function selectOption(option) {
+        const speed = parseFloat(option.getAttribute('data-speed'));
+        const speedText = option.textContent.trim();
+
+        ER.state.speechRate = speed;
+
+        document.querySelectorAll('.speed-control').forEach(speedControl => {
+            const display = speedControl.querySelector('.speed-display');
+            const value = speedControl.querySelector('.speed-value');
+            const options = speedControl.querySelectorAll('[role="option"]');
+            if (value) value.textContent = speedText;
+            if (display) display.setAttribute('aria-label', `${t('playback.speed')} ${speedText}`);
+            options.forEach(candidate => {
+                candidate.setAttribute(
+                    'aria-selected',
+                    candidate.getAttribute('data-speed') === option.getAttribute('data-speed') ? 'true' : 'false'
+                );
+            });
+        });
+
+        if (context === 'main') {
+            const wasPlaying = ER.state.isMainSpeaking && !ER.state.mainSpeechPaused;
+            if (wasPlaying && ER.state.mainCurrentWordIndex >= 0) {
+                ER.state.definedWordIndex = ER.state.mainCurrentWordIndex;
+                ER.state.speechSynthesis.cancel();
+                setTimeout(() => ER.resumeFromDefinedWord(), 50);
+            }
+        } else if (context === 'modal') {
+            const wasPlaying = ER.state.isModalSpeaking && !ER.state.modalSpeechPaused;
+            const currentWordBeforeChange = ER.state.modalCurrentWordIndex;
+            if (wasPlaying && currentWordBeforeChange >= 0) {
+                ER.state.speechSynthesis.cancel();
+                setTimeout(() => ER.restartModalFromWord(currentWordBeforeChange), 50);
+            }
+        }
+
+        closeDropdown(true);
+    }
+
+    speedDisplay.addEventListener('click', function(event) {
+        const isOpen = dropdown.classList.contains('show');
+        if (isOpen) closeDropdown(false);
+        else openDropdown();
         event.stopPropagation();
     });
-    
-    // Handle speed option selection
+
+    speedDisplay.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            openDropdown();
+            const selectedIndex = Math.max(0, speedOptions.findIndex(option => option.getAttribute('aria-selected') === 'true'));
+            focusOption(event.key === 'ArrowDown' ? selectedIndex : selectedIndex - 1);
+        } else if (event.key === 'Escape' && dropdown.classList.contains('show')) {
+            event.preventDefault();
+            closeDropdown(true);
+        }
+    });
+
     speedOptions.forEach(option => {
         option.addEventListener('click', function(event) {
-            const speed = parseFloat(this.getAttribute('data-speed'));
-            const speedText = this.textContent;
-            
-            // Update the unified speech rate
-            ER.state.speechRate = speed;
-            
-            // Update both main and modal displays
-            const mainSpeedDisplay = document.getElementById('speedDisplay');
-            const modalSpeedDisplay = document.getElementById('modalSpeedDisplay');
-            
-            [mainSpeedDisplay, modalSpeedDisplay].forEach(display => {
-                if (display) {
-                    const displayText = display.childNodes[0]; // Get the text node
-                    if (displayText && displayText.nodeType === Node.TEXT_NODE) {
-                        displayText.textContent = speedText;
-                    }
-                }
-            });
-            
-            // Handle playback restart based on context
-            if (context === 'main') {
-                const wasPlaying = ER.state.isMainSpeaking && !ER.state.mainSpeechPaused;
-                
-                // If currently playing, restart from current word with new speed
-                if (wasPlaying && ER.state.mainCurrentWordIndex >= 0) {
-                    // Set the defined word to current position for seamless restart
-                    ER.state.definedWordIndex = ER.state.mainCurrentWordIndex;
-                    // Stop current speech
-                    ER.state.speechSynthesis.cancel();
-                    // Small delay to ensure clean restart
-                    setTimeout(() => {
-                        ER.resumeFromDefinedWord();
-                    }, 50);
-                }
-            } else if (context === 'modal') {
-                const wasPlaying = ER.state.isModalSpeaking && !ER.state.modalSpeechPaused;
-                const currentWordBeforeChange = ER.state.modalCurrentWordIndex;
-                
-                // If currently playing, restart from current word with new speed
-                if (wasPlaying && ER.state.modalCurrentWordIndex >= 0) {
-                    // Stop current speech
-                    ER.state.speechSynthesis.cancel();
-                    // Restart from current position
-                    setTimeout(() => {
-                        ER.restartModalFromWord(currentWordBeforeChange);
-                    }, 50);
-                }
-            }
-            
-            // Close dropdown
-            dropdown.classList.remove('show');
-            speedDisplay.classList.remove('active');
-            
+            selectOption(this);
             event.stopPropagation();
+        });
+
+        option.addEventListener('keydown', function(event) {
+            const index = speedOptions.indexOf(this);
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                focusOption(index + 1);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                focusOption(index - 1);
+            } else if (event.key === 'Home') {
+                event.preventDefault();
+                focusOption(0);
+            } else if (event.key === 'End') {
+                event.preventDefault();
+                focusOption(speedOptions.length - 1);
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                closeDropdown(true);
+            }
         });
     });
 }

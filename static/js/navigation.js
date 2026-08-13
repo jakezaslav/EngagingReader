@@ -3,36 +3,42 @@ window.ER = window.ER || {};
 'use strict';
 // Handle global keyboard events
 function handleGlobalKeydown(event) {
-    // Don't interfere if user is typing in an input field
     const activeElement = document.activeElement;
-    if (activeElement && (
-        activeElement.tagName === 'INPUT' || 
-        activeElement.tagName === 'TEXTAREA' || 
-        activeElement.isContentEditable
-    )) {
-        return; // Let the default behavior happen
+    const modalIsOpen = ER.state.definitionModal.style.display === 'block';
+
+    if (modalIsOpen && event.key === 'Tab') {
+        trapDefinitionModalFocus(event);
+        return;
     }
 
     // Handle spacebar for play/pause
     if (event.code === 'Space') {
-        // Prevent spacebar from scrolling the page
-        event.preventDefault();
+        const isNativeControl = activeElement && (
+            ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'].includes(activeElement.tagName) ||
+            activeElement.isContentEditable ||
+            activeElement.matches('[role="button"]')
+        );
+        if (isNativeControl) return;
 
-        // Context-aware spacebar behavior
-        if (ER.state.definitionModal.style.display === 'block') {
-            // Modal is open - control modal speech
+        const focusIsInModal = modalIsOpen && ER.state.definitionModal.contains(activeElement);
+        const focusIsInText = !modalIsOpen && activeElement && (
+            activeElement.id === 'text-display' ||
+            activeElement.classList.contains('highlight-word') ||
+            ER.state.outputDiv.contains(activeElement)
+        );
+
+        if (focusIsInModal) {
+            event.preventDefault();
             handleModalSpacebar();
-        } else if (ER.state.currentText) {
-            // Main content is loaded - control main speech
+        } else if (focusIsInText && ER.state.currentText) {
+            event.preventDefault();
             handleMainSpacebar();
         }
-        // If no content is loaded, spacebar does nothing
         return;
     }
 
     // Handle Escape key to close modal
     if (event.code === 'Escape') {
-        const modalIsOpen = ER.state.definitionModal.style.display === 'block';
         if (modalIsOpen) {
             event.preventDefault();
             ER.closeDefinitionModal();
@@ -41,7 +47,6 @@ function handleGlobalKeydown(event) {
     }
 
     // Handle word navigation (only when text is loaded and not in modal)
-    const modalIsOpen = ER.state.definitionModal.style.display === 'block';
     if (ER.state.currentText && !modalIsOpen) {
         switch (event.code) {
             case 'Tab':
@@ -78,6 +83,30 @@ function handleGlobalKeydown(event) {
                 handleEnterForDefinition();
                 break;
         }
+    }
+}
+
+function trapDefinitionModalFocus(event) {
+    const focusable = Array.from(ER.state.definitionModal.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter(element => element.getClientRects().length > 0);
+
+    if (focusable.length === 0) {
+        event.preventDefault();
+        ER.state.definitionModal.focus();
+        return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const activeElement = document.activeElement;
+
+    if (event.shiftKey && (activeElement === first || !ER.state.definitionModal.contains(activeElement))) {
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && activeElement === last) {
+        event.preventDefault();
+        first.focus();
     }
 }
 

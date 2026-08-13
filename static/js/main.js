@@ -3,10 +3,12 @@ window.ER = window.ER || {};
 'use strict';
 
 document.addEventListener('click', function(event) {
-    if (!event.target.closest('.speed-display')) {
+    if (!event.target.closest('.speed-control')) {
         document.querySelectorAll('.speed-dropdown.show').forEach(dropdown => {
             dropdown.classList.remove('show');
-            dropdown.parentElement.classList.remove('active');
+            const trigger = dropdown.closest('.speed-control')?.querySelector('.speed-display');
+            trigger?.classList.remove('active');
+            trigger?.setAttribute('aria-expanded', 'false');
         });
     }
     if (!event.target.closest('.language-selector')) {
@@ -68,21 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.dataTransfer.files.length) {
             fileInput.files = e.dataTransfer.files;
             ER.uploadImage();
-        }
-    });
-
-    dropArea.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            fileInput.click();
-        }
-    });
-
-    dropArea.addEventListener('click', (e) => {
-        if (e.target === dropArea || e.target.closest('#drop-area') === dropArea) {
-            if (!e.target.classList.contains('labBtn')) {
-                fileInput.click();
-            }
         }
     });
 

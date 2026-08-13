@@ -4,7 +4,7 @@
   "lang.change": "Change Language",
   "lang.menu": "Language",
   "upload.label": "Upload File",
-  "upload.ariaLabel": "Upload document: click to browse files or drag and drop. Supported: Images and PDF files up to 50MB",
+  "upload.ariaLabel": "Choose a file or drag and drop it here. Supported: Images and PDF files up to 50MB.",
   "upload.imageAlt": "Upload File",
   "upload.translateFile": "Translate File",
   "disclaimer.bold": "Engaging Reader is not intended to handle sensitive personal data.",

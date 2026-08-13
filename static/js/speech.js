@@ -15,25 +15,24 @@ function wrapWordsInSpans(node) {
         }
 
         const fragment = document.createDocumentFragment();
-        const words = node.textContent.split(/\s+/); // Split by whitespace
+        const locale = ER.state.documentLocale || 'en';
+        const segments = ER.segmentTextIntoWords(node.textContent, locale);
 
-        words.forEach((word, index) => {
-            if (word) {
+        segments.forEach((segment) => {
+            if (segment.isWordLike) {
                 const span = document.createElement('span');
                 span.className = 'word highlight-word';
-                span.textContent = word;
-                
+                span.textContent = segment.text;
+
                 // Make word keyboard accessible with roving tabindex
                 span.setAttribute('tabindex', '-1');
                 span.setAttribute('role', 'button');
-                span.setAttribute('aria-label', word);
-                
+                span.setAttribute('aria-label', segment.text);
+
                 fragment.appendChild(span);
-            }
-            
-            // Add a space back between words
-            if (index < words.length - 1) {
-                fragment.appendChild(document.createTextNode(' '));
+            } else if (segment.text) {
+                // Preserve original separators (spaces, punctuation) — do not invent spaces
+                fragment.appendChild(document.createTextNode(segment.text));
             }
         });
 
@@ -109,14 +108,16 @@ async function readText() {
     ER.state.definedWordIndex = -1;
     ER.state.isManuallyPaused = false;
 
-    // 1. Get the plain text for the speech synthesis engine BEFORE modifying the DOM
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = ER.state.currentText;
-    const cleanText = tempDiv.textContent;
+    // 1. Plain text for TTS — use the live DOM so it matches word-span offsets
+    const cleanText = ER.state.outputDiv.textContent || '';
 
     // 2. Get all word spans for highlighting (words are already wrapped)
-    ER.state.mainWordSpans = Array.from(document.querySelectorAll('.highlight-word'));
+    ER.state.mainWordSpans = Array.from(ER.state.outputDiv.querySelectorAll('.highlight-word'));
     ER.state.mainWords = ER.state.mainWordSpans.map(span => span.textContent);
+    const wordOffsets = ER.computeWordOffsetsFromDom(
+        ER.state.outputDiv,
+        ER.state.mainWordSpans
+    );
 
     // Chrome fix: Start a dummy utterance immediately to establish speech context
     const isChrome = /chrome/i.test(navigator.userAgent) && !/edg/i.test(navigator.userAgent);
@@ -139,17 +140,10 @@ async function readText() {
     // Event handlers
     ER.state.mainSpeechUtterance.onboundary = function(event) {
         if (event.name === 'word') {
-            const charIndex = event.charIndex;
-            let currentCharCount = 0;
-
-            // Find which word we're at based on character index
-            for (let i = 0; i < ER.state.mainWords.length; i++) {
-                currentCharCount += ER.state.mainWords[i].length + (i === ER.state.mainWords.length - 1 ? 0 : 1); // +1 for space except last word
-                if (currentCharCount > charIndex) {
-                    ER.state.mainCurrentWordIndex = i;
-                    highlightCurrentWord(i);
-                    break;
-                }
+            const idx = ER.findWordIndexAtChar(event.charIndex, wordOffsets);
+            if (idx >= 0) {
+                ER.state.mainCurrentWordIndex = idx;
+                highlightCurrentWord(idx);
             }
         }
     };
@@ -374,9 +368,15 @@ async function resumeFromDefinedWord() {
     ER.state.isMainSpeaking = true;
     ER.state.mainSpeechPaused = false;
 
-    // Create text starting from the defined word
-    const remainingWords = ER.state.mainWords.slice(ER.state.definedWordIndex);
-    const textToSpeak = remainingWords.join(' ');
+    // Speak from the defined word using DOM text (preserves CJK separators)
+    const startSpan = ER.state.mainWordSpans[ER.state.definedWordIndex];
+    const remainingSpans = ER.state.mainWordSpans.slice(ER.state.definedWordIndex);
+    const textToSpeak = ER.getTextFromSpanToEnd(ER.state.outputDiv, startSpan);
+    const wordOffsets = ER.computeWordOffsetsFromDom(
+        ER.state.outputDiv,
+        remainingSpans,
+        startSpan
+    );
 
     // Create new utterance for the remaining text
     ER.state.mainSpeechUtterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -390,17 +390,10 @@ async function resumeFromDefinedWord() {
     // Event handlers
     ER.state.mainSpeechUtterance.onboundary = function(event) {
         if (event.name === 'word') {
-            const charIndex = event.charIndex;
-            let currentCharCount = 0;
-
-            // Find which word we're at based on character index (relative to remaining words)
-            for (let i = 0; i < remainingWords.length; i++) {
-                currentCharCount += remainingWords[i].length + (i === remainingWords.length - 1 ? 0 : 1);
-                if (currentCharCount > charIndex) {
-                    ER.state.mainCurrentWordIndex = ER.state.definedWordIndex + i;
-                    highlightCurrentWord(ER.state.mainCurrentWordIndex);
-                    break;
-                }
+            const i = ER.findWordIndexAtChar(event.charIndex, wordOffsets);
+            if (i >= 0) {
+                ER.state.mainCurrentWordIndex = ER.state.definedWordIndex + i;
+                highlightCurrentWord(ER.state.mainCurrentWordIndex);
             }
         }
     };

@@ -5,12 +5,13 @@ window.ER = window.ER || {};
 function handleWordSelection(event) {
     let selectedText = '';
     let contextElement = null;
+    const documentLocale = ER.state.documentLocale || 'en';
 
     // First, check if text is already selected
     const selection = window.getSelection();
     const selectionText = selection.toString().trim();
 
-    if (selectionText && selectionText.split(' ').length === 1) {
+    if (selectionText && ER.isSingleSegmenterWord(selectionText, documentLocale)) {
         // Use the selected text
         selectedText = selectionText;
         const range = selection.getRangeAt(0);
@@ -53,8 +54,12 @@ function handleWordSelection(event) {
         }
     }
 
-    // Only proceed if we have a single word
-    if (selectedText && selectedText.split(' ').length === 1) {
+    // Only proceed if we have a single word (space-free Chinese multi-word
+    // selections are rejected via segmenter count)
+    if (selectedText && (
+        (contextElement && contextElement.classList && contextElement.classList.contains('word')) ||
+        ER.isSingleSegmenterWord(selectedText, documentLocale)
+    )) {
         // Find the closest meaningful container for context
         while (contextElement && 
                contextElement !== ER.state.outputDiv && 
@@ -97,18 +102,40 @@ function handleWordSelection(event) {
 
 // Show definition modal
 function showDefinitionModal(word, content) {
+    const wasOpen = ER.state.definitionModal.style.display === 'block';
     ER.state.definitionWord.textContent = word;
 
+    const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+    ER.state.definitionContent.replaceChildren();
+    ER.state.definitionContent.setAttribute('lang', ER.resolveContentLang(locale));
+
     // Format the content with word spans for highlighting and keyboard access
-    ER.state.definitionContent.innerHTML = content.split('\n').map(paragraph => {
-        if (paragraph.trim() === '') return '<div class="word-line"><br></div>';
-        return `<div class="word-line">${paragraph.split(' ').map(word =>
-            `<span class="word definition-word" tabindex="-1" role="button" aria-label="${word}">${word}</span>`
-        ).join(' ')}</div>`;
-    }).join('');
+    String(content || '').split('\n').forEach((paragraph) => {
+        const line = document.createElement('div');
+        line.className = 'word-line';
+        if (paragraph.trim() === '') {
+            line.appendChild(document.createElement('br'));
+        } else {
+            const segments = ER.segmentTextIntoWords(paragraph, locale);
+            segments.forEach((segment) => {
+                if (segment.isWordLike) {
+                    const span = document.createElement('span');
+                    span.className = 'word definition-word';
+                    span.textContent = segment.text;
+                    span.setAttribute('tabindex', '-1');
+                    span.setAttribute('role', 'button');
+                    span.setAttribute('aria-label', segment.text);
+                    line.appendChild(span);
+                } else if (segment.text) {
+                    line.appendChild(document.createTextNode(segment.text));
+                }
+            });
+        }
+        ER.state.definitionContent.appendChild(line);
+    });
 
     // Store the word spans for highlighting
-    ER.state.modalWordSpans = Array.from(document.querySelectorAll('.definition-word'));
+    ER.state.modalWordSpans = Array.from(ER.state.definitionContent.querySelectorAll('.definition-word'));
     ER.state.modalWords = ER.state.modalWordSpans.map(span => span.textContent);
     ER.state.modalCurrentWordIndex = 0;
     
@@ -120,6 +147,10 @@ function showDefinitionModal(word, content) {
 
     ER.state.definitionModal.style.display = 'block';
     ER.setLanguageSelectorVisible(false);
+    if (!wasOpen) {
+        const closeButton = ER.state.definitionModal.querySelector('.close-btn');
+        closeButton?.focus();
+    }
 }
 
 // Close definition modal
@@ -214,6 +245,11 @@ async function readDefinitionAloud() {
     ER.state.modalCurrentWordIndex = 0;
     ER.state.isModalSpeaking = true;
 
+    const wordOffsets = ER.computeWordOffsetsFromDom(
+        ER.state.definitionContent,
+        ER.state.modalWordSpans
+    );
+
     // Create utterance
     ER.state.modalSpeechUtterance = new SpeechSynthesisUtterance(definitionText);
 
@@ -231,17 +267,10 @@ async function readDefinitionAloud() {
     // Event handlers
     ER.state.modalSpeechUtterance.onboundary = function(event) {
         if (event.name === 'word') {
-            const charIndex = event.charIndex;
-            let currentCharCount = 0;
-
-            // Find which word we're at based on character index
-            for (let i = 0; i < ER.state.modalWords.length; i++) {
-                currentCharCount += ER.state.modalWords[i].length + (i === ER.state.modalWords.length - 1 ? 0 : 1); // +1 for space except last word
-                if (currentCharCount > charIndex) {
-                    ER.state.modalCurrentWordIndex = i;
-                    ER.highlightModalCurrentWord(i);
-                    break;
-                }
+            const idx = ER.findWordIndexAtChar(event.charIndex, wordOffsets);
+            if (idx >= 0) {
+                ER.state.modalCurrentWordIndex = idx;
+                ER.highlightModalCurrentWord(idx);
             }
         }
     };
@@ -328,9 +357,15 @@ async function restartModalFromWord(wordIndex) {
     ER.state.isModalSpeaking = true;
     ER.state.modalSpeechPaused = false;
 
-    // Create text starting from the specified word
-    const remainingWords = ER.state.modalWords.slice(wordIndex);
-    const textToSpeak = remainingWords.join(' ');
+    // Speak from the word using DOM text (preserves CJK separators)
+    const startSpan = ER.state.modalWordSpans[wordIndex];
+    const remainingSpans = ER.state.modalWordSpans.slice(wordIndex);
+    const textToSpeak = ER.getTextFromSpanToEnd(ER.state.definitionContent, startSpan);
+    const wordOffsets = ER.computeWordOffsetsFromDom(
+        ER.state.definitionContent,
+        remainingSpans,
+        startSpan
+    );
 
     // Create new utterance for the remaining text
     ER.state.modalSpeechUtterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -349,17 +384,10 @@ async function restartModalFromWord(wordIndex) {
     // Event handlers
     ER.state.modalSpeechUtterance.onboundary = function(event) {
         if (event.name === 'word') {
-            const charIndex = event.charIndex;
-            let currentCharCount = 0;
-
-            // Find which word we're at based on character index (relative to remaining words)
-            for (let i = 0; i < remainingWords.length; i++) {
-                currentCharCount += remainingWords[i].length + (i === remainingWords.length - 1 ? 0 : 1);
-                if (currentCharCount > charIndex) {
-                    ER.state.modalCurrentWordIndex = wordIndex + i;
-                    ER.highlightModalCurrentWord(ER.state.modalCurrentWordIndex);
-                    break;
-                }
+            const i = ER.findWordIndexAtChar(event.charIndex, wordOffsets);
+            if (i >= 0) {
+                ER.state.modalCurrentWordIndex = wordIndex + i;
+                ER.highlightModalCurrentWord(ER.state.modalCurrentWordIndex);
             }
         }
     };
