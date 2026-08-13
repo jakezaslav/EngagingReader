@@ -41,6 +41,27 @@ function resolveContentLang(locale) {
 }
 
 /**
+ * Best-guess app locale for text whose language is not known up front
+ * (untranslated OCR output). Only non-Latin scripts are identified here;
+ * Latin-script text is ambiguous between supported locales, so it keeps the
+ * caller's fallback.
+ */
+function detectTextLocale(text, fallbackLocale) {
+    const sample = String(text || '');
+    if (/[\u3400-\u9fff\uf900-\ufaff]/.test(sample)) {
+        return 'zh';
+    }
+    if (/[\u0a00-\u0a7f]/.test(sample)) {
+        return 'pa';
+    }
+    if (/[\u0400-\u04ff]/.test(sample)) {
+        // Letters present in Ukrainian but not Russian
+        return /[\u0404\u0406\u0407\u0454\u0456\u0457\u0490\u0491]/.test(sample) ? 'uk' : 'ru';
+    }
+    return fallbackLocale || 'en';
+}
+
+/**
  * Locale-aware word segmentation.
  * Returns { text, isWordLike, start, end }[].
  * Falls back to whitespace splitting when Intl.Segmenter is unavailable.
@@ -191,6 +212,7 @@ function findWordIndexAtChar(charIndex, offsets) {
 
 ER.resolveSegmenterLocale = resolveSegmenterLocale;
 ER.resolveContentLang = resolveContentLang;
+ER.detectTextLocale = detectTextLocale;
 ER.segmentTextIntoWords = segmentTextIntoWords;
 ER.isSingleSegmenterWord = isSingleSegmenterWord;
 ER.getTextFromSpanToEnd = getTextFromSpanToEnd;

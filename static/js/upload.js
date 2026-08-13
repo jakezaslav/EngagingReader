@@ -100,9 +100,13 @@ async function uploadImage() {
                     
                     ER.state.outputDiv.innerHTML = cleanHtml;
 
-                    // Voice follows OCR output language: translate on → UI locale, else English
+                    // Voice follows OCR output language: translated files are in the UI
+                    // locale, otherwise the original language is unknown and detected
+                    // from the extracted text.
                     // Set locale before wrapping so CJK uses Intl.Segmenter correctly
-                    ER.state.documentLocale = translateFile ? locale : 'en';
+                    ER.state.documentLocale = translateFile
+                        ? locale
+                        : ER.detectTextLocale(ER.state.outputDiv.textContent, 'en');
                     ER.state.outputDiv.setAttribute(
                         'lang',
                         ER.resolveContentLang(ER.state.documentLocale)
