@@ -209,7 +209,9 @@ body {
     display: none;
     position: absolute;
     top: calc(100% + 6px);
-    right: 0;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     background-color: #45535B;
     border-radius: 20px;
     padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 20px);
