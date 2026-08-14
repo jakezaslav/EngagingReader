@@ -13,7 +13,6 @@ definitions_bp = Blueprint("definitions", __name__)
 def get_definition():
     try:
         data = request.get_json()
-        logger.info(f"Received data: {data}")  # Log raw incoming request
 
         # Input validation
         if not data:

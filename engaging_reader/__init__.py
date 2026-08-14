@@ -2,13 +2,19 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.exceptions import RequestEntityTooLarge
 
 from engaging_reader.blueprints.definitions import definitions_bp
 from engaging_reader.blueprints.documents import documents_bp
 from engaging_reader.blueprints.i18n import i18n_bp
 from engaging_reader.blueprints.pages import pages_bp
-from engaging_reader.config import STATIC_FOLDER, TEMPLATE_FOLDER, UPLOAD_FOLDER
+from engaging_reader.config import (
+    MAX_UPLOAD_BYTES,
+    STATIC_FOLDER,
+    TEMPLATE_FOLDER,
+    UPLOAD_FOLDER,
+)
 from engaging_reader.extensions import configure_logging, register_heif_opener
 from engaging_reader.services.gemini_client import initialize_genai_client, set_client
 
@@ -26,6 +32,13 @@ def create_app():
 
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+    app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
+
+    @app.errorhandler(RequestEntityTooLarge)
+    def handle_request_entity_too_large(_error):
+        return jsonify({
+            "error": "File size exceeds 50MB limit. Please choose a smaller file."
+        }), 413
 
     client = initialize_genai_client()
     set_client(client)

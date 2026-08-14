@@ -81,7 +81,8 @@ Return ONLY the final Markdown document. Do NOT include any conversational intro
 
 def process_file(file_path, user_language="English", translate=False):
     file_process_start = time.time()
-    logger.info(f"[TIMING] process_file() started for: {file_path}")
+    _, file_extension = os.path.splitext(file_path.lower())
+    logger.info(f"[TIMING] process_file() started extension={file_extension}")
 
     user_language = (user_language or "English").strip() or "English"
     if translate:
@@ -100,9 +101,6 @@ def process_file(file_path, user_language="English", translate=False):
         original_file_bytes = file.read()
     read_duration = time.time() - read_start
     logger.info(f"[TIMING] File read in {read_duration:.3f} seconds ({len(original_file_bytes)} bytes)")
-
-    # Determine file type based on extension
-    _, file_extension = os.path.splitext(file_path.lower())
 
     if file_extension == '.pdf':
         # Handle PDF files directly - no standardization needed

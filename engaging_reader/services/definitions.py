@@ -9,10 +9,7 @@ logger = get_logger(__name__)
 
 def generate_definition(word, context, user_language="English"):
     """Generate a contextual definition for a word. Returns the definition text."""
-    logger.info(
-        f"Processing definition for word: '{word}' with context: '{context}' "
-        f"in language: '{user_language}'"
-    )
+    logger.info(f"Definition request language={user_language}")
 
     # Compose user input into a single message
     user_prompt = f"""WORD TO DEFINE:
@@ -118,5 +115,5 @@ Portuguese
         if chunk.text:  # Only add text if it's not None
             output_text += chunk.text
 
-    logger.info(f"Generated definition: {output_text}")
+    logger.info("Definition generated")
     return output_text

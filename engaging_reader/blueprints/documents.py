@@ -8,7 +8,7 @@ from pathlib import Path
 from flask import Blueprint, current_app, jsonify, request
 
 from engaging_reader.extensions import get_logger
-from engaging_reader.jobs import cleanup_old_jobs, create_job, get_job, update_job
+from engaging_reader.jobs import cleanup_old_jobs, create_job, delete_job, get_job, update_job
 from engaging_reader.services.ocr import process_file
 
 logger = get_logger(__name__)
@@ -75,8 +75,8 @@ def upload_file():
     # Create job and start background processing
     job_id = create_job()
     logger.info(
-        f"Created job {job_id} for file {original_filename} "
-        f"(USER_LANGUAGE={user_language}, TRANSLATE_FILE={translate})"
+        f"Created job {job_id} extension={file_extension} "
+        f"USER_LANGUAGE={user_language} TRANSLATE_FILE={translate}"
     )
 
     # Start background thread to process file
@@ -127,7 +127,9 @@ def get_job_status(job_id):
 
     if job["status"] == "completed":
         response["result"] = job["result"]
+        delete_job(job_id)
     elif job["status"] == "failed":
         response["error"] = job["error"]
+        delete_job(job_id)
 
     return jsonify(response)

@@ -38,10 +38,16 @@ def get_job(job_id):
         return job_storage.get(job_id)
 
 
-def cleanup_old_jobs():
-    """Remove jobs older than 1 hour"""
+def delete_job(job_id):
+    """Remove a job from storage (e.g. after terminal status is returned)."""
     with job_lock:
-        cutoff = datetime.now() - timedelta(hours=1)
+        job_storage.pop(job_id, None)
+
+
+def cleanup_old_jobs():
+    """Remove jobs older than 15 minutes."""
+    with job_lock:
+        cutoff = datetime.now() - timedelta(minutes=15)
         to_remove = [
             job_id for job_id, job in job_storage.items()
             if job["created_at"] < cutoff
