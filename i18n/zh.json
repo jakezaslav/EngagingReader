@@ -45,7 +45,7 @@
   "definition.returnToText": "返回正文",
   "definition.loading": "正在加载释义……",
   "definition.loadFailed": "无法加载释义。请重试。",
-  "define.hover": "点击查看释义",
+  "define.hover": "释义",
   "aria.textDisplay": "提取的文本内容",
   "__source__": {
     "app.title": "Engaging Reader",
@@ -83,7 +83,7 @@
     "definition.returnToText": "return to main text",
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
-    "define.hover": "click to define",
+    "define.hover": "Define",
     "aria.textDisplay": "Extracted text content",
     "app.returnHome": "Return to Home Screen",
     "upload.translateFile": "Translate File"

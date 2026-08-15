@@ -84,10 +84,10 @@
 
     <div id="language-selector" class="language-selector">
         <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="lang.change">Change Language</span>
-        <button type="button" id="languageBtn" class="language-btn" data-i18n-aria="lang.change" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false">
+        <button type="button" id="languageBtn" class="language-btn" data-i18n-aria="lang.change" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageDropdown">
             <span class="language-btn-label">EN</span>
         </button>
-        <div class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
+        <div id="languageDropdown" class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
             <div class="language-option language-label" data-i18n="lang.menu">Language</div>
             <button type="button" class="language-option" data-lang="en" role="option">EN</button>
             <button type="button" class="language-option" data-lang="es" role="option">ES</button>
@@ -135,7 +135,7 @@
     <div aria-live="polite" aria-atomic="true" class="sr-only" id="upload-status"></div>
     <div aria-live="assertive" aria-atomic="true" class="sr-only" id="upload-errors"></div>
 
-    <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+    <div id="loading-overlay" class="loading-overlay" aria-hidden="true" tabindex="-1">
         <p class="banner" data-i18n="app.title">Engaging Reader</p>
         <div class="loader2"></div>
         <p id="loading-status" class="labBtn loading-status" data-i18n="status.loading">Loading</p>

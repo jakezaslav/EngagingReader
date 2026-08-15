@@ -45,7 +45,7 @@
   "definition.returnToText": "Вернуться к основному тексту",
   "definition.loading": "Загрузка определения...",
   "definition.loadFailed": "Не удалось загрузить определение. Попробуйте ещё раз.",
-  "define.hover": "нажмите, чтобы определить",
+  "define.hover": "Определить",
   "aria.textDisplay": "Извлеченный текст",
   "__source__": {
     "app.title": "Engaging Reader",
@@ -85,7 +85,7 @@
     "definition.returnToText": "return to main text",
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
-    "define.hover": "click to define",
+    "define.hover": "Define",
     "aria.textDisplay": "Extracted text content"
   }
 }

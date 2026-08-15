@@ -162,6 +162,30 @@ function setupLanguageSelector() {
     const dropdown = selector?.querySelector('.language-dropdown');
     if (!selector || !languageBtn || !dropdown || !label) return;
 
+    const languageOptions = Array.from(
+        dropdown.querySelectorAll('.language-option:not(.language-label)')
+    );
+
+    function openDropdown() {
+        dropdown.classList.add('show');
+        selector.classList.add('open');
+        languageBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function focusOption(index) {
+        languageOptions[(index + languageOptions.length) % languageOptions.length].focus();
+    }
+
+    function selectLanguage(option) {
+        const lang = option.getAttribute('data-lang');
+        if (lang && typeof window.setLocale === 'function') {
+            window.setLocale(lang);
+        } else {
+            label.textContent = option.textContent.trim();
+        }
+        closeLanguageDropdown(true);
+    }
+
     languageBtn.addEventListener('click', function(event) {
         event.stopPropagation();
         const isOpen = dropdown.classList.toggle('show');
@@ -169,28 +193,63 @@ function setupLanguageSelector() {
         languageBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    dropdown.querySelectorAll('.language-option:not(.language-label)').forEach(option => {
+    languageBtn.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            openDropdown();
+            const selectedIndex = Math.max(
+                0,
+                languageOptions.findIndex((option) => option.getAttribute('aria-selected') === 'true')
+            );
+            focusOption(event.key === 'ArrowDown' ? selectedIndex : selectedIndex - 1);
+        } else if (event.key === 'Escape' && dropdown.classList.contains('show')) {
+            event.preventDefault();
+            closeLanguageDropdown(true);
+        }
+    });
+
+    languageOptions.forEach((option) => {
         option.addEventListener('click', function(event) {
             event.stopPropagation();
-            const lang = this.getAttribute('data-lang');
-            if (lang && typeof window.setLocale === 'function') {
-                window.setLocale(lang);
-            } else {
-                label.textContent = this.textContent.trim();
+            selectLanguage(this);
+        });
+
+        option.addEventListener('keydown', function(event) {
+            const index = languageOptions.indexOf(this);
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                focusOption(index + 1);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                focusOption(index - 1);
+            } else if (event.key === 'Home') {
+                event.preventDefault();
+                focusOption(0);
+            } else if (event.key === 'End') {
+                event.preventDefault();
+                focusOption(languageOptions.length - 1);
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                closeLanguageDropdown(true);
+            } else if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                selectLanguage(this);
             }
-            closeLanguageDropdown();
         });
     });
 }
 
-function closeLanguageDropdown() {
+function closeLanguageDropdown(returnFocus) {
     const selector = document.getElementById('language-selector');
     const languageBtn = document.getElementById('languageBtn');
     const dropdown = selector?.querySelector('.language-dropdown');
     if (!selector || !dropdown) return;
     dropdown.classList.remove('show');
     selector.classList.remove('open');
-    if (languageBtn) languageBtn.setAttribute('aria-expanded', 'false');
+    if (languageBtn) {
+        languageBtn.setAttribute('aria-expanded', 'false');
+        if (returnFocus) languageBtn.focus();
+    }
 }
 
 const TRANSLATE_FILE_STORAGE_KEY = 'translateFile';

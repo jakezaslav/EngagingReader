@@ -163,7 +163,9 @@ body.definition-open .banner {
 }
 
 .banner-home:hover > .control-tooltip--below,
-.language-selector:hover > .control-tooltip--below {
+.banner-home:focus-within > .control-tooltip--below,
+.language-selector:hover > .control-tooltip--below,
+.language-selector:focus-within > .control-tooltip--below {
     opacity: 1;
     visibility: visible;
 }
@@ -450,7 +452,8 @@ body.definition-open .banner {
     left: 2px;
     width: 26px;
     height: 26px;
-    background-color: #F1F3F0;
+    /* Slate thumb: ≥3:1 against off (#E5EAE5) and on (#FFD90C) tracks (1.4.11) */
+    background-color: #45535B;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease;
@@ -489,6 +492,11 @@ body.definition-open .banner {
     flex-direction: column;
     align-items: center;
     z-index: 1000;
+}
+
+/* Language sits above the overlay in stacking order; hide it while loading */
+body.is-loading .language-selector {
+    visibility: hidden;
 }
 
 #loading-overlay .loading-status {
@@ -733,7 +741,7 @@ body.definition-open .banner {
 }
 
 #text-display .highlight-word::after {
-    content: var(--define-hover-label, "click to define");
+    content: var(--define-hover-label, "Define");
     position: absolute;
     top: calc(100% + 10px);
     left: 50%;
@@ -771,7 +779,9 @@ body.definition-open .banner {
 }
 
 #text-display .highlight-word:hover::after,
-#text-display .highlight-word:hover::before {
+#text-display .highlight-word:hover::before,
+#text-display .highlight-word:focus-visible::after,
+#text-display .highlight-word:focus-visible::before {
     opacity: 1;
     visibility: visible;
 }
@@ -965,9 +975,13 @@ body.definition-open .banner {
 }
 
 #speech-controls button:hover .control-tooltip,
+#speech-controls button:focus-visible .control-tooltip,
 .modal-speech-controls button:hover .control-tooltip,
+.modal-speech-controls button:focus-visible .control-tooltip,
 #speech-controls .speed-display:hover > .control-tooltip,
+#speech-controls .speed-display:focus-visible > .control-tooltip,
 .modal-speech-controls .speed-display:hover > .control-tooltip,
+.modal-speech-controls .speed-display:focus-visible > .control-tooltip,
 .close-btn:hover .control-tooltip,
 .close-btn:focus-visible .control-tooltip {
     opacity: 1;

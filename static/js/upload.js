@@ -3,6 +3,17 @@ window.ER = window.ER || {};
 'use strict';
 
 let stillLoadingAnnounced = false;
+let loadingPreviousFocus = null;
+
+function getLoadingBackdropRoots() {
+    return [
+        document.querySelector('header.banner'),
+        document.getElementById('language-selector'),
+        document.querySelector('main'),
+        document.getElementById('speech-controls'),
+        document.getElementById('definitionModal')
+    ].filter(Boolean);
+}
 
 function resetLoadingCopy() {
     const statusEl = document.getElementById('loading-status');
@@ -39,16 +50,50 @@ function setLoadingState(isLoading) {
     ER.state.loadingOverlay.style.display = isLoading ? 'flex' : 'none';
     ER.state.loadingOverlay.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
 
-    if (isLoading) {
-        resetLoadingCopy();
-    } else {
-        resetLoadingCopy();
-    }
-
     const main = document.querySelector('main');
     if (main) {
         if (isLoading) main.setAttribute('aria-busy', 'true');
         else main.removeAttribute('aria-busy');
+    }
+
+    if (isLoading) {
+        loadingPreviousFocus = document.activeElement;
+        document.body.classList.add('is-loading');
+        getLoadingBackdropRoots().forEach((el) => {
+            el.setAttribute('aria-hidden', 'true');
+            el.inert = true;
+        });
+        resetLoadingCopy();
+        requestAnimationFrame(() => {
+            document.getElementById('loadingBackBtn')?.focus();
+        });
+    } else {
+        document.body.classList.remove('is-loading');
+        getLoadingBackdropRoots().forEach((el) => {
+            el.removeAttribute('aria-hidden');
+            el.inert = false;
+        });
+        resetLoadingCopy();
+        const restore = loadingPreviousFocus;
+        loadingPreviousFocus = null;
+
+        /*
+         * The element focused before loading is often hidden by the time we
+         * finish (the upload form is replaced by the text), so fall back to the
+         * extracted text rather than letting focus drop to <body> — keyboard
+         * reading and word navigation both require focus inside the text.
+         */
+        const target = [
+            restore,
+            ER.state.outputDiv && ER.state.outputDiv.textContent.trim() ? ER.state.outputDiv : null,
+            document.querySelector('#drop-area label[for="fileInput"]')
+        ].find((el) => el && document.contains(el) && el.getClientRects().length > 0);
+
+        if (target && typeof target.focus === 'function') {
+            try {
+                target.focus();
+            } catch (e) { /* ignore */ }
+        }
     }
 }
 

@@ -45,7 +45,7 @@
   "definition.returnToText": "voltar ao texto principal",
   "definition.loading": "A carregar definição...",
   "definition.loadFailed": "Não foi possível carregar a definição. Por favor, tente novamente.",
-  "define.hover": "clique para definir",
+  "define.hover": "Definir",
   "aria.textDisplay": "Conteúdo de texto extraído",
   "__source__": {
     "app.title": "Engaging Reader",
@@ -83,7 +83,7 @@
     "definition.returnToText": "return to main text",
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
-    "define.hover": "click to define",
+    "define.hover": "Define",
     "aria.textDisplay": "Extracted text content",
     "app.returnHome": "Return to Home Screen",
     "upload.translateFile": "Translate File"

@@ -45,7 +45,7 @@
   "definition.returnToText": "Bumalik sa pangunahing teksto",
   "definition.loading": "Ina-load ang depinisyon...",
   "definition.loadFailed": "Hindi na-load ang depinisyon. Mangyaring subukan muli.",
-  "define.hover": "I-click upang tukuyin",
+  "define.hover": "Tukuyin",
   "aria.textDisplay": "Hinango nilalaman ng teksto",
   "__source__": {
     "app.title": "Engaging Reader",
@@ -83,7 +83,7 @@
     "definition.returnToText": "return to main text",
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
-    "define.hover": "click to define",
+    "define.hover": "Define",
     "aria.textDisplay": "Extracted text content",
     "app.returnHome": "Return to Home Screen",
     "upload.translateFile": "Translate File"

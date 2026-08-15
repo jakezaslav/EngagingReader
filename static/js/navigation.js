@@ -5,6 +5,13 @@ window.ER = window.ER || {};
 function handleGlobalKeydown(event) {
     const activeElement = document.activeElement;
     const modalIsOpen = ER.state.definitionModal.style.display === 'block';
+    const loadingVisible = ER.state.loadingOverlay &&
+        ER.state.loadingOverlay.style.display === 'flex';
+
+    if (loadingVisible && event.key === 'Tab') {
+        trapLoadingOverlayFocus(event);
+        return;
+    }
 
     if (modalIsOpen && event.key === 'Tab') {
         trapDefinitionModalFocus(event);
@@ -13,11 +20,23 @@ function handleGlobalKeydown(event) {
 
     // Handle spacebar for play/pause
     if (event.code === 'Space') {
-        const isNativeControl = activeElement && (
+        /*
+         * Words carry role="button" for screen readers but are activated with
+         * Enter, so they must not count as controls that own the spacebar —
+         * otherwise focusing a word (via arrows, or on closing a definition)
+         * silently swallows play/pause.
+         */
+        const isWordSpan = !!(activeElement && activeElement.classList && (
+            activeElement.classList.contains('highlight-word') ||
+            activeElement.classList.contains('definition-word')
+        ));
+
+        const isNativeControl = !isWordSpan && activeElement && (
             ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'].includes(activeElement.tagName) ||
             activeElement.isContentEditable ||
             activeElement.matches('[role="button"]')
         );
+
         if (isNativeControl) return;
 
         const focusIsInModal = modalIsOpen && ER.state.definitionModal.contains(activeElement);
@@ -60,8 +79,14 @@ function handleGlobalKeydown(event) {
         return;
     }
 
-    // Handle word navigation (only when text is loaded and not in modal)
-    if (ER.state.currentText && !modalIsOpen) {
+    // Word navigation only when focus is in the reading text (not chrome controls)
+    const focusIsInReadingText = !modalIsOpen && !loadingVisible && activeElement && (
+        activeElement.id === 'text-display' ||
+        activeElement.classList.contains('highlight-word') ||
+        (ER.state.outputDiv && ER.state.outputDiv.contains(activeElement))
+    );
+
+    if (ER.state.currentText && focusIsInReadingText) {
         switch (event.code) {
             case 'Tab':
                 // Tab into text area - focus first word of first paragraph
@@ -97,6 +122,42 @@ function handleGlobalKeydown(event) {
                 handleEnterForDefinition();
                 break;
         }
+    }
+}
+
+function getLoadingFocusableElements() {
+    const selector = [
+        'button:not([disabled])',
+        '[href]',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(', ');
+
+    return Array.from(ER.state.loadingOverlay.querySelectorAll(selector))
+        .filter((element) => element.getClientRects().length > 0);
+}
+
+function trapLoadingOverlayFocus(event) {
+    const focusable = getLoadingFocusableElements();
+
+    if (focusable.length === 0) {
+        event.preventDefault();
+        ER.state.loadingOverlay.focus();
+        return;
+    }
+
+    event.preventDefault();
+    const activeElement = document.activeElement;
+    const index = focusable.indexOf(activeElement);
+
+    if (event.shiftKey) {
+        const next = index <= 0 ? focusable.length - 1 : index - 1;
+        focusable[next].focus();
+    } else {
+        const next = index >= focusable.length - 1 ? 0 : index + 1;
+        focusable[next].focus();
     }
 }
 

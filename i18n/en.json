@@ -45,6 +45,6 @@
   "definition.returnToText": "return to main text",
   "definition.loading": "Loading definition...",
   "definition.loadFailed": "Could not load definition. Please try again.",
-  "define.hover": "click to define",
+  "define.hover": "Define",
   "aria.textDisplay": "Extracted text content"
 }

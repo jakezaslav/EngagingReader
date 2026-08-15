@@ -45,7 +45,7 @@
   "definition.returnToText": "retounen nan tèks prensipal la",
   "definition.loading": "Chaje definisyon...",
   "definition.loadFailed": "Pa t kapab chaje definisyon an. Tanpri eseye ankò.",
-  "define.hover": "Klike pou defini",
+  "define.hover": "Defini",
   "aria.textDisplay": "Kontni tèks ekstrè",
   "__source__": {
     "app.title": "Engaging Reader",
@@ -85,7 +85,7 @@
     "definition.returnToText": "return to main text",
     "definition.loading": "Loading definition...",
     "definition.loadFailed": "Could not load definition. Please try again.",
-    "define.hover": "click to define",
+    "define.hover": "Define",
     "aria.textDisplay": "Extracted text content"
   }
 }
