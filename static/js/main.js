@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ER.setupSpeedControl('speedDisplay', 'main');
     ER.setupSpeedControl('modalSpeedDisplay', 'modal');
     ER.setupLanguageSelector();
+    ER.trackBannerHeight();
 
     const dropArea = ER.state.dropArea;
     const fileInput = ER.state.fileInput;

@@ -41,6 +41,12 @@ function handleGlobalKeydown(event) {
     if (event.code === 'Escape') {
         if (modalIsOpen) {
             event.preventDefault();
+            // Close an open language menu first; a second Escape closes the definition
+            const languageDropdown = document.querySelector('#language-selector .language-dropdown.show');
+            if (languageDropdown) {
+                ER.closeLanguageDropdown();
+                return;
+            }
             ER.closeDefinitionModal();
             return;
         }
@@ -94,10 +100,32 @@ function handleGlobalKeydown(event) {
     }
 }
 
+/*
+ * Definition panel sits under the header, so Tab cycles through header
+ * controls (home, language) plus the panel — not the obscured page behind.
+ */
+function getDefinitionFocusableElements() {
+    const selector = [
+        'button:not([disabled])',
+        '[href]',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(', ');
+
+    const roots = [
+        document.querySelector('header.banner'),
+        document.getElementById('language-selector'),
+        ER.state.definitionModal
+    ].filter(Boolean);
+
+    return roots.flatMap((root) => Array.from(root.querySelectorAll(selector)))
+        .filter((element) => element.getClientRects().length > 0);
+}
+
 function trapDefinitionModalFocus(event) {
-    const focusable = Array.from(ER.state.definitionModal.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    )).filter(element => element.getClientRects().length > 0);
+    const focusable = getDefinitionFocusableElements();
 
     if (focusable.length === 0) {
         event.preventDefault();
@@ -105,16 +133,18 @@ function trapDefinitionModalFocus(event) {
         return;
     }
 
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    // Header and panel aren't contiguous in DOM order (speech controls sit
+    // between them), so Tab must be driven explicitly through this list.
+    event.preventDefault();
     const activeElement = document.activeElement;
+    const index = focusable.indexOf(activeElement);
 
-    if (event.shiftKey && (activeElement === first || !ER.state.definitionModal.contains(activeElement))) {
-        event.preventDefault();
-        last.focus();
-    } else if (!event.shiftKey && activeElement === last) {
-        event.preventDefault();
-        first.focus();
+    if (event.shiftKey) {
+        const next = index <= 0 ? focusable.length - 1 : index - 1;
+        focusable[next].focus();
+    } else {
+        const next = index >= focusable.length - 1 ? 0 : index + 1;
+        focusable[next].focus();
     }
 }
 

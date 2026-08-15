@@ -193,11 +193,27 @@ function closeLanguageDropdown() {
     if (languageBtn) languageBtn.setAttribute('aria-expanded', 'false');
 }
 
-function setLanguageSelectorVisible(visible) {
-    const selector = document.getElementById('language-selector');
-    if (!selector) return;
-    if (!visible) closeLanguageDropdown();
-    selector.style.display = visible ? '' : 'none';
+/*
+ * The banner is fixed and its height changes with the viewport, the user's font
+ * size and title wrapping, so anything positioned under it reads the measured
+ * value from --banner-height instead of hard-coding an offset.
+ */
+function trackBannerHeight() {
+    const banner = document.querySelector('header.banner');
+    if (!banner) return;
+
+    const syncBannerHeight = () => {
+        const height = Math.round(banner.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--banner-height', height + 'px');
+    };
+
+    syncBannerHeight();
+
+    if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(syncBannerHeight).observe(banner);
+    } else {
+        window.addEventListener('resize', syncBannerHeight);
+    }
 }
 
 function clearUploadError() {
@@ -265,7 +281,7 @@ function announceError(message) {
   ER.setupSpeedControl = setupSpeedControl;
   ER.setupLanguageSelector = setupLanguageSelector;
   ER.closeLanguageDropdown = closeLanguageDropdown;
-  ER.setLanguageSelectorVisible = setLanguageSelectorVisible;
+  ER.trackBannerHeight = trackBannerHeight;
   ER.clearUploadError = clearUploadError;
   ER.showUploadError = showUploadError;
   ER.announceStatus = announceStatus;

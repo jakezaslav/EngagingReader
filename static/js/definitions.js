@@ -146,7 +146,8 @@ function showDefinitionModal(word, content) {
     ER.updateModalButtonStates(false);
 
     ER.state.definitionModal.style.display = 'block';
-    ER.setLanguageSelectorVisible(false);
+    document.body.classList.add('definition-open');
+    ER.closeLanguageDropdown();
     if (!wasOpen) {
         const closeButton = ER.state.definitionModal.querySelector('.close-btn');
         closeButton?.focus();
@@ -157,7 +158,7 @@ function showDefinitionModal(word, content) {
 function closeDefinitionModal() {
     stopDefinitionReading();
     ER.state.definitionModal.style.display = 'none';
-    ER.setLanguageSelectorVisible(true);
+    document.body.classList.remove('definition-open');
     
     // Restore focus to the word that opened the modal (as requested)
     const restoreIndex = ER.state.definedWordIndex >= 0

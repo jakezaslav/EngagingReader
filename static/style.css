@@ -3,6 +3,8 @@
 :root {
     --icon-unselected: #E5EAE5;
     --icon-selected: #FFD90C;
+    /* Measured from the banner at runtime; fallback covers the tallest banner */
+    --banner-height: 88px;
 }
 
 /* ===== BASE ===== */
@@ -103,6 +105,12 @@ body {
     font-style: normal;
     z-index: 100;
     box-sizing: border-box;
+}
+
+/* The definition panel opens beneath the banner, so the banner's tooltip must
+   still paint over the panel. */
+body.definition-open .banner {
+    z-index: 1001;
 }
 
 .banner-home {
@@ -496,10 +504,10 @@ body {
     background-color: #95D3A6;
 }
 
-/* Top-left of the overlay, below the fixed banner (tallest is ~87px) */
+/* Top-left of the overlay, just below the fixed banner */
 .loading-back-btn {
     position: absolute;
-    top: 96px;
+    top: calc(var(--banner-height) + 8px);
     left: clamp(15px, 4vw, 25px);
     width: clamp(50px, 12vw, 70px);
     height: clamp(50px, 12vw, 70px);
@@ -775,16 +783,17 @@ body {
 
 /* ===== DEFINITION MODAL ===== */
 
+/* Sits below the banner so the header (language button, Userway widget) stays usable */
 .modal {
     display: none;
     position: fixed;
     left: 0px;
-    top: 0;
+    top: var(--banner-height);
     width: 100%;
     max-width: 100%;
     padding: clamp(15px, 4vw, 25px);
     background-color: #D8E1D9;
-    height: 100%;
+    height: calc(100% - var(--banner-height));
     font-size: 2rem; /* Fallback for older browsers */
     font-size: clamp(1.2rem, 5vw, 3.2rem); /* Match main text sizing exactly */
     line-height: 1.6; /* Match main text line-height exactly */
@@ -794,7 +803,7 @@ body {
 }
 
 .modal h2 {
-    margin-top: clamp(20px, 5vw, 40px);
+    margin-top: 0;
     margin-bottom: clamp(15px, 4vw, 25px);
     font-size: clamp(1.8rem, 7vw, 4rem); /* Consistent heading scaling */
 }
@@ -953,7 +962,8 @@ body {
 .modal-speech-controls button:hover .control-tooltip,
 #speech-controls .speed-display:hover > .control-tooltip,
 .modal-speech-controls .speed-display:hover > .control-tooltip,
-.close-btn:hover .control-tooltip {
+.close-btn:hover .control-tooltip,
+.close-btn:focus-visible .control-tooltip {
     opacity: 1;
     visibility: visible;
 }
@@ -1073,13 +1083,11 @@ body {
 }
 
 .close-btn {
-    margin: clamp(12px, 3vw, 20px);
-    top: 58px; /* Lowered to clear Userway accessibility widget */
+    margin: clamp(12px, 2.5vw, 24px);
+    top: var(--banner-height); /* Top of the panel, just under the banner */
     right: 0;
-    width: clamp(50px, 12vw, 70px);
-    height: clamp(50px, 12vw, 70px);
-    min-width: 44px;
-    min-height: 44px;
+    width: 60px;
+    height: 60px;
     padding: 0;
     border: none;
     background: transparent;
@@ -1089,9 +1097,18 @@ body {
     color: var(--icon-unselected);
 }
 
+/*
+ * :focus-visible, not :focus — the panel focuses this button on open, which
+ * would otherwise leave it permanently selected after a mouse click.
+ */
 .close-btn:hover,
-.close-btn:focus {
+.close-btn:focus-visible {
     color: var(--icon-selected);
+}
+
+.close-btn:focus-visible {
+    outline: 3px solid #2E6F40;
+    outline-offset: 2px;
 }
 
 #newFileBtn,
@@ -1189,15 +1206,16 @@ body {
 
     .language-selector {
         min-height: 64px;
-        padding: clamp(16px, 3.5vw, 20px) 0;
+        /* Tight enough that a full-size pill still fits inside the green bar */
+        padding: clamp(12px, 2.5vw, 16px) 0;
         /* Keep same gap from Userway as desktop (right: 80px) */
         right: 80px;
     }
 
     .language-btn {
-        min-height: 32px;
-        padding: 6px 14px;
-        font-size: 0.95rem;
+        min-height: 40px;
+        padding: 8px clamp(16px, 4vw, 20px);
+        font-size: 1.05rem;
     }
     
     .drop-area {
@@ -1222,37 +1240,6 @@ body {
     #text-display {
         margin-top: max(1.5rem, 5vh); /* Ensure readable spacing on small screens */
     }
-
-    .loading-back-btn {
-        top: 80px; /* Banner is shorter here than in the 640-768px band */
-    }
-}
-
-/* Narrowest phones: the banner title wraps to two lines, so it is taller */
-@media screen and (max-width: 359px) {
-    .loading-back-btn {
-        top: 104px;
-    }
-}
-
-/* Medium phones and small tablets - use base responsive design */
-@media screen and (min-width: 481px) and (max-width: 768px) {
-    /* Base responsive design handles this range perfectly */
-}
-
-/* Tablets - use base responsive design */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-    /* Base responsive design handles this range perfectly */
-}
-
-/* Large tablets and small desktops - use base responsive design */
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-    /* Base responsive design handles this range perfectly */
-}
-
-/* Large screens - use base responsive design */
-@media screen and (min-width: 1441px) {
-    /* Base responsive design handles this range perfectly */
 }
 
 /* iPad and iPad Pro specific optimizations */
