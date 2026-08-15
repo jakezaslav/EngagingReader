@@ -193,6 +193,26 @@ function closeLanguageDropdown() {
     if (languageBtn) languageBtn.setAttribute('aria-expanded', 'false');
 }
 
+const TRANSLATE_FILE_STORAGE_KEY = 'translateFile';
+
+function setupTranslateToggle() {
+    const toggle = document.getElementById('translateFileToggle');
+    if (!toggle) return;
+
+    try {
+        const stored = localStorage.getItem(TRANSLATE_FILE_STORAGE_KEY);
+        if (stored === 'true' || stored === 'false') {
+            toggle.checked = stored === 'true';
+        }
+    } catch (e) { /* ignore */ }
+
+    toggle.addEventListener('change', function() {
+        try {
+            localStorage.setItem(TRANSLATE_FILE_STORAGE_KEY, toggle.checked ? 'true' : 'false');
+        } catch (e) { /* ignore */ }
+    });
+}
+
 /*
  * The banner is fixed and its height changes with the viewport, the user's font
  * size and title wrapping, so anything positioned under it reads the measured
@@ -281,6 +301,7 @@ function announceError(message) {
   ER.setupSpeedControl = setupSpeedControl;
   ER.setupLanguageSelector = setupLanguageSelector;
   ER.closeLanguageDropdown = closeLanguageDropdown;
+  ER.setupTranslateToggle = setupTranslateToggle;
   ER.trackBannerHeight = trackBannerHeight;
   ER.clearUploadError = clearUploadError;
   ER.showUploadError = showUploadError;
