@@ -16,6 +16,7 @@ body {
     align-items: center;
     flex-direction: column;
     background-color: #E5EAE5;
+    color: #050505;
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
@@ -95,7 +96,7 @@ body {
     align-items: center;
     background-color: #2E6F40;
     margin-top: 0;
-    color: white;
+    color: #F1F3F0;
     font-size: 2rem; /* Fallback for older browsers */
     font-size: clamp(1.5rem, 6vw, 2.4rem); /* Optimized scaling from mobile to desktop, respects user font preferences */
     font-weight: 700;
@@ -179,7 +180,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #45535B;
-    color: #FFFFFF;
+    color: #F1F3F0;
     font-family: "Atkinson Hyperlegible", sans-serif;
     font-size: clamp(1rem, 2.5vw, 1.25rem);
     font-weight: 700;
@@ -230,7 +231,7 @@ body {
     font-family: "Atkinson Hyperlegible", sans-serif;
     font-size: clamp(1rem, 2.5vw, 1.2rem);
     font-weight: 700;
-    color: #FFFFFF;
+    color: #F1F3F0;
     background: transparent;
     border: none;
     text-align: center;
@@ -283,9 +284,39 @@ body {
     box-sizing: border-box;
 }
 
+.upload-error {
+    margin-top: clamp(15px, 3vw, 25px);
+    background-color: #E3F0E5;
+    border: 4px solid var(--icon-selected, #FFD90C);
+    border-radius: 10px;
+    padding: clamp(10px, 2vw, 18px);
+    max-width: 90%;
+    text-align: center;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.upload-error-title {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: #050505;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 clamp(6px, 1.5vw, 5px) 0;
+    line-height: 1.3;
+}
+
+.upload-error-detail {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: #050505;
+    font-weight: 400;
+    text-align: center;
+    margin: 0;
+    line-height: 1.1;
+}
+
 .disclaimer-line-bold {
     font-size: clamp(1rem, 2.5vw, 1.4rem);
-    color: black;
+    color: #050505;
     font-weight: 700;
     text-align: center;
     margin: 0 0 clamp(6px, 1.5vw, 5px) 0;
@@ -294,7 +325,7 @@ body {
 
 .disclaimer-line-regular {
     font-size: clamp(1rem, 2.5vw, 1.4rem);
-    color: black;
+    color: #050505;
     font-weight: 400;
     text-align: center;
     margin: 0;
@@ -411,7 +442,7 @@ body {
     left: 2px;
     width: 26px;
     height: 26px;
-    background-color: #fff;
+    background-color: #F1F3F0;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease;
@@ -433,7 +464,7 @@ body {
 .translate-toggle-label {
     font-size: clamp(1.1rem, 2.5vw, 1.35rem);
     font-weight: 700;
-    color: #000;
+    color: #050505;
 }
 
 /* ===== LOADING ===== */
@@ -450,6 +481,87 @@ body {
     flex-direction: column;
     align-items: center;
     z-index: 1000;
+}
+
+#loading-overlay .loading-status {
+    max-width: min(90vw, 22rem);
+    box-sizing: border-box;
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+    cursor: default;
+}
+
+#loading-overlay .loading-status:hover {
+    background-color: #95D3A6;
+}
+
+/* Top-left of the overlay, below the fixed banner (tallest is ~87px) */
+.loading-back-btn {
+    position: absolute;
+    top: 96px;
+    left: clamp(15px, 4vw, 25px);
+    width: clamp(50px, 12vw, 70px);
+    height: clamp(50px, 12vw, 70px);
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    color: var(--icon-unselected);
+}
+
+.loading-back-btn:hover,
+.loading-back-btn:focus-visible {
+    color: var(--icon-selected);
+}
+
+.loading-back-btn:focus-visible {
+    outline: 3px solid #2E6F40;
+    outline-offset: 2px;
+}
+
+.loading-back-btn:hover .control-tooltip,
+.loading-back-btn:focus-visible .control-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/*
+ * Tip sits below the button (banner is above) and is left-anchored so long
+ * locales wrap instead of running off the left edge on narrow screens.
+ */
+.loading-back-btn .control-tooltip {
+    bottom: auto;
+    top: calc(100% + 10px);
+    left: 0;
+    transform: none;
+    width: max-content;
+    max-width: min(70vw, 18rem);
+    white-space: normal;
+    text-align: left;
+}
+
+.loading-back-btn .control-tooltip::after {
+    top: auto;
+    bottom: 100%;
+    left: clamp(25px, 6vw, 35px);
+    border-top: none;
+    border-bottom: 8px solid #45535B;
+}
+
+.loading-reassurance {
+    margin-top: clamp(12px, 2vw, 20px);
+    max-width: min(90vw, 22rem);
+    padding: 0 1rem;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: #050505;
 }
 
 .loader2 {
@@ -593,7 +705,7 @@ body {
     outline: 3px solid #2E6F40 !important;
     outline-offset: 2px;
     /* Make the outline more prominent when both states are active */
-    box-shadow: 0 0 0 1px white, 0 0 0 4px #2E6F40;
+    box-shadow: 0 0 0 1px #F1F3F0, 0 0 0 4px #2E6F40;
 }
 
 .word-line {
@@ -718,7 +830,7 @@ body {
     outline: 3px solid #2E6F40 !important;
     outline-offset: 2px;
     /* Make the outline more prominent when both states are active */
-    box-shadow: 0 0 0 1px white, 0 0 0 4px #2E6F40;
+    box-shadow: 0 0 0 1px #F1F3F0, 0 0 0 4px #2E6F40;
 }
 
 .definition-current-word {
@@ -1040,7 +1152,7 @@ body {
 
 #status {
     font-size: 1rem;
-    color: white;
+    color: #F1F3F0;
     margin-top: 10px;
     opacity: 0;
     visibility: none;
@@ -1109,6 +1221,17 @@ body {
     
     #text-display {
         margin-top: max(1.5rem, 5vh); /* Ensure readable spacing on small screens */
+    }
+
+    .loading-back-btn {
+        top: 80px; /* Banner is shorter here than in the 640-768px band */
+    }
+}
+
+/* Narrowest phones: the banner title wraps to two lines, so it is taller */
+@media screen and (max-width: 359px) {
+    .loading-back-btn {
+        top: 104px;
     }
 }
 

@@ -37,11 +37,19 @@ function handleGlobalKeydown(event) {
         return;
     }
 
-    // Handle Escape key to close modal
+    // Handle Escape key to close modal or clear upload error
     if (event.code === 'Escape') {
         if (modalIsOpen) {
             event.preventDefault();
             ER.closeDefinitionModal();
+            return;
+        }
+        const uploadError = document.getElementById('upload-error');
+        if (uploadError && !uploadError.hidden) {
+            event.preventDefault();
+            ER.clearUploadError();
+            const uploadLabel = document.querySelector('#drop-area label[for="fileInput"]');
+            if (uploadLabel) uploadLabel.focus();
         }
         return;
     }

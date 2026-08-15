@@ -200,8 +200,51 @@ function setLanguageSelectorVisible(visible) {
     selector.style.display = visible ? '' : 'none';
 }
 
-function showError(message) {
-    ER.state.outputDiv.innerHTML = `<div style="color: #d32f2f; margin-top: -110px; font-size: 24pt; line-height: 1.1;">${message}</div>`;
+function clearUploadError() {
+    const errorEl = document.getElementById('upload-error');
+    if (!errorEl) return;
+
+    const titleEl = errorEl.querySelector('.upload-error-title');
+    const detailEl = errorEl.querySelector('.upload-error-detail');
+    if (titleEl) titleEl.textContent = '';
+    if (detailEl) detailEl.textContent = '';
+    errorEl.hidden = true;
+
+    const fileInput = ER.state.fileInput;
+    if (fileInput) {
+        fileInput.setAttribute('aria-describedby', 'upload-hint');
+    }
+
+    const liveRegion = document.getElementById('upload-errors');
+    if (liveRegion) liveRegion.textContent = '';
+}
+
+function showUploadError(category) {
+    const title = t('errors.' + category + '.title');
+    const detail = t('errors.' + category + '.detail');
+    const message = title + '. ' + detail;
+
+    const errorEl = document.getElementById('upload-error');
+    if (errorEl) {
+        const titleEl = errorEl.querySelector('.upload-error-title');
+        const detailEl = errorEl.querySelector('.upload-error-detail');
+        if (titleEl) titleEl.textContent = title;
+        if (detailEl) detailEl.textContent = detail;
+        errorEl.hidden = false;
+        errorEl.focus();
+    }
+
+    if (ER.state.outputDiv) {
+        ER.state.outputDiv.innerHTML = '';
+    }
+
+    const fileInput = ER.state.fileInput;
+    if (fileInput) {
+        fileInput.value = '';
+        fileInput.setAttribute('aria-describedby', 'upload-hint upload-error');
+    }
+
+    announceError(message);
 }
 
 function announceStatus(message) {
@@ -223,7 +266,8 @@ function announceError(message) {
   ER.setupLanguageSelector = setupLanguageSelector;
   ER.closeLanguageDropdown = closeLanguageDropdown;
   ER.setLanguageSelectorVisible = setLanguageSelectorVisible;
-  ER.showError = showError;
+  ER.clearUploadError = clearUploadError;
+  ER.showUploadError = showUploadError;
   ER.announceStatus = announceStatus;
   ER.announceError = announceError;
 })(window.ER);

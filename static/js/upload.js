@@ -1,9 +1,49 @@
 window.ER = window.ER || {};
 (function (ER) {
 'use strict';
+
+let stillLoadingAnnounced = false;
+
+function resetLoadingCopy() {
+    const statusEl = document.getElementById('loading-status');
+    const reassuranceEl = document.getElementById('loading-reassurance');
+    if (statusEl) {
+        statusEl.textContent = t('status.loading');
+        statusEl.setAttribute('data-i18n', 'status.loading');
+    }
+    if (reassuranceEl) {
+        reassuranceEl.hidden = true;
+        reassuranceEl.textContent = t('status.canTakeAMinute');
+    }
+    stillLoadingAnnounced = false;
+}
+
+function showStillLoading() {
+    if (stillLoadingAnnounced) return;
+    stillLoadingAnnounced = true;
+
+    const statusEl = document.getElementById('loading-status');
+    const reassuranceEl = document.getElementById('loading-reassurance');
+    if (statusEl) {
+        statusEl.textContent = t('status.stillLoading');
+        statusEl.setAttribute('data-i18n', 'status.stillLoading');
+    }
+    if (reassuranceEl) {
+        reassuranceEl.textContent = t('status.canTakeAMinute');
+        reassuranceEl.hidden = false;
+    }
+    ER.announceStatus(t('status.stillLoading') + '. ' + t('status.canTakeAMinute'));
+}
+
 function setLoadingState(isLoading) {
     ER.state.loadingOverlay.style.display = isLoading ? 'flex' : 'none';
     ER.state.loadingOverlay.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+
+    if (isLoading) {
+        resetLoadingCopy();
+    } else {
+        resetLoadingCopy();
+    }
 
     const main = document.querySelector('main');
     if (main) {
@@ -12,13 +52,23 @@ function setLoadingState(isLoading) {
     }
 }
 
+function isNetworkError(error) {
+    if (!error) return false;
+    if (error.name === 'TypeError') return true;
+    const message = String(error.message || '').toLowerCase();
+    return message.includes('failed to fetch') ||
+        message.includes('networkerror') ||
+        message.includes('network request failed') ||
+        message.includes('load failed');
+}
+
 async function uploadImage() {
     // Hide speech controls when starting new upload
     document.getElementById('speech-controls').style.display = 'none';
-    
+    ER.clearUploadError();
+
     if (!ER.state.fileInput.files.length) {
-        ER.showError(t('errors.selectFileVisible'));
-        ER.announceError(t('errors.selectFile'));
+        ER.showUploadError('noFile');
         return;
     }
 
@@ -27,22 +77,25 @@ async function uploadImage() {
     // Validate file type - support images and PDFs
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp', 'application/pdf'];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.heic', '.heif', '.webp', '.pdf'];
-    
+
     // Check both MIME type and file extension (HEIC files might not have proper MIME type on all browsers)
     const fileName = file.name.toLowerCase();
     const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
-    
+
     if (!allowedTypes.includes(file.type) && !hasValidExtension) {
-        ER.showError(t('errors.invalidTypeVisible'));
-        ER.announceError(t('errors.invalidType'));
+        ER.showUploadError('invalidType');
         return;
     }
 
     // Check file size (50MB limit - generous for high-quality documents)
     const maxSize = 50 * 1024 * 1024; // 50MB in bytes
     if (file.size > maxSize) {
-        ER.showError(t('errors.fileTooLargeVisible'));
-        ER.announceError(t('errors.fileTooLarge'));
+        ER.showUploadError('fileTooLarge');
+        return;
+    }
+
+    if (file.size === 0) {
+        ER.showUploadError('fileEmpty');
         return;
     }
 
@@ -68,36 +121,76 @@ async function uploadImage() {
             body: formData
         });
 
-        const data = await response.json();
+        let data;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            console.error("Upload response parse error:", parseError);
+            setLoadingState(false);
+            ER.showUploadError('processFailed');
+            document.getElementById('speech-controls').style.display = 'none';
+            return;
+        }
 
         if (!response.ok) {
-            throw new Error(data.error || t('errors.uploadFailed'));
+            console.error("Upload failed:", data && data.error);
+            setLoadingState(false);
+            ER.showUploadError('processFailed');
+            document.getElementById('speech-controls').style.display = 'none';
+            return;
         }
 
         // Get job ID and poll for results
         if (!data.job_id) {
-            throw new Error("Server did not return a job ID. Please try again.");
+            console.error("Server did not return a job ID.");
+            setLoadingState(false);
+            ER.showUploadError('processFailed');
+            document.getElementById('speech-controls').style.display = 'none';
+            return;
         }
 
         const jobId = data.job_id;
         let pollAttempts = 0;
         const maxPollAttempts = 300; // 5 minutes max (300 * 1 second)
         const pollInterval = 1000; // Poll every 1 second
+        const stillLoadingAfter = 20;
 
         const pollForResults = async () => {
             try {
                 const statusResponse = await fetch(`/status/${jobId}`);
-                const statusData = await statusResponse.json();
-                
-                if (!statusResponse.ok) {
-                    throw new Error(statusData.error || t('errors.statusCheckFailed'));
+                let statusData;
+                try {
+                    statusData = await statusResponse.json();
+                } catch (parseError) {
+                    console.error("Status response parse error:", parseError);
+                    setLoadingState(false);
+                    ER.showUploadError('processFailed');
+                    document.getElementById('speech-controls').style.display = 'none';
+                    return;
                 }
-                
+
+                if (!statusResponse.ok) {
+                    console.error("Status check failed:", statusData && statusData.error);
+                    setLoadingState(false);
+                    ER.showUploadError('processFailed');
+                    document.getElementById('speech-controls').style.display = 'none';
+                    return;
+                }
+
                 if (statusData.status === "completed") {
+                    const markdown = (statusData.result && statusData.result.markdown) || "";
+                    if (!markdown.trim()) {
+                        console.error("OCR completed with empty markdown");
+                        setLoadingState(false);
+                        ER.showUploadError('noText');
+                        document.getElementById('speech-controls').style.display = 'none';
+                        return;
+                    }
+
                     // Processing complete, render the markdown
-                    const dirtyHtml = marked.parse(statusData.result.markdown || "");
+                    const dirtyHtml = marked.parse(markdown);
                     const cleanHtml = DOMPurify.sanitize(dirtyHtml);
-                    
+
                     ER.state.outputDiv.innerHTML = cleanHtml;
 
                     // Voice follows OCR output language: translated files are in the UI
@@ -114,7 +207,7 @@ async function uploadImage() {
 
                     ER.wrapWordsInSpans(ER.state.outputDiv);
                     ER.initializeWordNavigation();
-                    
+
                     // Enable play button and store the current text
                     ER.state.currentText = cleanHtml;
 
@@ -126,7 +219,7 @@ async function uploadImage() {
                             console.error('Error preloading document voice:', err);
                         });
                     }
-                    
+
                     // Set initial button states (not playing)
                     ER.updateButtonStates(false);
 
@@ -135,29 +228,39 @@ async function uploadImage() {
 
                     // Hide upload container and show content
                     document.getElementById('upload-container').style.display = 'none';
-                    
+
                     setLoadingState(false);
                     ER.announceStatus(t('status.extracted'));
                 } else if (statusData.status === "failed") {
-                    throw new Error(statusData.error || "Processing failed");
+                    console.error("Processing failed:", statusData.error);
+                    setLoadingState(false);
+                    ER.showUploadError('processFailed');
+                    document.getElementById('speech-controls').style.display = 'none';
                 } else if (statusData.status === "processing") {
                     // Still processing, poll again
                     pollAttempts++;
+                    if (pollAttempts === stillLoadingAfter) {
+                        showStillLoading();
+                    }
                     if (pollAttempts >= maxPollAttempts) {
-                        throw new Error("Processing timed out. Please try again.");
+                        console.error("Processing timed out after", maxPollAttempts, "seconds");
+                        setLoadingState(false);
+                        ER.showUploadError('timeout');
+                        document.getElementById('speech-controls').style.display = 'none';
+                        return;
                     }
                     setTimeout(pollForResults, pollInterval);
                 } else {
                     // Unexpected status - log and treat as error
                     console.error("Unexpected job status:", statusData.status);
-                    throw new Error("Unexpected processing status. Please try again.");
+                    setLoadingState(false);
+                    ER.showUploadError('processFailed');
+                    document.getElementById('speech-controls').style.display = 'none';
                 }
             } catch (error) {
                 console.error("Error polling for results:", error);
                 setLoadingState(false);
-                ER.showError(error.message);
-                ER.announceError(t('errors.processFailed'));
-                // Keep speech controls hidden on error
+                ER.showUploadError(isNetworkError(error) ? 'network' : 'processFailed');
                 document.getElementById('speech-controls').style.display = 'none';
             }
         };
@@ -166,11 +269,10 @@ async function uploadImage() {
         pollForResults();
 
     } catch (error) {
-        ER.showError(error.message);
-        ER.announceError(t('errors.processFailed'));
-        // Keep speech controls hidden on error
-        document.getElementById('speech-controls').style.display = 'none';
+        console.error("Upload error:", error);
         setLoadingState(false);
+        ER.showUploadError(isNetworkError(error) ? 'network' : 'processFailed');
+        document.getElementById('speech-controls').style.display = 'none';
     }
 }
   ER.uploadImage = uploadImage;

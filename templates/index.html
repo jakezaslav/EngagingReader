@@ -9,7 +9,7 @@
     <meta name="keywords" content="{{ site_keywords }}">
     <meta name="author" content="{{ site_name }}">
     <meta name="application-name" content="{{ site_name }}">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#F1F3F0">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ site_url }}/">
 
@@ -107,9 +107,13 @@
         <div id="upload-container">
         <div id="drop-area" class="drop-area">
             <img src="/static/assets/upload.svg" alt="">
-            <label for="fileInput" class="labBtn" data-i18n="upload.label">Upload File</label>
+            <label for="fileInput" class="labBtn" data-i18n="upload.label" tabindex="-1">Upload File</label>
             <span id="upload-hint" class="sr-only" data-i18n="upload.ariaLabel">Choose a file or drag and drop it here. Supported: Images and PDF files up to 50MB.</span>
             <input type="file" id="fileInput" aria-describedby="upload-hint" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
+        </div>
+        <div id="upload-error" class="upload-error" role="alert" tabindex="-1" hidden>
+            <p class="upload-error-title"></p>
+            <p class="upload-error-detail"></p>
         </div>
         <div class="translate-toggle-row">
             <label class="translate-toggle" for="translateFileToggle">
@@ -134,7 +138,15 @@
     <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
         <p class="banner" data-i18n="app.title">Engaging Reader</p>
         <div class="loader2"></div>
-        <label class="labBtn" data-i18n="status.loading">Loading</label>
+        <p id="loading-status" class="labBtn loading-status" data-i18n="status.loading">Loading</p>
+        <p id="loading-reassurance" class="loading-reassurance" hidden data-i18n="status.canTakeAMinute">This can take up to a minute.</p>
+        <button id="loadingBackBtn" class="loading-back-btn" type="button" onclick="window.location.reload();" data-i18n-aria="app.returnHome" aria-label="Return to Home Screen">
+            <span class="control-tooltip" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
+            <svg class="control-icon" viewBox="20 20 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="70" cy="70" r="50" fill="#45535B"/>
+                <path class="icon-fg" d="M51.6855 44.502H51.6846C50.6902 44.5317 49.7447 44.9403 49.042 45.6436L34.6416 60.0439C33.9107 60.7753 33.5 61.7669 33.5 62.8008C33.5 63.8349 33.9105 64.8272 34.6416 65.5586H34.6426L49.042 79.958C49.7734 80.6893 50.7656 81.1006 51.7998 81.1006C52.7692 81.1005 53.7017 80.7394 54.417 80.0918L54.5566 79.958C55.2879 79.2266 55.6992 78.2344 55.6992 77.2002C55.6991 76.1661 55.2878 75.1746 54.5566 74.4434L46.8154 66.7012H85.3984C91.2257 66.7012 95.8983 71.373 95.8984 77.2002C95.8984 83.0275 91.2258 87.7002 85.3984 87.7002H70.999C69.9647 87.7002 68.9726 88.1114 68.2412 88.8428C67.5101 89.574 67.0988 90.5656 67.0986 91.5996C67.0986 92.6338 67.51 93.6261 68.2412 94.3574C68.9726 95.0888 69.9647 95.5 70.999 95.5H85.3984C95.4765 95.5 103.698 87.2782 103.698 77.2002C103.698 67.1222 95.4764 58.9004 85.3984 58.9004H46.8154L54.5566 51.1582C55.2878 50.4269 55.6991 49.4354 55.6992 48.4014C55.6992 47.3671 55.2879 46.3749 54.5566 45.6436C54.1814 45.268 53.7336 44.9727 53.2402 44.7764C52.7464 44.5799 52.2168 44.4867 51.6855 44.502Z"/>
+            </svg>
+        </button>
     </div>
 
     <div id="speech-controls" style="left: 50%;transform: translate(-50%, -50%);">
