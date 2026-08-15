@@ -851,14 +851,16 @@ body.definition-open .banner {
 
 .modal-speech-controls {
     position: fixed;
-    bottom: clamp(40px, 8vw, 70px);
+    --controls-bottom: clamp(40px, 8vw, 70px);
+    --controls-padding: clamp(8px, 2vw, 12px);
+    bottom: var(--controls-bottom);
     left: 50%;
     -webkit-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
     display: flex;
-    gap: clamp(8px, 2vw, 12px);
-    padding: clamp(8px, 2vw, 12px);
+    gap: var(--controls-padding);
+    padding: var(--controls-padding);
     box-shadow: 0 9px #2E6F40;
     background-color: #95D3A6;
     border: solid black 1px;
@@ -902,19 +904,23 @@ body.definition-open .banner {
 
 #speech-controls {
     position: fixed;
-    bottom: clamp(15px, 4vw, 25px);
+    --controls-bottom: clamp(15px, 4vw, 25px);
+    --controls-padding: clamp(8px, 2vw, 12px);
+    bottom: var(--controls-bottom);
     left: 50%;
     -webkit-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
     display: none;
-    gap: clamp(8px, 2vw, 12px);
-    padding: clamp(8px, 2vw, 12px);
+    gap: var(--controls-padding);
+    padding: var(--controls-padding);
     box-shadow: 0 9px #2E6F40;
     background-color: #95D3A6;
     border: solid black 1px;
     border-radius: 30px;
     overflow: visible;
+    /* Above the banner so the speed menu isn't covered, below the definition panel */
+    z-index: 200;
 }
 
 #speech-controls button {
@@ -1017,40 +1023,84 @@ body.definition-open .banner {
 }
 
 .speed-dropdown {
+    /* Clears the whole control bar, not just the pill, with a few px to spare */
+    --dropdown-gap: calc(var(--controls-padding, 12px) + 6px);
+    /* Height of the pill the menu opens from */
+    --control-size: clamp(50px, 12vw, 70px);
     display: none;
     position: absolute;
-    bottom: calc(100% + 10px);
+    bottom: calc(100% + var(--dropdown-gap));
     left: 50%;
     transform: translateX(-50%);
     background-color: #45535B;
-    border-radius: 15px;
-    padding: clamp(12px, 3vw, 18px);
+    border-radius: 12px;
+    padding: 6px 8px;
+    /* Sized to the widest row, so nothing overflows sideways */
+    width: max-content;
     min-width: 120px;
+    max-width: min(90vw, 15rem);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    /*
+     * The menu grows upward, so on short viewports it would otherwise run past
+     * the banner. Keep it inside the space between the banner and the bar and
+     * let the options scroll when they don't all fit.
+     */
+    max-height: calc(100vh - var(--banner-height) - var(--controls-bottom, 25px) - var(--controls-padding, 12px) - var(--control-size) - var(--dropdown-gap) - 4px);
+    max-height: calc(100dvh - var(--banner-height) - var(--controls-bottom, 25px) - var(--controls-padding, 12px) - var(--control-size) - var(--dropdown-gap) - 4px);
+    /* Never scroll sideways, but leave room for a focus ring to paint */
+    overflow-x: clip;
+    overflow-clip-margin: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Always-visible slim scrollbar, so a clipped list is obvious */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(229, 234, 229, 0.55) transparent;
 }
 
 .speed-dropdown.show {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 2vw, 12px);
+    gap: 2px;
 }
 
 .speed-dropdown .speed-option {
-    font-size: clamp(1.5rem, 3vw, 2rem); /* Simple responsive sizing for dropdown options */
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem); /* Simple responsive sizing for dropdown options */
+    line-height: 1.2;
     color: #E5EAE5;
     text-align: center;
-    padding: clamp(6px, 1.5vw, 10px);
+    padding: 2px 8px;
     cursor: pointer;
     border-radius: 8px;
     transition: background-color 0.2s ease, font-weight 0.1s ease;
     font-weight: 400; /* Normal weight by default */
     border: none;
     background: transparent;
-    width: 100%;
+    /*
+     * `auto` + the column's default stretch, rather than `100%`: a percentage
+     * contributes nothing to the panel's max-content width, which left the bold
+     * "Speed" label wider than the panel and pushed off centre by the resulting
+     * horizontal overflow.
+     */
+    width: auto;
     height: auto;
     min-width: 0;
-    min-height: 44px;
+    min-height: 40px;
     font-family: inherit;
+}
+
+/*
+ * The round-button sizing in `#speech-controls button` / `.modal-speech-controls
+ * button` outranks the rule above on specificity, which left the options at a
+ * fixed 70px circle against the left edge of the panel. Re-qualified here so the
+ * rows match the menu's own sizing instead of the control buttons'.
+ */
+#speech-controls .speed-dropdown .speed-option,
+.modal-speech-controls .speed-dropdown .speed-option {
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 40px;
+    border-radius: 8px;
 }
 
 .speed-dropdown .speed-option.speed-label {
