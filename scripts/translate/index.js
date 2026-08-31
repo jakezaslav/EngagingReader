@@ -19,9 +19,36 @@ const path = require('path');
 
 const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh', 'ru', 'ht'];
 const SOURCE_KEY = '__source__';
+const GLOSSARY_REVISION_KEY = '__glossaryRevision';
+/** Bump to force-retranslate GLOSSARY_KEYS (Play/Pause UI sense, placeholders). */
+const GLOSSARY_REVISION = 1;
 
 /** Keys that must stay identical to English (brand names, etc.). */
 const DO_NOT_TRANSLATE = new Set(['app.title']);
+
+/**
+ * Short UI verbs DeepL otherwise glosses as games/dictionary lemmas.
+ * Retranslated whenever GLOSSARY_REVISION increases.
+ */
+const GLOSSARY_KEYS = new Set([
+  'playback.play',
+  'playback.pause',
+  'definition.play',
+  'definition.pause',
+  'definition.close',
+  'define.hover',
+  'status.gettingDefinition',
+]);
+
+const MEDIA_CONTEXT =
+  'This is UI copy for a reading app with text-to-speech. ' +
+  '"Play" and "Pause" are audio playback controls, not games or sports. ' +
+  '"Play definition" means speak the definition aloud. ' +
+  '"Pause definition" means pause that speech. ' +
+  '"Close definition" means dismiss the definition dialog. ' +
+  '"Define" is a control that shows a word\'s meaning.';
+
+const PLACEHOLDER_RE = /\{\{(\w+)\}\}/g;
 
 /** DeepL target codes. Languages omitted here are skipped. */
 const DEEPL_TARGETS = {
@@ -84,7 +111,19 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function translateDeepL(text, target) {
+function placeholderNames(text) {
+  return [...String(text).matchAll(PLACEHOLDER_RE)].map((m) => m[1]).sort();
+}
+
+function wrapPlaceholders(text) {
+  return String(text).replace(PLACEHOLDER_RE, '<ph>{{$1}}</ph>');
+}
+
+function unwrapPlaceholders(text) {
+  return String(text).replace(/<\/?ph>/gi, '');
+}
+
+async function translateDeepL(text, target, options = {}) {
   const key = process.env.DEEPL_API_KEY;
   if (!key) throw new Error('DEEPL_API_KEY is required');
 
@@ -97,10 +136,20 @@ async function translateDeepL(text, target) {
     ? 'https://api-free.deepl.com/v2/translate'
     : 'https://api.deepl.com/v2/translate';
 
+  const expected = placeholderNames(text);
+  const payload = expected.length ? wrapPlaceholders(text) : text;
+
   const params = new URLSearchParams();
-  params.append('text', text);
+  params.append('text', payload);
   params.append('source_lang', 'EN');
   params.append('target_lang', apiTarget);
+  if (expected.length) {
+    params.append('tag_handling', 'xml');
+    params.append('ignore_tags', 'ph');
+  }
+  if (options.context) {
+    params.append('context', options.context);
+  }
 
   const maxAttempts = 6;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -115,7 +164,16 @@ async function translateDeepL(text, target) {
 
     if (res.ok) {
       const data = await res.json();
-      return data.translations[0].text;
+      const translated = unwrapPlaceholders(data.translations[0].text);
+      const got = placeholderNames(translated);
+      if (expected.join(',') !== got.join(',')) {
+        throw new Error(
+          `placeholder mismatch: expected {{${expected.join('}}, {{')}}}, got ${
+            got.length ? `{{${got.join('}}, {{')}}}` : '(none)'
+          }`
+        );
+      }
+      return translated;
     }
 
     const errText = await res.text().catch(() => '');
@@ -135,11 +193,23 @@ function isDeepLUnsupported(lang) {
   return !DEEPL_TARGETS[lang];
 }
 
+function sourceMap(existing) {
+  const source =
+    existing[SOURCE_KEY] && typeof existing[SOURCE_KEY] === 'object'
+      ? existing[SOURCE_KEY]
+      : {};
+  return source;
+}
+
+function glossaryRevision(source) {
+  const value = source[GLOSSARY_REVISION_KEY];
+  return Number.isInteger(value) ? value : 0;
+}
+
 function keysNeedingTranslation(en, existing) {
   const force = process.env.FORCE_I18N_RETRANSLATE === '1';
-  const source = existing[SOURCE_KEY] && typeof existing[SOURCE_KEY] === 'object'
-    ? existing[SOURCE_KEY]
-    : {};
+  const source = sourceMap(existing);
+  const glossaryStale = glossaryRevision(source) < GLOSSARY_REVISION;
   const needed = [];
   for (const [key, value] of Object.entries(en)) {
     if (key === SOURCE_KEY) continue;
@@ -149,7 +219,17 @@ function keysNeedingTranslation(en, existing) {
     }
     const missing = !(key in existing) || existing[key] === '' || existing[key] == null;
     const enChanged = source[key] !== value;
-    if (missing || enChanged) {
+    // persist() must not write __source__ until DeepL (or DO_NOT_TRANSLATE) runs.
+    // Sentence-length English still sitting in the locale with no provenance is
+    // treated as skipped work. Do not flag keys already in __source__: DeepL may
+    // legitimately return English (Tagalog "Pause definition").
+    const copiedEnglish =
+      !DO_NOT_TRANSLATE.has(key) &&
+      existing[key] === value &&
+      !Object.prototype.hasOwnProperty.call(source, key) &&
+      /\s/.test(value);
+    const glossaryRefresh = glossaryStale && GLOSSARY_KEYS.has(key);
+    if (missing || enChanged || copiedEnglish || glossaryRefresh) {
       needed.push(key);
     }
   }
@@ -180,18 +260,24 @@ async function translateLocale(lang, en) {
     return { lang, translated: 0, wrote: false };
   }
 
-  const source = { ...(existing[SOURCE_KEY] || {}) };
+  const source = { ...sourceMap(existing) };
   const next = { ...existing };
   delete next[SOURCE_KEY];
 
   function persist() {
     const ordered = {};
+    const nextSource = { [GLOSSARY_REVISION_KEY]: GLOSSARY_REVISION };
     for (const key of Object.keys(en)) {
       if (key === SOURCE_KEY) continue;
-      ordered[key] = key in next ? next[key] : en[key];
-      if (!(key in source)) source[key] = en[key];
+      ordered[key] = Object.prototype.hasOwnProperty.call(next, key) ? next[key] : en[key];
+      // Only record English provenance for keys we have actually processed.
+      // Untranslated leftovers must not land in __source__, or the next run skips them.
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        nextSource[key] = source[key];
+      }
     }
-    ordered[SOURCE_KEY] = source;
+    ordered[SOURCE_KEY] = nextSource;
+    Object.assign(source, nextSource);
     writeJson(outPath, ordered);
   }
 
@@ -206,7 +292,9 @@ async function translateLocale(lang, en) {
         console.log('kept English');
         continue;
       }
-      const translated = await translateDeepL(enText, lang);
+      const translated = await translateDeepL(enText, lang, {
+        context: GLOSSARY_KEYS.has(key) ? MEDIA_CONTEXT : undefined,
+      });
       next[key] = translated;
       source[key] = enText;
       persist();
@@ -219,6 +307,7 @@ async function translateLocale(lang, en) {
     }
   }
 
+  persist();
   return { lang, translated: needed.length, wrote: true };
 }
 
