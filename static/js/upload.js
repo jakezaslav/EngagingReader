@@ -249,6 +249,12 @@ async function uploadImage() {
                         'lang',
                         ER.resolveContentLang(ER.state.documentLocale)
                     );
+                    ER.state.outputDiv.setAttribute(
+                        'dir',
+                        window.isRtlLocale && window.isRtlLocale(ER.state.documentLocale)
+                            ? 'rtl'
+                            : 'ltr'
+                    );
 
                     ER.wrapWordsInSpans(ER.state.outputDiv);
                     ER.initializeWordNavigation();

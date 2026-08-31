@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh', 'ru', 'ht'];
+const TARGET_LANGS = ['es', 'fr', 'uk', 'fil', 'tr', 'pt', 'pa', 'zh', 'ru', 'ht', 'ar'];
 const SOURCE_KEY = '__source__';
 const GLOSSARY_REVISION_KEY = '__glossaryRevision';
 /** Bump to force-retranslate GLOSSARY_KEYS (Play/Pause UI sense, placeholders). */
@@ -62,6 +62,7 @@ const DEEPL_TARGETS = {
   zh: 'ZH', // Simplified Chinese
   ru: 'RU',
   ht: 'HT', // Haitian Creole
+  ar: 'AR', // Modern Standard Arabic
 };
 
 const I18N_DIR = process.env.I18N_DIR

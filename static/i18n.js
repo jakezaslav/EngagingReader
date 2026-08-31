@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'ru', 'ht', 'zh'];
+    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'ru', 'ht', 'zh', 'ar'];
     var LOCALE_LABELS = {
         en: 'EN',
         es: 'ES',
@@ -13,7 +13,8 @@
         uk: 'UK',
         ru: 'RU',
         ht: 'HT',
-        zh: 'ZH'
+        zh: 'ZH',
+        ar: 'AR'
     };
     var STORAGE_KEY = 'locale';
     var SOURCE_META = '__source__';
@@ -25,6 +26,10 @@
 
     function isSupported(code) {
         return SUPPORTED.indexOf(code) !== -1;
+    }
+
+    function isRtlLocale(code) {
+        return String(code || '').toLowerCase().replace('_', '-').split('-')[0] === 'ar';
     }
 
     function mapBrowserLang(tag) {
@@ -122,6 +127,8 @@
     }
 
     function applyUITranslations() {
+        // Chrome layout stays LTR for every locale; only document content
+        // follows the reading direction of its own language.
         document.documentElement.lang = currentLocale;
 
         document.querySelectorAll('[data-i18n]').forEach(function (el) {
@@ -190,6 +197,23 @@
 
         return loadLocale(code).then(function () {
             applyUITranslations();
+
+            // A translated document follows the selected UI language. Keep its
+            // direction and language isolated from the surrounding chrome.
+            var toggle = document.getElementById('translateFileToggle');
+            var reader = document.getElementById('text-display');
+            if (
+                toggle && toggle.checked &&
+                reader && reader.textContent.trim() &&
+                window.ER && window.ER.state
+            ) {
+                window.ER.state.documentLocale = currentLocale;
+                reader.setAttribute('dir', isRtlLocale(currentLocale) ? 'rtl' : 'ltr');
+                var contentLang = window.ER.resolveContentLang
+                    ? window.ER.resolveContentLang(currentLocale)
+                    : currentLocale;
+                reader.setAttribute('lang', contentLang);
+            }
         });
     }
 
@@ -208,7 +232,8 @@
         uk: 'Ukrainian',
         ru: 'Russian',
         ht: 'Haitian Creole',
-        zh: 'Chinese'
+        zh: 'Chinese',
+        ar: 'Arabic'
     };
 
     function localeToLanguageName(code) {
@@ -220,6 +245,7 @@
     window.applyUITranslations = applyUITranslations;
     window.getLocale = getLocale;
     window.localeToLanguageName = localeToLanguageName;
+    window.isRtlLocale = isRtlLocale;
     window.__SUPPORTED_LOCALES = SUPPORTED.slice();
     window.__LOCALE_LABELS = Object.assign({}, LOCALE_LABELS);
 

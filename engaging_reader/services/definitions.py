@@ -26,7 +26,7 @@ USER_LANGUAGE:
 **Instructions:** 
 1. Your primary task is to define the word provided in the \"WORD TO DEFINE\" field. You must only define this word. 
 2. Write your entire response in the language specified in the \"USER_LANGUAGE\" field. 
-3. You must start your response using the original English word from the \"WORD TO DEFINE\" field (e.g., if the word is 'Apple' and the set language is Spanish, start with \"'Apple' significa...\"). 
+3. Start your response using the original WORD TO DEFINE, unchanged (e.g., if the word is 'Apple' and the set language is Spanish, start with \"'Apple' significa...\").
 4. Use the \"CONTEXT SENTENCE\" field only to understand the word's meaning. Do not define other words from the context. 
 5. Write at a 4th-7th grade reading level for the target language. Keep sentences short and use everyday language. 
 6. If the word is a common grammatical word (like 'with', 'the', 'a', 'is', 'of'), explain the job it does in the sentence instead of giving a dictionary definition. 

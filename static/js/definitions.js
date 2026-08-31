@@ -106,6 +106,12 @@ function showDefinitionModal(word, content) {
     ER.state.definitionWord.textContent = word;
 
     const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
+    // The heading belongs to the definition, not the surrounding chrome, so it
+    // follows the language the definition is written in.
+    ER.state.definitionWord.setAttribute(
+        'dir',
+        typeof window.isRtlLocale === 'function' && window.isRtlLocale(locale) ? 'rtl' : 'ltr'
+    );
     ER.state.definitionContent.replaceChildren();
     ER.state.definitionContent.setAttribute('lang', ER.resolveContentLang(locale));
 

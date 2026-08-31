@@ -52,7 +52,7 @@
       },
       "featureList": {{ site_features | list | tojson }},
       "keywords": {{ site_keywords | tojson }},
-      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "ru", "ht", "zh"],
+      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "ru", "ht", "zh", "ar"],
       "image": {{ og_image_url | tojson }},
       "screenshot": {{ og_image_url | tojson }}
     }
@@ -63,7 +63,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Naskh+Arabic:wght@400;700&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
@@ -89,16 +89,17 @@
         </button>
         <div id="languageDropdown" class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
             <div class="language-option language-label" data-i18n="lang.menu">Language</div>
+            <button type="button" class="language-option" data-lang="ar" role="option">AR</button>
             <button type="button" class="language-option" data-lang="en" role="option">EN</button>
             <button type="button" class="language-option" data-lang="es" role="option">ES</button>
-            <button type="button" class="language-option" data-lang="fr" role="option">FR</button>
             <button type="button" class="language-option" data-lang="fil" role="option">FIL</button>
-            <button type="button" class="language-option" data-lang="pt" role="option">PT</button>
+            <button type="button" class="language-option" data-lang="fr" role="option">FR</button>
+            <button type="button" class="language-option" data-lang="ht" role="option">HT</button>
             <button type="button" class="language-option" data-lang="pa" role="option">PA</button>
+            <button type="button" class="language-option" data-lang="pt" role="option">PT</button>
+            <button type="button" class="language-option" data-lang="ru" role="option">RU</button>
             <button type="button" class="language-option" data-lang="tr" role="option">TR</button>
             <button type="button" class="language-option" data-lang="uk" role="option">UK</button>
-            <button type="button" class="language-option" data-lang="ru" role="option">RU</button>
-            <button type="button" class="language-option" data-lang="ht" role="option">HT</button>
             <button type="button" class="language-option" data-lang="zh" role="option">ZH</button>
         </div>
     </div>
@@ -194,7 +195,7 @@
     <div id="definitionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="definitionWord">
         <div class="modal-content">
             <h2 id="definitionWord" data-i18n="definition.title">Definition</h2>
-            <div id="definitionTextContent" tabindex="0"></div>
+            <div id="definitionTextContent" tabindex="0" dir="auto"></div>
             <div class="modal-speech-controls">
                 <button id="modalPlayBtn" data-i18n-aria="definition.play" aria-label="Play definition">
                     <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>

@@ -36,8 +36,8 @@ Analyze the uploaded document image and process its content according to the fol
      * Define the footnote immediately below the corresponding table: `[^1]: Footnote text here.`
    - Completeness: Ensure all relevant text, numbers, visual notes, and URLs are fully retained.
 3. LAYOUT & READING ORDER
-   - Two-Page Spreads: If the image contains a two-page book spread, you must process the pages sequentially based on their physical layout.
-   - Process and output the ENTIRE left page first (from top to bottom), followed by the ENTIRE right page (from top to bottom). Do not mix text from the two pages based on horizontal alignment.
+   - Two-Page Spreads & Columns: Process pages or columns sequentially according to the source document's writing direction, regardless of the target translation language.
+   - If the source page is right-to-left (such as Arabic or Hebrew), output the ENTIRE right page/column first (top to bottom), then the ENTIRE left page/column. If the source page is left-to-right, output the ENTIRE left page/column first, then the ENTIRE right page/column. Do not mix text based on horizontal alignment.
 </instructions>
 
 <output_constraint>
@@ -70,8 +70,8 @@ Analyze the uploaded document image and process its content according to the fol
    - Completeness: Ensure all relevant text, numbers, visual notes, and URLs are fully extracted based on the active scenario.
 
 3. LAYOUT & READING ORDER
-   - Two-Page Spreads & Columns: If the image contains a two-page book spread or multiple columns, you must process the content sequentially based on the physical layout.
-   - Order: Process and output the ENTIRE left page/column first (from top to bottom), followed by the ENTIRE right page/column (from top to bottom). Do not mix text from the two pages based on horizontal alignment.
+   - Two-Page Spreads & Columns: Process pages or columns sequentially according to the source document's writing direction.
+   - If the source page is right-to-left (such as Arabic or Hebrew), output the ENTIRE right page/column first (top to bottom), then the ENTIRE left page/column. If the source page is left-to-right, output the ENTIRE left page/column first, then the ENTIRE right page/column. Do not mix text based on horizontal alignment.
 </instructions>
 
 <output_constraint>
