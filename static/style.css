@@ -42,6 +42,18 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/*
+ * A flex item's automatic minimum size is its min-content width, so a single
+ * unwrappable child in the extracted document (a Markdown code block) would
+ * stretch this column far past the viewport. Centred by `align-items`, it then
+ * overhangs both edges, where the body's `overflow-x: hidden` clips every line
+ * of text on the left and the right. Cap the column at the viewport instead.
+ */
+main {
+    min-width: 0;
+    max-width: 100%;
+}
+
 /* Screen reader only content */
 .sr-only {
     position: absolute;
@@ -654,6 +666,25 @@ body.is-loading .language-selector {
     );
 }
 
+/*
+ * OCR output is Markdown, so it can contain code blocks and tables that are far
+ * wider than the reader. Wrap them instead of letting them set the width: this
+ * is a reading surface, not a code viewer, and horizontal scrolling would hide
+ * text from keyboard and screen-reader navigation.
+ */
+#text-display pre,
+#text-display code {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+#text-display pre,
+#text-display table,
+#text-display img {
+    max-width: 100%;
+}
+
 /* ===== TEXT HIERARCHY WITHIN MAIN CONTENT ===== */
 
 /* Main heading within text content */
@@ -727,6 +758,13 @@ body.is-loading .language-selector {
     display: inline;
     padding-inline: 0;
     letter-spacing: 0;
+}
+
+/* Number spans are marked dir="ltr" when wrapped. Isolation normally comes from
+   the UA sheet; state it here so the Arabic display:inline rule above cannot
+   leave digits, dates or phone numbers to reorder with surrounding RTL text. */
+.word[dir="ltr"] {
+    unicode-bidi: isolate;
 }
 
 .word:hover {

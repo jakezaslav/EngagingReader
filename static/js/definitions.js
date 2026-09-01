@@ -136,6 +136,9 @@ function showDefinitionModal(word, content) {
                     span.setAttribute('tabindex', '-1');
                     span.setAttribute('role', 'button');
                     span.setAttribute('aria-label', segment.text);
+                    if (segment.isNumeric) {
+                        span.setAttribute('dir', 'ltr');
+                    }
                     line.appendChild(span);
                 } else if (segment.text) {
                     line.appendChild(document.createTextNode(segment.text));

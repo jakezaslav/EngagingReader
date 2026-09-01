@@ -35,6 +35,7 @@ Analyze the uploaded document image and process its content according to the fol
    - Footnotes: 
      * Mark references in table cells using standard Markdown notation: `1,234,567[^1]`
      * Define the footnote immediately below the corresponding table: `[^1]: Footnote text here.`
+   - Numerals: Output every number in logical left-to-right order, exactly as it is read on the page (`123`, `12.5`, `1,234,567`, `12/3/2024`, `09:30`, `+1-555-0100`). NEVER reverse digits, or reorder the parts of a date, time, decimal, or phone number, even when the surrounding text is right-to-left. Keep the digit set printed on the page (Western `0-9` or Arabic-Indic `٠-٩`); the target language does not change it.
    - Completeness: Ensure all relevant text, numbers, visual notes, and URLs are fully retained.
 3. LAYOUT & READING ORDER
    - Two-Page Spreads & Columns: Process pages or columns sequentially according to the source document's writing direction, regardless of the target translation language.
@@ -68,6 +69,7 @@ Analyze the uploaded document image and process its content according to the fol
    - Footnotes: 
      * Mark references in table cells using standard Markdown notation: `1,234,567[^1]`
      * Define the footnote immediately below the corresponding table: `[^1]: Footnote text here.`
+   - Numerals: Output every number in logical left-to-right order, exactly as it is read on the page (`123`, `12.5`, `1,234,567`, `12/3/2024`, `09:30`, `+1-555-0100`). NEVER reverse digits, or reorder the parts of a date, time, decimal, or phone number, even when the surrounding text is right-to-left. Keep the digit set printed on the page (Western `0-9` or Arabic-Indic `٠-٩`).
    - Completeness: Ensure all relevant text, numbers, visual notes, and URLs are fully extracted based on the active scenario.
 
 3. LAYOUT & READING ORDER

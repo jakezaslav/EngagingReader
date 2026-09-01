@@ -29,6 +29,12 @@ function wrapWordsInSpans(node) {
                 span.setAttribute('role', 'button');
                 span.setAttribute('aria-label', segment.text);
 
+                // dir on the element is a bidi isolate, so digits, dates and
+                // phone numbers keep their logical order inside RTL text.
+                if (segment.isNumeric) {
+                    span.setAttribute('dir', 'ltr');
+                }
+
                 fragment.appendChild(span);
             } else if (segment.text) {
                 // Preserve original separators (spaces, punctuation) — do not invent spaces
