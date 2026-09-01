@@ -106,14 +106,19 @@ function showDefinitionModal(word, content) {
     ER.state.definitionWord.textContent = word;
 
     const locale = typeof window.getLocale === 'function' ? window.getLocale() : 'en';
-    // The heading belongs to the definition, not the surrounding chrome, so it
-    // follows the language the definition is written in.
-    ER.state.definitionWord.setAttribute(
-        'dir',
-        typeof window.isRtlLocale === 'function' && window.isRtlLocale(locale) ? 'rtl' : 'ltr'
+    const documentLocale = ER.state.documentLocale || locale;
+    const dirFor = (code) => (
+        typeof window.isRtlLocale === 'function' && window.isRtlLocale(code) ? 'rtl' : 'ltr'
     );
+
+    // The heading is the selected word, so it follows the document's language.
+    ER.state.definitionWord.setAttribute('dir', dirFor(documentLocale));
     ER.state.definitionContent.replaceChildren();
     ER.state.definitionContent.setAttribute('lang', ER.resolveContentLang(locale));
+    // The definition itself is written in the UI language. Deriving direction
+    // from the text would flip an English definition that opens with the
+    // foreign word it defines.
+    ER.state.definitionContent.setAttribute('dir', dirFor(locale));
 
     // Format the content with word spans for highlighting and keyboard access
     String(content || '').split('\n').forEach((paragraph) => {

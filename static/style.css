@@ -5,11 +5,26 @@
     --icon-selected: #FFD90C;
     /* Measured from the banner at runtime; fallback covers the tallest banner */
     --banner-height: 88px;
+
+    /*
+     * Geometry of the fixed control bars. Text that scrolls beneath them
+     * reserves space from these values, so the two can't drift apart.
+     */
+    --controls-padding: clamp(8px, 2vw, 12px);
+    --controls-size: clamp(50px, 12vw, 70px);
+    /* Buttons, the bar's own padding, and its 1px border */
+    --controls-height: calc(var(--controls-size) + 2 * var(--controls-padding) + 2px);
+    /* Breathing room between the last line of text and the bar */
+    --controls-gap: clamp(12px, 3vw, 24px);
+    --main-controls-bottom: clamp(15px, 4vw, 25px);
 }
 
 /* ===== BASE ===== */
 
 body {
+    /* Atkinson must lead: Noto Naskh Arabic also ships Latin glyphs (a serif design),
+       so putting it first makes Latin text render serif instead of falling through.
+       Atkinson has no Arabic coverage, so Arabic still resolves to Noto per-glyph. */
     font-family: "Atkinson Hyperlegible", "Noto Naskh Arabic", sans-serif;
     padding: 0px clamp(15px, 4vw, 75px); /* Consistent responsive padding */
     margin: 0;
@@ -627,9 +642,16 @@ body.is-loading .language-selector {
     overflow: visible;
 }
 
-#text-display[lang^="ar"],
-#definitionTextContent[lang^="ar"] {
-    font-family: "Noto Naskh Arabic", "Atkinson Hyperlegible", sans-serif;
+/*
+ * Once a document is loaded, the control bar floats over the end of the page.
+ * The markup nudges the bar up half its own height, so clearing it takes one
+ * and a half bar heights above the bar's offset.
+ */
+#text-display:not(:empty) {
+    margin-bottom: 0;
+    padding-bottom: calc(
+        var(--main-controls-bottom) + 1.5 * var(--controls-height) + var(--controls-gap)
+    );
 }
 
 /* ===== TEXT HIERARCHY WITHIN MAIN CONTENT ===== */
@@ -814,7 +836,11 @@ body.is-loading .language-selector {
     top: var(--banner-height);
     width: 100%;
     max-width: 100%;
-    padding: clamp(15px, 4vw, 25px);
+    --modal-padding: clamp(15px, 4vw, 25px);
+    --controls-bottom: clamp(40px, 8vw, 70px);
+    /* Viewport bottom up to the top edge of the control bar */
+    --controls-clearance: calc(var(--controls-bottom) + var(--controls-height));
+    padding: var(--modal-padding);
     background-color: #D8E1D9;
     height: calc(100% - var(--banner-height));
     font-size: 2rem; /* Fallback for older browsers */
@@ -834,7 +860,16 @@ body.is-loading .language-selector {
 .modal-content {
     max-width: clamp(90%, 85vw, 80%);
     margin: 0 auto;
-    padding-bottom: clamp(100px, 15vw, 120px); /* Space for controls */
+    /*
+     * The control bar is fixed to the viewport, so the last lines of a long
+     * definition scroll underneath it unless the full height of the bar is
+     * reserved. The modal's own bottom padding already sits below this box.
+     */
+    padding-bottom: calc(
+        var(--controls-clearance) - var(--modal-padding) + var(--controls-gap)
+    );
+    /* Without this the padding above lands outside the clipped scroll area */
+    box-sizing: border-box;
     max-height: 100%;
     overflow-y: auto;
     overflow-x: visible;
@@ -874,8 +909,6 @@ body.is-loading .language-selector {
 
 .modal-speech-controls {
     position: fixed;
-    --controls-bottom: clamp(40px, 8vw, 70px);
-    --controls-padding: clamp(8px, 2vw, 12px);
     bottom: var(--controls-bottom);
     left: 50%;
     -webkit-transform: translateX(-50%);
@@ -896,8 +929,8 @@ body.is-loading .language-selector {
     position: relative;
     border: none;
     border-radius: 50%;
-    width: clamp(50px, 12vw, 70px);
-    height: clamp(50px, 12vw, 70px);
+    width: var(--controls-size);
+    height: var(--controls-size);
     min-width: 44px; /* Accessibility minimum */
     min-height: 44px;
     padding: 0;
@@ -927,8 +960,7 @@ body.is-loading .language-selector {
 
 #speech-controls {
     position: fixed;
-    --controls-bottom: clamp(15px, 4vw, 25px);
-    --controls-padding: clamp(8px, 2vw, 12px);
+    --controls-bottom: var(--main-controls-bottom);
     bottom: var(--controls-bottom);
     left: 50%;
     -webkit-transform: translateX(-50%);
@@ -950,8 +982,8 @@ body.is-loading .language-selector {
     position: relative;
     border: none;
     border-radius: 50%;
-    width: clamp(50px, 12vw, 70px);
-    height: clamp(50px, 12vw, 70px);
+    width: var(--controls-size);
+    height: var(--controls-size);
     min-width: 44px; /* Accessibility minimum */
     min-height: 44px;
     padding: 0;
@@ -1038,7 +1070,7 @@ body.is-loading .language-selector {
 .modal-speech-controls button.speed-display {
     border-radius: 50px;
     width: clamp(100px, 20vw, 140px);
-    height: clamp(50px, 12vw, 70px);
+    height: var(--controls-size);
     min-width: 90px;
     min-height: 44px;
     padding: 0;

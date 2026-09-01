@@ -99,12 +99,20 @@ function handleGlobalKeydown(event) {
                 
             case 'ArrowLeft':
                 event.preventDefault();
-                navigateToPreviousWord();
+                if (isReadingTextRtl()) {
+                    navigateToNextWord();
+                } else {
+                    navigateToPreviousWord();
+                }
                 break;
                 
             case 'ArrowRight':
                 event.preventDefault();
-                navigateToNextWord();
+                if (isReadingTextRtl()) {
+                    navigateToPreviousWord();
+                } else {
+                    navigateToNextWord();
+                }
                 break;
                 
             case 'ArrowUp':
@@ -376,6 +384,16 @@ function updateCurrentParagraphIndex(wordIndex) {
             break;
         }
     }
+}
+
+/*
+ * The reader carries its own dir (Arabic document inside LTR chrome, or the
+ * reverse), so direction is read from the reader — not from the page.
+ */
+function isReadingTextRtl() {
+    const reader = ER.state.outputDiv;
+    if (!reader) return false;
+    return window.getComputedStyle(reader).direction === 'rtl';
 }
 
 // Navigation functions
