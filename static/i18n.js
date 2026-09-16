@@ -128,7 +128,9 @@
 
     function applyUITranslations() {
         // Chrome layout stays LTR for every locale; only document content
-        // follows the reading direction of its own language.
+        // follows the reading direction of its own language. Individual chrome
+        // strings carry dir="auto" in the template, so an Arabic sentence still
+        // resolves its own base direction inside the LTR layout.
         document.documentElement.lang = currentLocale;
 
         document.querySelectorAll('[data-i18n]').forEach(function (el) {

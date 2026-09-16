@@ -77,18 +77,18 @@
 <body>
     <header class="banner">
         <h1 class="banner-home">
-            <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
+            <span class="control-tooltip control-tooltip--below" role="tooltip" dir="auto" data-i18n="app.returnHome">Return to Home Screen</span>
             <button type="button" class="banner-home-btn" onclick="window.location.reload();" data-i18n="app.title" data-home-label aria-label="Engaging Reader — Return to Home Screen">Engaging Reader</button>
         </h1>
     </header>
 
     <div id="language-selector" class="language-selector">
-        <span class="control-tooltip control-tooltip--below" role="tooltip" data-i18n="lang.change">Change Language</span>
+        <span class="control-tooltip control-tooltip--below" role="tooltip" dir="auto" data-i18n="lang.change">Change Language</span>
         <button type="button" id="languageBtn" class="language-btn" data-i18n-aria="lang.change" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageDropdown">
             <span class="language-btn-label">EN</span>
         </button>
         <div id="languageDropdown" class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
-            <div class="language-option language-label" data-i18n="lang.menu">Language</div>
+            <div class="language-option language-label" dir="auto" data-i18n="lang.menu">Language</div>
             <button type="button" class="language-option" data-lang="ar" role="option">AR</button>
             <button type="button" class="language-option" data-lang="en" role="option">EN</button>
             <button type="button" class="language-option" data-lang="es" role="option">ES</button>
@@ -107,12 +107,12 @@
     <main role="main">
         <div id="upload-container">
         <div id="drop-area" class="drop-area">
-            <img src="/static/assets/upload.svg" alt="">
-            <label for="fileInput" class="labBtn" data-i18n="upload.label" tabindex="-1">Upload File</label>
+            <img src="/static/assets/upload.png" alt="">
+            <label for="fileInput" class="labBtn" dir="auto" data-i18n="upload.label" tabindex="-1">Upload File</label>
             <span id="upload-hint" class="sr-only" data-i18n="upload.ariaLabel">Choose a file or drag and drop it here. Supported: Images and PDF files up to 50MB.</span>
             <input type="file" id="fileInput" aria-describedby="upload-hint" accept="image/*,.png,.jpg,.jpeg,.heic,.heif,.webp,.pdf,application/pdf">
         </div>
-        <div id="upload-error" class="upload-error" role="alert" tabindex="-1" hidden>
+        <div id="upload-error" class="upload-error" role="alert" tabindex="-1" dir="auto" hidden>
             <p class="upload-error-title"></p>
             <p class="upload-error-detail"></p>
         </div>
@@ -120,10 +120,10 @@
             <label class="translate-toggle" for="translateFileToggle">
                 <input type="checkbox" id="translateFileToggle" role="switch">
                 <span class="translate-toggle-track" aria-hidden="true"></span>
-                <span class="translate-toggle-label" data-i18n="upload.translateFile">Translate File</span>
+                <span class="translate-toggle-label" dir="auto" data-i18n="upload.translateFile">Translate File</span>
             </label>
         </div>
-        <div class="disclaimer-box">
+        <div class="disclaimer-box" dir="auto">
             <p class="disclaimer-line-bold" data-i18n="disclaimer.bold">Engaging Reader is not intended to handle sensitive personal data.</p>
             <p class="disclaimer-line-regular" data-i18n="disclaimer.regular">Please do not upload documents with financial information, government ID numbers, medical details, or other confidential content.</p>
         </div>
@@ -139,10 +139,10 @@
     <div id="loading-overlay" class="loading-overlay" aria-hidden="true" tabindex="-1">
         <p class="banner" data-i18n="app.title">Engaging Reader</p>
         <div class="loader2"></div>
-        <p id="loading-status" class="labBtn loading-status" data-i18n="status.loading">Loading</p>
-        <p id="loading-reassurance" class="loading-reassurance" hidden data-i18n="status.canTakeAMinute">This can take up to a minute.</p>
+        <p id="loading-status" class="labBtn loading-status" dir="auto" data-i18n="status.loading">Loading</p>
+        <p id="loading-reassurance" class="loading-reassurance" dir="auto" hidden data-i18n="status.canTakeAMinute">This can take up to a minute.</p>
         <button id="loadingBackBtn" class="loading-back-btn" type="button" onclick="window.location.reload();" data-i18n-aria="app.returnHome" aria-label="Return to Home Screen">
-            <span class="control-tooltip" role="tooltip" data-i18n="app.returnHome">Return to Home Screen</span>
+            <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="app.returnHome">Return to Home Screen</span>
             <svg class="control-icon" viewBox="20 20 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="70" cy="70" r="50" fill="#45535B"/>
                 <path class="icon-fg" d="M51.6855 44.502H51.6846C50.6902 44.5317 49.7447 44.9403 49.042 45.6436L34.6416 60.0439C33.9107 60.7753 33.5 61.7669 33.5 62.8008C33.5 63.8349 33.9105 64.8272 34.6416 65.5586H34.6426L49.042 79.958C49.7734 80.6893 50.7656 81.1006 51.7998 81.1006C52.7692 81.1005 53.7017 80.7394 54.417 80.0918L54.5566 79.958C55.2879 79.2266 55.6992 78.2344 55.6992 77.2002C55.6991 76.1661 55.2878 75.1746 54.5566 74.4434L46.8154 66.7012H85.3984C91.2257 66.7012 95.8983 71.373 95.8984 77.2002C95.8984 83.0275 91.2258 87.7002 85.3984 87.7002H70.999C69.9647 87.7002 68.9726 88.1114 68.2412 88.8428C67.5101 89.574 67.0988 90.5656 67.0986 91.5996C67.0986 92.6338 67.51 93.6261 68.2412 94.3574C68.9726 95.0888 69.9647 95.5 70.999 95.5H85.3984C95.4765 95.5 103.698 87.2782 103.698 77.2002C103.698 67.1222 95.4764 58.9004 85.3984 58.9004H46.8154L54.5566 51.1582C55.2878 50.4269 55.6991 49.4354 55.6992 48.4014C55.6992 47.3671 55.2879 46.3749 54.5566 45.6436C54.1814 45.268 53.7336 44.9727 53.2402 44.7764C52.7464 44.5799 52.2168 44.4867 51.6855 44.502Z"/>
@@ -152,14 +152,14 @@
 
     <div id="speech-controls" style="left: 50%;transform: translate(-50%, -50%);">
         <button id="playBtn" data-i18n-aria="playback.play" aria-label="Play">
-            <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>
+            <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.play">Play</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
             </svg>
         </button>
         <button id="pauseBtn" data-i18n-aria="playback.pause" aria-label="Pause">
-            <span class="control-tooltip" role="tooltip" data-i18n="playback.pause">Pause</span>
+            <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.pause">Pause</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
@@ -168,11 +168,11 @@
         </button>
         <div class="speed-control">
             <button type="button" id="speedDisplay" class="speed-display" aria-haspopup="listbox" aria-expanded="false" aria-controls="speedDropdown" aria-label="Speed 1x">
-                <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
+                <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.speedTooltip">Change reading speed</span>
                 <span class="speed-value">1x</span>
             </button>
             <div id="speedDropdown" class="speed-dropdown" role="listbox" data-i18n-aria="playback.speed" aria-label="Speed">
-                <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
+                <div class="speed-option speed-label" dir="auto" data-i18n="playback.speed">Speed</div>
                 <button type="button" class="speed-option" data-speed="0.45" role="option" aria-selected="false">.5x</button>
                 <button type="button" class="speed-option" data-speed="0.675" role="option" aria-selected="false">.75x</button>
                 <button type="button" class="speed-option" data-speed="0.9" role="option" aria-selected="true">1x</button>
@@ -182,7 +182,7 @@
             </div>
         </div>
         <button id="newFileBtn" type="button" data-i18n-aria="playback.uploadNew" aria-label="Upload new file">
-            <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
+            <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.uploadNew">Upload new file</span>
             <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="50" cy="50" r="50" fill="#45535B"/>
                 <rect class="icon-fg" x="25" y="57.5" width="15" height="50" rx="7.5" transform="rotate(-90 25 57.5)"/>
@@ -198,14 +198,14 @@
             <div id="definitionTextContent" tabindex="0" dir="ltr"></div>
             <div class="modal-speech-controls">
                 <button id="modalPlayBtn" data-i18n-aria="definition.play" aria-label="Play definition">
-                    <span class="control-tooltip" role="tooltip" data-i18n="playback.play">Play</span>
+                    <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.play">Play</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
                         <path class="icon-fg" d="M76.4418 46.5904C78.9864 48.1513 78.9864 51.8487 76.4418 53.4096L40.0916 75.7081C37.4263 77.343 34 75.4252 34 72.2985L34 27.7015C34 24.5748 37.4263 22.657 40.0916 24.2919L76.4418 46.5904Z"/>
                     </svg>
                 </button>
                 <button id="modalPauseBtn" data-i18n-aria="definition.pause" aria-label="Pause definition">
-                    <span class="control-tooltip" role="tooltip" data-i18n="playback.pause">Pause</span>
+                    <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.pause">Pause</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
                         <rect class="icon-fg" x="32" y="25" width="15" height="50" rx="7.5"/>
@@ -214,11 +214,11 @@
                 </button>
                 <div class="speed-control">
                     <button type="button" id="modalSpeedDisplay" class="speed-display" aria-haspopup="listbox" aria-expanded="false" aria-controls="modalSpeedDropdown" aria-label="Speed 1x">
-                        <span class="control-tooltip" role="tooltip" data-i18n="playback.speedTooltip">Change reading speed</span>
+                        <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.speedTooltip">Change reading speed</span>
                         <span class="speed-value">1x</span>
                     </button>
                     <div id="modalSpeedDropdown" class="speed-dropdown" role="listbox" data-i18n-aria="playback.speed" aria-label="Speed">
-                        <div class="speed-option speed-label" data-i18n="playback.speed">Speed</div>
+                        <div class="speed-option speed-label" dir="auto" data-i18n="playback.speed">Speed</div>
                         <button type="button" class="speed-option" data-speed="0.45" role="option" aria-selected="false">.5x</button>
                         <button type="button" class="speed-option" data-speed="0.675" role="option" aria-selected="false">.75x</button>
                         <button type="button" class="speed-option" data-speed="0.9" role="option" aria-selected="true">1x</button>
@@ -228,7 +228,7 @@
                     </div>
                 </div>
                 <button id="modalNewFileBtn" type="button" data-i18n-aria="playback.uploadNew" aria-label="Upload new file">
-                    <span class="control-tooltip" role="tooltip" data-i18n="playback.uploadNew">Upload new file</span>
+                    <span class="control-tooltip" role="tooltip" dir="auto" data-i18n="playback.uploadNew">Upload new file</span>
                     <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="50" fill="#45535B"/>
                         <rect class="icon-fg" x="25" y="57.5" width="15" height="50" rx="7.5" transform="rotate(-90 25 57.5)"/>
@@ -238,7 +238,7 @@
             </div>
             
             <button type="button" class="close-btn" data-i18n-aria="definition.returnToText" aria-label="return to main text">
-                <span class="control-tooltip control-tooltip--side" role="tooltip" data-i18n="definition.returnToText">return to main text</span>
+                <span class="control-tooltip control-tooltip--side" role="tooltip" dir="auto" data-i18n="definition.returnToText">return to main text</span>
                 <svg class="control-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <circle cx="50" cy="50" r="50" fill="#45535B"/>
                     <rect class="icon-fg" x="24.9998" y="37.0288" width="17.9302" height="56.7791" rx="8.96512" transform="rotate(-42.0697 24.9998 37.0288)"/>
