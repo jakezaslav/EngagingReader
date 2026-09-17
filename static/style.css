@@ -24,7 +24,8 @@
 body {
     /* Atkinson must lead: Noto Naskh Arabic also ships Latin glyphs (a serif design),
        so putting it first makes Latin text render serif instead of falling through.
-       Atkinson has no Arabic coverage, so Arabic still resolves to Noto per-glyph. */
+       Atkinson has no Arabic-script coverage, so Arabic, Farsi, Dari, and Urdu
+       still resolve to Noto per-glyph. */
     font-family: "Atkinson Hyperlegible", "Noto Naskh Arabic", sans-serif;
     padding: 0px clamp(15px, 4vw, 75px); /* Consistent responsive padding */
     margin: 0;
@@ -246,28 +247,81 @@ body.definition-open .banner {
 .language-dropdown {
     display: none;
     position: absolute;
-    top: calc(100% + 6px);
+    /*
+     * Hung off the banner rather than the pill. The two scale on different
+     * font clamps, so measuring from the pill left a gap under the header that
+     * changed with the viewport; --banner-height keeps it at 4px everywhere.
+     */
+    top: calc(var(--banner-height) + 4px);
     left: 50%;
     right: auto;
     transform: translateX(-50%);
     background-color: #45535B;
     border-radius: 20px;
     padding: clamp(10px, 2vw, 14px) clamp(14px, 3vw, 20px);
+    /* Sized to the longest language name, so nothing wraps or overflows */
+    width: max-content;
     min-width: 72px;
+    /*
+     * Centred on the pill, the menu can only grow half its width toward the
+     * right edge, where the selector leaves 80px plus half the pill (100% here
+     * is the pill's width). Cap the width at twice that, less an 8px gutter, so
+     * a long name or a large default font size can never run off screen.
+     */
+    max-width: min(18rem, calc(100% + 144px));
+    /* So the padding counts inside max-height rather than spilling past it */
+    box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: clamp(4px, 1vw, 8px);
+    /*
+     * Only the space below the banner is available: the 4px above plus 32px
+     * that keeps the padding and rounded corner under the last option on
+     * screen, mirroring the space above the heading.
+     */
+    max-height: calc(100vh - var(--banner-height) - 36px);
+    max-height: calc(100dvh - var(--banner-height) - 36px);
 }
 
 .language-dropdown.show {
     display: flex;
 }
 
+.language-dropdown-label {
+    font-family: "Atkinson Hyperlegible", "Noto Naskh Arabic", sans-serif;
+    /* Same size as the options it heads, set apart by weight instead */
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+    font-weight: 700;
+    color: #F1F3F0;
+    text-align: center;
+    padding: clamp(4px, 1vw, 6px) 4px clamp(2px, 0.5vw, 4px);
+}
+
+/* Only the options scroll; the "Language" heading stays in view. */
+.language-dropdown-list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(4px, 1vw, 8px);
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Never scroll sideways, but leave room for a focus ring to paint */
+    overflow-x: clip;
+    overflow-clip-margin: 4px;
+    /* Always-visible slim scrollbar, so a clipped list is obvious */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(229, 234, 229, 0.55) transparent;
+    /* Reserve the scrollbar track: the menu is width: max-content, so a
+       scrollbar appearing would otherwise eat into the option text. */
+    scrollbar-gutter: stable;
+}
+
 .language-option {
     font-family: "Atkinson Hyperlegible", "Noto Naskh Arabic", sans-serif;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    font-weight: 700;
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+    font-weight: 400;
     color: #F1F3F0;
     background: transparent;
     border: none;
@@ -279,18 +333,16 @@ body.definition-open .banner {
     box-sizing: border-box;
 }
 
-.language-option.language-label {
-    font-weight: 400;
-    font-size: clamp(0.85rem, 2vw, 1rem);
-    cursor: default;
-    pointer-events: none;
-    padding-bottom: clamp(2px, 0.5vw, 4px);
-}
-
-.language-option:hover:not(.language-label),
-.language-option:focus-visible:not(.language-label) {
+.language-option:hover,
+.language-option:focus-visible {
     background-color: rgba(229, 234, 229, 0.15);
     outline: none;
+}
+
+/* Marks the language in use, which the scrolling list can push out of view */
+.language-option.active {
+    font-weight: 700;
+    background-color: rgba(229, 234, 229, 0.18);
 }
 
 .language-selector.open > .control-tooltip--below {
@@ -754,14 +806,15 @@ body.is-loading .language-selector {
 
 #text-display[lang^="ar"] .word,
 #text-display[dir="rtl"] .word,
-#definitionTextContent[lang^="ar"] .word {
+#definitionTextContent[lang^="ar"] .word,
+#definitionTextContent[dir="rtl"] .word {
     display: inline;
     padding-inline: 0;
     letter-spacing: 0;
 }
 
 /* Number spans are marked dir="ltr" when wrapped. Isolation normally comes from
-   the UA sheet; state it here so the Arabic display:inline rule above cannot
+   the UA sheet; state it here so the RTL display:inline rule above cannot
    leave digits, dates or phone numbers to reorder with surrounding RTL text. */
 .word[dir="ltr"] {
     unicode-bidi: isolate;

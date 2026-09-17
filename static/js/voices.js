@@ -161,7 +161,11 @@ var LOCALE_LANG_TAGS = {
     ru: ['ru-RU', 'ru_RU', 'ru'],
     ht: ['ht-HT', 'ht_HT', 'ht'],
     zh: ['zh-CN', 'zh_CN', 'zh-Hans', 'zh-TW', 'zh-Hant', 'zh'],
-    ar: ['ar-SA', 'ar_SA', 'ar-EG', 'ar_EG', 'ar']
+    ar: ['ar-SA', 'ar_SA', 'ar-EG', 'ar_EG', 'ar'],
+    he: ['he-IL', 'he_IL', 'iw-IL', 'iw_IL', 'he', 'iw'],
+    ur: ['ur-PK', 'ur_PK', 'ur-IN', 'ur_IN', 'ur'],
+    fa: ['fa-IR', 'fa_IR', 'fa'],
+    prs: ['fa-AF', 'fa_AF', 'prs-AF', 'prs_AF', 'prs']
 };
 
 // Voice-name keywords when lang tags are missing or nonstandard
@@ -176,7 +180,11 @@ var LOCALE_VOICE_NAME_HINTS = {
     ru: ['russian', 'русский'],
     ht: ['haitian', 'creole', 'kreyol', 'kreyòl'],
     zh: ['chinese', 'mandarin', 'cantonese', '中文'],
-    ar: ['arabic', 'العربية', 'عربي']
+    ar: ['arabic', 'العربية', 'عربي'],
+    he: ['hebrew', 'עברית'],
+    ur: ['urdu', 'اردو'],
+    fa: ['persian', 'farsi', 'فارسی'],
+    prs: ['dari', 'afghan persian', 'دری']
 };
 
 function normalizeLangTag(tag) {

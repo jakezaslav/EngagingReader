@@ -1,7 +1,10 @@
 (function () {
     'use strict';
 
-    var SUPPORTED = ['en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'ru', 'ht', 'zh', 'ar'];
+    var SUPPORTED = [
+        'en', 'es', 'fr', 'fil', 'pt', 'pa', 'tr', 'uk', 'ru', 'ht', 'zh',
+        'ar', 'he', 'ur', 'fa', 'prs'
+    ];
     var LOCALE_LABELS = {
         en: 'EN',
         es: 'ES',
@@ -14,7 +17,31 @@
         ru: 'RU',
         ht: 'HT',
         zh: 'ZH',
-        ar: 'AR'
+        ar: 'AR',
+        he: 'HE',
+        ur: 'UR',
+        fa: 'FA',
+        prs: 'PRS'
+    };
+    // Shown in the language menu: every locale is listed under its own name, so
+    // a reader who does not know English can still find their language.
+    var LOCALE_AUTONYMS = {
+        en: 'English',
+        es: 'Español',
+        fr: 'Français',
+        fil: 'Filipino',
+        pt: 'Português',
+        pa: 'ਪੰਜਾਬੀ',
+        tr: 'Türkçe',
+        uk: 'Українська',
+        ru: 'Русский',
+        ht: 'Kreyòl',
+        zh: '中文',
+        ar: 'العربية',
+        he: 'עברית',
+        ur: 'اردو',
+        fa: 'فارسی',
+        prs: 'دری'
     };
     var STORAGE_KEY = 'locale';
     var SOURCE_META = '__source__';
@@ -29,7 +56,8 @@
     }
 
     function isRtlLocale(code) {
-        return String(code || '').toLowerCase().replace('_', '-').split('-')[0] === 'ar';
+        var primary = String(code || '').toLowerCase().replace('_', '-').split('-')[0];
+        return ['ar', 'he', 'ur', 'fa', 'prs'].indexOf(primary) !== -1;
     }
 
     function mapBrowserLang(tag) {
@@ -38,6 +66,8 @@
         var primary = lower.split('-')[0];
 
         if (primary === 'tl' || primary === 'fil') return 'fil';
+        if (lower === 'fa-af' || primary === 'prs') return 'prs';
+        if (primary === 'iw') return 'he';
         if (primary === 'zh') return 'zh';
         if (isSupported(primary)) return primary;
         if (isSupported(lower)) return lower;
@@ -108,18 +138,26 @@
     function syncLanguageSelector() {
         var label = document.querySelector('#languageBtn .language-btn-label');
         var languageCode = LOCALE_LABELS[currentLocale] || currentLocale.toUpperCase();
+        // The pill only has room for the short code, so the accessible name
+        // carries the language's own name instead.
+        var autonym = LOCALE_AUTONYMS[currentLocale] || languageCode;
         if (label) label.textContent = languageCode;
 
         var languageBtn = document.getElementById('languageBtn');
         if (languageBtn) {
-            languageBtn.setAttribute('aria-label', languageCode + ' — ' + t('lang.change'));
+            languageBtn.setAttribute('aria-label', autonym + ' — ' + t('lang.change'));
         }
 
         var options = document.querySelectorAll('.language-option[data-lang]');
         options.forEach(function (option) {
             var code = option.getAttribute('data-lang');
-            var nativeName = LOCALE_LABELS[code];
-            if (nativeName) option.textContent = nativeName;
+            var nativeName = LOCALE_AUTONYMS[code];
+            if (nativeName) {
+                option.textContent = nativeName;
+                // Each row reads in its own language: keep font selection and
+                // screen-reader pronunciation on the option itself.
+                option.setAttribute('lang', code);
+            }
             var selected = code === currentLocale;
             option.setAttribute('aria-selected', selected ? 'true' : 'false');
             option.classList.toggle('active', selected);
@@ -129,7 +167,7 @@
     function applyUITranslations() {
         // Chrome layout stays LTR for every locale; only document content
         // follows the reading direction of its own language. Individual chrome
-        // strings carry dir="auto" in the template, so an Arabic sentence still
+        // strings carry dir="auto" in the template, so an RTL sentence still
         // resolves its own base direction inside the LTR layout.
         document.documentElement.lang = currentLocale;
 
@@ -235,7 +273,11 @@
         ru: 'Russian',
         ht: 'Haitian Creole',
         zh: 'Chinese',
-        ar: 'Arabic'
+        ar: 'Arabic',
+        he: 'Hebrew',
+        ur: 'Urdu',
+        fa: 'Farsi',
+        prs: 'Dari'
     };
 
     function localeToLanguageName(code) {
@@ -250,6 +292,7 @@
     window.isRtlLocale = isRtlLocale;
     window.__SUPPORTED_LOCALES = SUPPORTED.slice();
     window.__LOCALE_LABELS = Object.assign({}, LOCALE_LABELS);
+    window.__LOCALE_AUTONYMS = Object.assign({}, LOCALE_AUTONYMS);
 
     var initial = resolveLocale();
     try {

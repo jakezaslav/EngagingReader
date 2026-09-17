@@ -387,7 +387,7 @@ function updateCurrentParagraphIndex(wordIndex) {
 }
 
 /*
- * The reader carries its own dir (Arabic document inside LTR chrome, or the
+ * The reader carries its own dir (an RTL document inside LTR chrome, or the
  * reverse), so direction is read from the reader — not from the page.
  */
 function isReadingTextRtl() {

@@ -163,13 +163,25 @@ function setupLanguageSelector() {
     if (!selector || !languageBtn || !dropdown || !label) return;
 
     const languageOptions = Array.from(
-        dropdown.querySelectorAll('.language-option:not(.language-label)')
+        dropdown.querySelectorAll('.language-option[data-lang]')
     );
+
+    /*
+     * The list scrolls, so the current language can sit outside the visible
+     * rows when the menu opens.
+     */
+    function revealSelectedOption() {
+        const selected = languageOptions.find(
+            (option) => option.getAttribute('aria-selected') === 'true'
+        );
+        if (selected) selected.scrollIntoView({ block: 'nearest' });
+    }
 
     function openDropdown() {
         dropdown.classList.add('show');
         selector.classList.add('open');
         languageBtn.setAttribute('aria-expanded', 'true');
+        revealSelectedOption();
     }
 
     function focusOption(index) {
@@ -180,17 +192,20 @@ function setupLanguageSelector() {
         const lang = option.getAttribute('data-lang');
         if (lang && typeof window.setLocale === 'function') {
             window.setLocale(lang);
-        } else {
-            label.textContent = option.textContent.trim();
+        } else if (lang) {
+            // The pill shows the short code, never the full language name
+            label.textContent = lang.toUpperCase();
         }
         closeLanguageDropdown(true);
     }
 
     languageBtn.addEventListener('click', function(event) {
         event.stopPropagation();
-        const isOpen = dropdown.classList.toggle('show');
-        selector.classList.toggle('open', isOpen);
-        languageBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (dropdown.classList.contains('show')) {
+            closeLanguageDropdown(false);
+        } else {
+            openDropdown();
+        }
     });
 
     languageBtn.addEventListener('keydown', function(event) {

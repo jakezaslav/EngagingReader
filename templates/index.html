@@ -52,7 +52,7 @@
       },
       "featureList": {{ site_features | list | tojson }},
       "keywords": {{ site_keywords | tojson }},
-      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "ru", "ht", "zh", "ar"],
+      "inLanguage": ["en", "es", "fr", "fil", "pt", "pa", "tr", "uk", "ru", "ht", "zh", "ar", "he", "ur", "fa", "prs"],
       "image": {{ og_image_url | tojson }},
       "screenshot": {{ og_image_url | tojson }}
     }
@@ -87,20 +87,26 @@
         <button type="button" id="languageBtn" class="language-btn" data-i18n-aria="lang.change" aria-label="Change Language" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageDropdown">
             <span class="language-btn-label">EN</span>
         </button>
-        <div id="languageDropdown" class="language-dropdown" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
-            <div class="language-option language-label" dir="auto" data-i18n="lang.menu">Language</div>
-            <button type="button" class="language-option" data-lang="ar" role="option">AR</button>
-            <button type="button" class="language-option" data-lang="en" role="option">EN</button>
-            <button type="button" class="language-option" data-lang="es" role="option">ES</button>
-            <button type="button" class="language-option" data-lang="fil" role="option">FIL</button>
-            <button type="button" class="language-option" data-lang="fr" role="option">FR</button>
-            <button type="button" class="language-option" data-lang="ht" role="option">HT</button>
-            <button type="button" class="language-option" data-lang="pa" role="option">PA</button>
-            <button type="button" class="language-option" data-lang="pt" role="option">PT</button>
-            <button type="button" class="language-option" data-lang="ru" role="option">RU</button>
-            <button type="button" class="language-option" data-lang="tr" role="option">TR</button>
-            <button type="button" class="language-option" data-lang="uk" role="option">UK</button>
-            <button type="button" class="language-option" data-lang="zh" role="option">ZH</button>
+        <div class="language-dropdown">
+            <div class="language-dropdown-label" dir="auto" data-i18n="lang.menu">Language</div>
+            <div id="languageDropdown" class="language-dropdown-list" role="listbox" data-i18n-aria="lang.menu" aria-label="Language">
+                <button type="button" class="language-option" data-lang="en" role="option" lang="en" dir="auto">English</button>
+                <button type="button" class="language-option" data-lang="es" role="option" lang="es" dir="auto">Español</button>
+                <button type="button" class="language-option" data-lang="fil" role="option" lang="fil" dir="auto">Filipino</button>
+                <button type="button" class="language-option" data-lang="fr" role="option" lang="fr" dir="auto">Français</button>
+                <button type="button" class="language-option" data-lang="ht" role="option" lang="ht" dir="auto">Kreyòl</button>
+                <button type="button" class="language-option" data-lang="pt" role="option" lang="pt" dir="auto">Português</button>
+                <button type="button" class="language-option" data-lang="tr" role="option" lang="tr" dir="auto">Türkçe</button>
+                <button type="button" class="language-option" data-lang="ru" role="option" lang="ru" dir="auto">Русский</button>
+                <button type="button" class="language-option" data-lang="uk" role="option" lang="uk" dir="auto">Українська</button>
+                <button type="button" class="language-option" data-lang="he" role="option" lang="he" dir="auto">עברית</button>
+                <button type="button" class="language-option" data-lang="ur" role="option" lang="ur" dir="auto">اردو</button>
+                <button type="button" class="language-option" data-lang="ar" role="option" lang="ar" dir="auto">العربية</button>
+                <button type="button" class="language-option" data-lang="prs" role="option" lang="prs" dir="auto">دری</button>
+                <button type="button" class="language-option" data-lang="fa" role="option" lang="fa" dir="auto">فارسی</button>
+                <button type="button" class="language-option" data-lang="pa" role="option" lang="pa" dir="auto">ਪੰਜਾਬੀ</button>
+                <button type="button" class="language-option" data-lang="zh" role="option" lang="zh" dir="auto">中文</button>
+            </div>
         </div>
     </div>
 

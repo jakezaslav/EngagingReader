@@ -48,7 +48,18 @@ function resolveContentLang(locale) {
  */
 function detectTextLocale(text, fallbackLocale) {
     const sample = String(text || '');
+    if (/[\u0590-\u05ff]/.test(sample)) {
+        return 'he';
+    }
     if (/[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/.test(sample)) {
+        // Check letters distinctive to Urdu before the shared Persian/Arabic
+        // script. Persian and Dari cannot be reliably distinguished by script.
+        if (/[\u0679\u0688\u0691\u06ba\u06be\u06c1\u06d2]/.test(sample)) {
+            return 'ur';
+        }
+        if (/[\u067e\u0686\u0698\u06a9\u06af\u06cc]/.test(sample)) {
+            return 'fa';
+        }
         return 'ar';
     }
     if (/[\u3400-\u9fff\uf900-\ufaff]/.test(sample)) {
