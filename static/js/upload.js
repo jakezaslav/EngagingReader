@@ -256,6 +256,7 @@ async function uploadImage() {
                             : 'ltr'
                     );
 
+                    ER.flattenReaderTables(ER.state.outputDiv);
                     ER.wrapWordsInSpans(ER.state.outputDiv);
                     ER.initializeWordNavigation();
 

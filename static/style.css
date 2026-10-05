@@ -719,10 +719,10 @@ body.is-loading .language-selector {
 }
 
 /*
- * OCR output is Markdown, so it can contain code blocks and tables that are far
- * wider than the reader. Wrap them instead of letting them set the width: this
- * is a reading surface, not a code viewer, and horizontal scrolling would hide
- * text from keyboard and screen-reader navigation.
+ * OCR output is Markdown, so it can contain code blocks that are far wider
+ * than the reader. Wrap them instead of letting them set the width: this is a
+ * reading surface, not a code viewer, and horizontal scrolling would hide
+ * text from keyboard and Play.
  */
 #text-display pre,
 #text-display code {
@@ -732,9 +732,46 @@ body.is-loading .language-selector {
 }
 
 #text-display pre,
-#text-display table,
 #text-display img {
     max-width: 100%;
+}
+
+/* Flattened multi-column tables */
+.table-stack {
+    width: 100%;
+}
+
+.table-card {
+    margin: 1em 0;
+    padding: 0.75em 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.table-card:last-child {
+    border-bottom: none;
+}
+
+#text-display .table-card-title {
+    font-size: 1.15em;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0.4em;
+    line-height: 1.3;
+}
+
+.table-card-row {
+    margin: 0.25em 0;
+}
+
+.table-card-label {
+    font-weight: 700;
+}
+
+.table-card .word,
+#text-display table .word {
+    display: inline;
+    padding-inline: 0;
+    letter-spacing: 0;
 }
 
 /* ===== TEXT HIERARCHY WITHIN MAIN CONTENT ===== */
@@ -796,8 +833,6 @@ body.is-loading .language-selector {
     font-size: inherit; /* Use parent's responsive font size */
     padding: 2px 1px; /* Small padding for better clickability */
     border-radius: 3px;
-    /* Removed transition for instant highlighting changes */
-    
     /* Reserve space to prevent reflow when bolded */
     letter-spacing: 0.5px; /* Slightly wider spacing to accommodate bold width */
     word-break: break-word; /* Allow long words to break when necessary */
@@ -1314,73 +1349,6 @@ body.is-loading .language-selector {
 #newFileBtn,
 #modalNewFileBtn {
     color: var(--icon-unselected);
-}
-
-/* ===== FRONT PAGE CONTROLS ===== */
-
-/* Front page controls styling */
-#front-page-controls {
-    margin-top: clamp(30px, 6vw, 50px);
-    position: relative;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    display: flex;
-    gap: clamp(8px, 2vw, 12px);
-    padding: clamp(8px, 2vw, 12px);
-    box-shadow: 0 9px #2E6F40;
-    background-color: #95D3A6;
-    border: solid black 1px;
-    border-radius: 30px;
-    justify-content: center;
-}
-
-#front-page-controls button {
-    border: none;
-    border-radius: 50%;
-    width: clamp(50px, 12vw, 70px);
-    height: clamp(50px, 12vw, 70px);
-    min-width: 44px; /* Accessibility minimum */
-    min-height: 44px;
-    padding: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-/* Front page play: unselected by default, selected while playing */
-#frontPlayBtn {
-    color: var(--icon-unselected);
-}
-
-#frontPlayBtn.playing {
-    color: var(--icon-selected);
-}
-
-/* Front page pause: selected when idle, unselected while playing */
-#frontPauseBtn {
-    color: var(--icon-selected);
-}
-
-#frontPauseBtn.playing {
-    color: var(--icon-unselected);
-}
-
-/* ===== LEGACY / UNUSED HELPERS ===== */
-
-#status {
-    font-size: 1rem;
-    color: #F1F3F0;
-    margin-top: 10px;
-    opacity: 0;
-    visibility: none;
-}
-
-#content-area {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    margin: 30px;
-    display: inline;
 }
 
 /* ===== THIRD-PARTY ===== */

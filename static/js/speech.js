@@ -185,7 +185,7 @@ async function readText() {
     };
 
     ER.state.mainSpeechUtterance.onerror = function(event) {
-        console.error('❌ Speech error:', event.error);
+        console.error('Speech error:', event.error);
         
         // Ignore 'interrupted' and 'canceled' errors as they're expected when switching/resuming
         if (event.error !== 'interrupted' && event.error !== 'canceled') {

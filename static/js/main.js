@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             await ER.preloadDocumentVoice(ER.state.documentLocale || 'en');
         } catch (error) {
-            console.error('❌ Error preloading voice:', error);
+            console.error('Error preloading voice:', error);
         }
     }, 100);
 

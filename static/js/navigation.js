@@ -282,6 +282,13 @@ function detectParagraphBoundaries() {
     const paragraphElements = ER.state.outputDiv.querySelectorAll('p, div, h1, h2, h3, h4, h5, h6');
     
     paragraphElements.forEach((element) => {
+        // Skip table wrappers: they contain every word, so they steal ArrowDown
+        // from titles and rows.
+        if (element.classList.contains('table-stack') ||
+            element.classList.contains('table-card')) {
+            return;
+        }
+
         const wordsInElement = element.querySelectorAll('.highlight-word');
         if (wordsInElement.length > 0) {
             // Find the actual indices of these words in the global mainWordSpans array
@@ -319,8 +326,6 @@ function setWordFocus(wordIndex) {
         
         // Update current paragraph index
         updateCurrentParagraphIndex(wordIndex);
-        
-        // Remove speaking highlight when user navigates (as requested)
         removeAllSpeakingHighlights();
     }
 }
@@ -410,12 +415,10 @@ function navigateToNextWord() {
     } else if (ER.state.focusedWordIndex < ER.state.mainWordSpans.length - 1) {
         setWordFocus(ER.state.focusedWordIndex + 1);
     }
-    // Do nothing if at last word (as requested)
 }
 
 function navigateToPreviousWord() {
     if (ER.state.focusedWordIndex <= 0) {
-        // Do nothing if at first word or no word focused (as requested)
         return;
     } else {
         setWordFocus(ER.state.focusedWordIndex - 1);
@@ -429,12 +432,10 @@ function navigateToNextParagraph() {
         const nextParagraph = ER.state.paragraphBoundaries[ER.state.currentParagraphIndex + 1];
         setWordFocus(nextParagraph.startIndex);
     }
-    // Do nothing if at last paragraph (as requested)
 }
 
 function navigateToPreviousParagraph() {
     if (ER.state.currentParagraphIndex <= 0) {
-        // Do nothing if at first paragraph or no paragraph focused (as requested)
         return;
     } else {
         const prevParagraph = ER.state.paragraphBoundaries[ER.state.currentParagraphIndex - 1];

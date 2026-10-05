@@ -174,7 +174,6 @@ function closeDefinitionModal() {
     ER.state.definitionModal.style.display = 'none';
     document.body.classList.remove('definition-open');
     
-    // Restore focus to the word that opened the modal (as requested)
     const restoreIndex = ER.state.definedWordIndex >= 0
         ? ER.state.definedWordIndex
         : ER.state.focusedWordIndex;
