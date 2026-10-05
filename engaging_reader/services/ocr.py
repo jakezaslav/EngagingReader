@@ -82,6 +82,11 @@ Return ONLY the final Markdown document. Do NOT include any conversational intro
 </output_constraint>"""
 
 
+MAX_RECITATION_CONTINUATIONS = 5
+
+CONTINUE_PROMPT = """Your previous response stopped before the document was finished. Continue the Markdown from exactly where it stopped, following the same instructions. Do NOT repeat any text you already wrote, and do NOT add any introduction or explanation. If the last word was cut off, start by completing that word."""
+
+
 def process_file(file_path, user_language="English", translate=False):
     file_process_start = time.time()
     _, file_extension = os.path.splitext(file_path.lower())
@@ -167,19 +172,26 @@ def process_file(file_path, user_language="English", translate=False):
     client = get_client()
     gemini_start = time.time()
     logger.info(f"[TIMING] Starting Gemini API call")
-    output_text = ""
-    first_chunk_received = False
-    for chunk in client.models.generate_content_stream(
-        model="gemini-3.5-flash-lite",
-        contents=contents,
-        config=config,
-    ):
-        if chunk.text:  # Only add text if it's not None
-            if not first_chunk_received:
-                first_chunk_time = time.time() - gemini_start
-                logger.info(f"[TIMING] First chunk received in {first_chunk_time:.3f} seconds")
-                first_chunk_received = True
-            output_text += chunk.text
+    output_text, finish_reason = _stream_text(client, contents, config, gemini_start)
+
+    # Gemini's recitation filter stops output partway through text that matches
+    # published material (books, official documents), so ask it to pick up from
+    # where it stopped.
+    continuation_attempts = 0
+    while finish_reason == types.FinishReason.RECITATION and continuation_attempts < MAX_RECITATION_CONTINUATIONS:
+        continuation_attempts += 1
+        logger.warning(
+            f"OCR stopped for RECITATION after {len(output_text)} chars; "
+            f"continuing (attempt {continuation_attempts})"
+        )
+        continuation_contents = contents + [
+            types.Content(role="model", parts=[types.Part.from_text(text=output_text)]),
+            types.Content(role="user", parts=[types.Part.from_text(text=CONTINUE_PROMPT)]),
+        ]
+        more_text, finish_reason = _stream_text(client, continuation_contents, config, gemini_start)
+        if not more_text:
+            break
+        output_text += more_text
 
     gemini_duration = time.time() - gemini_start
     logger.info(f"[TIMING] Gemini API completed in {gemini_duration:.3f} seconds")
@@ -188,3 +200,25 @@ def process_file(file_path, user_language="English", translate=False):
     logger.info(f"[TIMING] Total process_file() duration: {total_process_duration:.3f} seconds")
 
     return output_text  # Return the markdown-formatted output
+
+
+def _stream_text(client, contents, config, gemini_start):
+    """Stream one Gemini response; return its text and finish reason."""
+    output_text = ""
+    finish_reason = None
+    first_chunk_received = False
+    for chunk in client.models.generate_content_stream(
+        model="gemini-3.5-flash-lite",
+        contents=contents,
+        config=config,
+    ):
+        if chunk.candidates and chunk.candidates[0].finish_reason:
+            finish_reason = chunk.candidates[0].finish_reason
+        if chunk.text:  # Only add text if it's not None
+            if not first_chunk_received:
+                first_chunk_time = time.time() - gemini_start
+                logger.info(f"[TIMING] First chunk received in {first_chunk_time:.3f} seconds")
+                first_chunk_received = True
+            output_text += chunk.text
+
+    return output_text, finish_reason
