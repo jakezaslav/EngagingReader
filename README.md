@@ -20,7 +20,7 @@ At Engaging Reader, we make reading accessible for everyone. Our AI-powered web 
 
 ## Prerequisites
 
-- Python 3.9 or higher (Flask 3.1)
+- Python 3.11 or higher (Flask 3.1, Pillow 13, and Gunicorn 26). Render uses Python 3.12 from `.python-version`.
 - Node.js 18 or higher (for build-time UI locale translation)
 - A [Gemini API key](https://aistudio.google.com/apikey), **or** a Google Cloud project with Vertex AI and a service account
 - A [DeepL API key](https://www.deepl.com/pro-api) (for `npm run translate` and Render builds)
